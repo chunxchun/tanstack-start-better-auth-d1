@@ -191,3 +191,6 @@ Files prefixed with `demo` can be safely deleted. They are there to provide a st
 You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
 
 For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+
+##
+To use Drizzle kit with Cloudflare D1 HTTP API [Docs](https://orm.drizzle.team/docs/guides/d1-http-with-drizzle-kit)

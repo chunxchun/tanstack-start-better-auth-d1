@@ -17,6 +17,13 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  optimizeDeps: {
+    exclude: [
+      // 'better-auth',
+      // 'better-auth/adapters/drizzle',
+      // 'better-auth/tanstack-start',
+    ],
+  },
 })
 
 export default config
