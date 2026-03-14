@@ -7,8 +7,34 @@ import {
   Waves,
   Sparkles,
 } from 'lucide-react'
+import { createServerFn } from "@tanstack/react-start";
+import { env } from "cloudflare:workers";
 
 export const Route = createFileRoute('/')({ component: App })
+
+export const uploadFile = createServerFn({ method: "POST" })
+  .inputValidator(
+    (data: { key: string; content: string; contentType?: string }) => data,
+  )
+  .handler(async ({ data }) => {
+    const binary = atob(data.content);
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+
+    await env.BUCKET.put(data.key, bytes, {
+      httpMetadata: {
+        contentType: data.contentType ?? "application/octet-stream",
+      },
+    });
+
+    return { success: true };
+  });
+
+export const getFile = createServerFn()
+  .inputValidator((key: string) => key)
+  .handler(async ({ data: key }) => {
+    const object = await env.BUCKET.get(key);
+    return object ? await object.text() : null;
+  });
 
 function App() {
   const features = [

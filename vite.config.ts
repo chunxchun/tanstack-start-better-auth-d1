@@ -19,9 +19,9 @@ const config = defineConfig({
   ],
   optimizeDeps: {
     exclude: [
-      // 'better-auth',
-      // 'better-auth/adapters/drizzle',
-      // 'better-auth/tanstack-start',
+      'better-auth',
+      'better-auth/adapters/drizzle',
+      'better-auth/tanstack-start',
     ],
   },
 })

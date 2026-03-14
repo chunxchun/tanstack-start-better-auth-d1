@@ -13,10 +13,16 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiUploadRouteImport } from './routes/api/upload'
 import { Route as ProtectedSettingRouteImport } from './routes/_protected/setting'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
+import { Route as ApiShopIndexRouteImport } from './routes/api/shop/index'
+import { Route as ApiShopIdRouteImport } from './routes/api/shop/$id'
+import { Route as ApiR2UploadRouteImport } from './routes/api/r2/upload'
+import { Route as ApiR2DownloadRouteImport } from './routes/api/r2/download'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedDashboardUserRouteImport } from './routes/_protected/dashboard/user'
+import { Route as ProtectedDashboardShopRouteImport } from './routes/_protected/dashboard/shop'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -37,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiUploadRoute = ApiUploadRouteImport.update({
+  id: '/api/upload',
+  path: '/api/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProtectedSettingRoute = ProtectedSettingRouteImport.update({
   id: '/setting',
   path: '/setting',
@@ -46,6 +57,26 @@ const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => ProtectedRoute,
+} as any)
+const ApiShopIndexRoute = ApiShopIndexRouteImport.update({
+  id: '/api/shop/',
+  path: '/api/shop/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiShopIdRoute = ApiShopIdRouteImport.update({
+  id: '/api/shop/$id',
+  path: '/api/shop/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiR2UploadRoute = ApiR2UploadRouteImport.update({
+  id: '/api/r2/upload',
+  path: '/api/r2/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiR2DownloadRoute = ApiR2DownloadRouteImport.update({
+  id: '/api/r2/download',
+  path: '/api/r2/download',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -57,6 +88,11 @@ const ProtectedDashboardUserRoute = ProtectedDashboardUserRouteImport.update({
   path: '/user',
   getParentRoute: () => ProtectedDashboardRoute,
 } as any)
+const ProtectedDashboardShopRoute = ProtectedDashboardShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => ProtectedDashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -64,8 +100,14 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
+  '/api/upload': typeof ApiUploadRoute
+  '/dashboard/shop': typeof ProtectedDashboardShopRoute
   '/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/r2/download': typeof ApiR2DownloadRoute
+  '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/shop/$id': typeof ApiShopIdRoute
+  '/api/shop/': typeof ApiShopIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -73,8 +115,14 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
+  '/api/upload': typeof ApiUploadRoute
+  '/dashboard/shop': typeof ProtectedDashboardShopRoute
   '/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/r2/download': typeof ApiR2DownloadRoute
+  '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/shop/$id': typeof ApiShopIdRoute
+  '/api/shop': typeof ApiShopIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,8 +132,14 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_protected/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/_protected/setting': typeof ProtectedSettingRoute
+  '/api/upload': typeof ApiUploadRoute
+  '/_protected/dashboard/shop': typeof ProtectedDashboardShopRoute
   '/_protected/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/r2/download': typeof ApiR2DownloadRoute
+  '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/shop/$id': typeof ApiShopIdRoute
+  '/api/shop/': typeof ApiShopIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -95,8 +149,14 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard'
     | '/setting'
+    | '/api/upload'
+    | '/dashboard/shop'
     | '/dashboard/user'
     | '/api/auth/$'
+    | '/api/r2/download'
+    | '/api/r2/upload'
+    | '/api/shop/$id'
+    | '/api/shop/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -104,8 +164,14 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard'
     | '/setting'
+    | '/api/upload'
+    | '/dashboard/shop'
     | '/dashboard/user'
     | '/api/auth/$'
+    | '/api/r2/download'
+    | '/api/r2/upload'
+    | '/api/shop/$id'
+    | '/api/shop'
   id:
     | '__root__'
     | '/'
@@ -114,8 +180,14 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_protected/dashboard'
     | '/_protected/setting'
+    | '/api/upload'
+    | '/_protected/dashboard/shop'
     | '/_protected/dashboard/user'
     | '/api/auth/$'
+    | '/api/r2/download'
+    | '/api/r2/upload'
+    | '/api/shop/$id'
+    | '/api/shop/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -123,7 +195,12 @@ export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiUploadRoute: typeof ApiUploadRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiR2DownloadRoute: typeof ApiR2DownloadRoute
+  ApiR2UploadRoute: typeof ApiR2UploadRoute
+  ApiShopIdRoute: typeof ApiShopIdRoute
+  ApiShopIndexRoute: typeof ApiShopIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -156,6 +233,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/upload': {
+      id: '/api/upload'
+      path: '/api/upload'
+      fullPath: '/api/upload'
+      preLoaderRoute: typeof ApiUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_protected/setting': {
       id: '/_protected/setting'
       path: '/setting'
@@ -169,6 +253,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard'
       preLoaderRoute: typeof ProtectedDashboardRouteImport
       parentRoute: typeof ProtectedRoute
+    }
+    '/api/shop/': {
+      id: '/api/shop/'
+      path: '/api/shop'
+      fullPath: '/api/shop/'
+      preLoaderRoute: typeof ApiShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/shop/$id': {
+      id: '/api/shop/$id'
+      path: '/api/shop/$id'
+      fullPath: '/api/shop/$id'
+      preLoaderRoute: typeof ApiShopIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/r2/upload': {
+      id: '/api/r2/upload'
+      path: '/api/r2/upload'
+      fullPath: '/api/r2/upload'
+      preLoaderRoute: typeof ApiR2UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/r2/download': {
+      id: '/api/r2/download'
+      path: '/api/r2/download'
+      fullPath: '/api/r2/download'
+      preLoaderRoute: typeof ApiR2DownloadRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -184,14 +296,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardUserRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/shop': {
+      id: '/_protected/dashboard/shop'
+      path: '/shop'
+      fullPath: '/dashboard/shop'
+      preLoaderRoute: typeof ProtectedDashboardShopRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
   }
 }
 
 interface ProtectedDashboardRouteChildren {
+  ProtectedDashboardShopRoute: typeof ProtectedDashboardShopRoute
   ProtectedDashboardUserRoute: typeof ProtectedDashboardUserRoute
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
+  ProtectedDashboardShopRoute: ProtectedDashboardShopRoute,
   ProtectedDashboardUserRoute: ProtectedDashboardUserRoute,
 }
 
@@ -217,7 +338,12 @@ const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiUploadRoute: ApiUploadRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiR2DownloadRoute: ApiR2DownloadRoute,
+  ApiR2UploadRoute: ApiR2UploadRoute,
+  ApiShopIdRoute: ApiShopIdRoute,
+  ApiShopIndexRoute: ApiShopIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
