@@ -24,8 +24,9 @@ export const fetchShopByIdHandler = async (id: number) => {
     const result = await db
       .select()
       .from(shopTable)
-      .where(eq(shopTable.id, id));
-    return result;
+      .where(eq(shopTable.id, id))
+      .limit(1);
+    return result[0] ?? null;
   } catch (error) {
     console.error("Error fetching shop by id:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
