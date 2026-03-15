@@ -38,7 +38,7 @@ export const getShopColumns = ({ onView, onEdit, onDelete }: ShopColumnsOptions)
           alt="Shop Logo"
           style={{ width: 50, height: 50, objectFit: "cover" }}
         />
-      ) : null;
+      ) : <p>-</p>;
     },
   },
   {
