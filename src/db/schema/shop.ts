@@ -20,11 +20,7 @@ export const shopTable = sqliteTable("shop", {
     .notNull(),
 });
 
-export const insertShopSchema = createInsertSchema(shopTable).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertShopSchema = createInsertSchema(shopTable)
 export const updateShopSchema = createUpdateSchema(shopTable);
 export const selectShopSchema = createSelectSchema(shopTable);
 

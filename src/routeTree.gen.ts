@@ -17,6 +17,7 @@ import { Route as ApiUploadRouteImport } from './routes/api/upload'
 import { Route as ProtectedSettingRouteImport } from './routes/_protected/setting'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
 import { Route as ApiShopIndexRouteImport } from './routes/api/shop/index'
+import { Route as ProtectedDashboardIndexRouteImport } from './routes/_protected/dashboard/index'
 import { Route as ApiShopIdRouteImport } from './routes/api/shop/$id'
 import { Route as ApiR2UploadRouteImport } from './routes/api/r2/upload'
 import { Route as ApiR2DownloadRouteImport } from './routes/api/r2/download'
@@ -63,6 +64,11 @@ const ApiShopIndexRoute = ApiShopIndexRouteImport.update({
   path: '/api/shop/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedDashboardIndexRoute = ProtectedDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProtectedDashboardRoute,
+} as any)
 const ApiShopIdRoute = ApiShopIdRouteImport.update({
   id: '/api/shop/$id',
   path: '/api/shop/$id',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
   '/api/shop/$id': typeof ApiShopIdRoute
+  '/dashboard/': typeof ProtectedDashboardIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
 }
@@ -114,7 +121,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
   '/api/upload': typeof ApiUploadRoute
   '/dashboard/user': typeof ProtectedDashboardUserRoute
@@ -122,6 +128,7 @@ export interface FileRoutesByTo {
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
   '/api/shop/$id': typeof ApiShopIdRoute
+  '/dashboard': typeof ProtectedDashboardIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
   '/dashboard/shop': typeof ProtectedDashboardShopIndexRoute
 }
@@ -139,6 +146,7 @@ export interface FileRoutesById {
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
   '/api/shop/$id': typeof ApiShopIdRoute
+  '/_protected/dashboard/': typeof ProtectedDashboardIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/_protected/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
 }
@@ -156,6 +164,7 @@ export interface FileRouteTypes {
     | '/api/r2/download'
     | '/api/r2/upload'
     | '/api/shop/$id'
+    | '/dashboard/'
     | '/api/shop/'
     | '/dashboard/shop/'
   fileRoutesByTo: FileRoutesByTo
@@ -163,7 +172,6 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
-    | '/dashboard'
     | '/setting'
     | '/api/upload'
     | '/dashboard/user'
@@ -171,6 +179,7 @@ export interface FileRouteTypes {
     | '/api/r2/download'
     | '/api/r2/upload'
     | '/api/shop/$id'
+    | '/dashboard'
     | '/api/shop'
     | '/dashboard/shop'
   id:
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/api/r2/download'
     | '/api/r2/upload'
     | '/api/shop/$id'
+    | '/_protected/dashboard/'
     | '/api/shop/'
     | '/_protected/dashboard/shop/'
   fileRoutesById: FileRoutesById
@@ -262,6 +272,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiShopIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/dashboard/': {
+      id: '/_protected/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof ProtectedDashboardIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/api/shop/$id': {
       id: '/api/shop/$id'
       path: '/api/shop/$id'
@@ -309,11 +326,13 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedDashboardRouteChildren {
   ProtectedDashboardUserRoute: typeof ProtectedDashboardUserRoute
+  ProtectedDashboardIndexRoute: typeof ProtectedDashboardIndexRoute
   ProtectedDashboardShopIndexRoute: typeof ProtectedDashboardShopIndexRoute
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardUserRoute: ProtectedDashboardUserRoute,
+  ProtectedDashboardIndexRoute: ProtectedDashboardIndexRoute,
   ProtectedDashboardShopIndexRoute: ProtectedDashboardShopIndexRoute,
 }
 

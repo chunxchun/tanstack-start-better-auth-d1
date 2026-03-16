@@ -171,8 +171,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div>Hello "/_protected/dashboard/shop"!</div>
-      <div className="container mx-auto py-10">
+      <div className="container mx-auto px-10 py-10">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="text-sm text-muted-foreground">
             Page {currentPage}
