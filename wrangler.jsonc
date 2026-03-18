@@ -17,16 +17,16 @@
       "database_name": "hono-better-auth-demo-d1",
       "database_id": "7c0ec73c-8df2-4aa6-b7cb-be2f4940a6ea",
       "migrations_dir": "drizzle/migrations",
-      "remote": false
+      "remote": true,
     },
   ],
   "r2_buckets": [
     {
       "binding": "BUCKET",
       "bucket_name": "demo",
-      "remote": false
-    }
-  ]
+      "remote": true,
+    },
+  ],
   /**
    * Smart Placement
    * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
