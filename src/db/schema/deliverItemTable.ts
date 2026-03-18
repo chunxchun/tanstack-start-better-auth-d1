@@ -1,19 +1,19 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable } from "drizzle-orm/sqlite-core";
 import {
   createInsertSchema,
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
+import { deliveriesTable } from "./deliveryTable";
 import { foodItemsTable } from "./foodItemTable";
-import { machinesTable } from "./machineTable";
 
-export const inventoriesTable = sqliteTable("inventories", {
+export const deliverItemsTable = sqliteTable("deliver_items", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  machineId: integer("machine_id")
+  deliveryId: integer("delivery_id")
     .notNull()
-    .references(() => machinesTable.id, {
+    .references(() => deliveriesTable.id, {
       onDelete: "restrict",
       onUpdate: "restrict",
     }),
@@ -24,8 +24,7 @@ export const inventoriesTable = sqliteTable("inventories", {
       onUpdate: "restrict",
     }),
   quantity: integer("quantity").notNull(),
-  date: text("date").notNull(),
-  createdAt: integer("created_at")
+  createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   updatedAt: integer("updated_at")
@@ -34,10 +33,10 @@ export const inventoriesTable = sqliteTable("inventories", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertInventorySchema = createInsertSchema(inventoriesTable);
-export const updateInventorySchema = createUpdateSchema(inventoriesTable);
-export const selectInventorySchema = createSelectSchema(inventoriesTable);
+export const insertDeliverItemSchema = createInsertSchema(deliverItemsTable);
+export const updateDeliverItemSchema = createUpdateSchema(deliverItemsTable);
+export const selectDeliverItemSchema = createSelectSchema(deliverItemsTable);
 
-export type InsertInventoryType = z.infer<typeof insertInventorySchema>;
-export type UpdateInventoryType = z.infer<typeof updateInventorySchema>;
-export type SelectInventoryType = z.infer<typeof selectInventorySchema>;
+export type InsertDeliverItemType = z.infer<typeof insertDeliverItemSchema>;
+export type UpdateDeliverItemType = z.infer<typeof updateDeliverItemSchema>;
+export type SelectDeliverItemType = z.infer<typeof selectDeliverItemSchema>;

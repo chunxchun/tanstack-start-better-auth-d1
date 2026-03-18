@@ -53,6 +53,6 @@ export const insertDisposeSchema = createInsertSchema(disposesTable);
 export const updateDisposeSchema = createUpdateSchema(disposesTable);
 export const selectDisposeSchema = createSelectSchema(disposesTable);
 
-export type InsertDispose = z.infer<typeof insertDisposeSchema>;
-export type UpdateDispose = z.infer<typeof updateDisposeSchema>;
-export type SelectDispose = z.infer<typeof selectDisposeSchema>;
+export type InsertDisposeType = z.infer<typeof insertDisposeSchema>;
+export type UpdateDisposeType = z.infer<typeof updateDisposeSchema>;
+export type SelectDisposeType = z.infer<typeof selectDisposeSchema>;

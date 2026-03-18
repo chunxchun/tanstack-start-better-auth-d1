@@ -20,8 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { SelectLocation } from "@/db/schema";
-import { countryValues } from "@/db/schema/commonEnums";
+import type { SelectLocationType } from "@/db/schema";
+import { countryValues } from "@/db/schema/commonSchema";
 
 type LocationSubmitValues = {
   name: string;
@@ -36,7 +36,7 @@ type LocationSubmitValues = {
 };
 
 type LocationFormBaseProps = {
-  initialData?: Partial<SelectLocation>;
+  initialData?: Partial<SelectLocationType>;
   onCancel?: () => void;
 };
 

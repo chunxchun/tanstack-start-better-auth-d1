@@ -24,14 +24,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   machineModeValues,
   machineStatusValues,
-  type SelectMachine as Machine,
+  type SelectMachineType as Machine,
   type MachineMode,
   type MachineStatus,
-  type SelectLocation as Location,
-  type SelectShop as Shop,
+  type SelectLocationType as Location,
+  type SelectShopType as Shop,
+  type MachineVersion,
+  type InsertMachineType,
+  type UpdateMachineType,
 } from "@/db/schema";
 
-type MachineSubmitValues = Omit<Machine, "id" | "createdAt" | "updatedAt">;
+// type MachineSubmitValues = Omit<Machine, "id" | "createdAt" | "updatedAt">;
 
 type MachineFormBaseProps = {
   initialData?: Partial<Machine>;
@@ -47,11 +50,16 @@ type MachineFormViewProps = MachineFormBaseProps & {
 };
 
 type MachineFormEditProps = MachineFormBaseProps & {
-  mode: "create" | "edit";
-  onSubmit: (values: MachineSubmitValues) => Promise<void>;
+  mode: "edit";
+  onSubmit: (values: UpdateMachineType) => Promise<void>;
 };
 
-type MachineFormProps = MachineFormViewProps | MachineFormEditProps;
+type MachineFormInsertProps = MachineFormBaseProps & {
+  mode: "create";
+  onSubmit: (values: InsertMachineType) => Promise<void>;
+};
+
+type MachineFormProps = MachineFormViewProps | MachineFormEditProps | MachineFormInsertProps;
 
 export function MachineForm({
   mode,
@@ -79,21 +87,11 @@ export function MachineForm({
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
-
-      await onSubmit({
-        locationId: value.locationId,
-        shopId: value.shopId,
-        name: value.name,
-        serialNumber: value.serialNumber,
-        status: value.status,
-        version: value.version,
-        mode: value.mode,
-        dayEndStockAutoReset: value.dayEndStockAutoReset,
-        description: value.description,
-        installationDate: value.installationDate,
-        startWorkingHour: value.startWorkingHour,
-        closeWorkingHour: value.closeWorkingHour,
-      });
+      try {
+        await onSubmit(value);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
     },
   });
 
@@ -201,7 +199,7 @@ export function MachineForm({
                   }
                 >
                   <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue/>
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {machineModeValues.map((mode) => (
@@ -228,7 +226,9 @@ export function MachineForm({
                   value={field.state.value ?? ""}
                   disabled={isReadOnly}
                   onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value || null)}
+                  onChange={(e) =>
+                    field.handleChange(e.target.value as MachineVersion)
+                  }
                 />
               </Field>
             )}
@@ -253,7 +253,9 @@ export function MachineForm({
                   </div>
                 ) : (
                   <Select
-                    value={field.state.value != null ? String(field.state.value) : ""}
+                    value={
+                      field.state.value != null ? String(field.state.value) : ""
+                    }
                     disabled={isReadOnly}
                     onValueChange={(val) =>
                       field.handleChange(val ? Number(val) : null)
@@ -283,7 +285,9 @@ export function MachineForm({
               <Field>
                 <FieldLabel htmlFor={field.name}>Shop</FieldLabel>
                 <Select
-                  value={field.state.value != null ? String(field.state.value) : ""}
+                  value={
+                    field.state.value != null ? String(field.state.value) : ""
+                  }
                   disabled={isReadOnly}
                   onValueChange={(val) =>
                     field.handleChange(val ? Number(val) : null)

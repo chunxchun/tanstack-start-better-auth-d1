@@ -1,19 +1,30 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { ShopSwitcher } from "@/components/shop-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon } from "lucide-react"
+} from "@/components/ui/sidebar";
+import {
+  BotIcon,
+  BookOpenIcon,
+  Settings2Icon,
+  SquareTerminal,
+  ShoppingCart,
+  Truck,
+  CircleDollarSign,
+  FileQuestionMark,
+  LifeBuoy,
+} from "lucide-react";
+import type { SelectShopType } from "@/db/schema";
 
 // This is sample data.
 const data = {
@@ -22,164 +33,121 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: (
-        <GalleryVerticalEndIcon
-        />
-      ),
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: (
-        <AudioLinesIcon
-        />
-      ),
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: (
-        <TerminalIcon
-        />
-      ),
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
+      title: "Profile",
       url: "#",
-      icon: (
-        <TerminalSquareIcon
-        />
-      ),
+      icon: <BotIcon />,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Branding",
+          url: "/dashboard/branding",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Users",
+          url: "/dashboard/users",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Vending Machines",
       url: "#",
-      icon: (
-        <BotIcon
-        />
-      ),
+      icon: <SquareTerminal />,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Locations",
+          url: "/dashboard/locations",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Machines",
+          url: "/dashboard/machines",
         },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+        // { title: "Maintainence & Repair", url: "#", disabled: true },
       ],
+    },
+    {
+      title: "Products",
+      url: "#",
+      icon: <ShoppingCart />,
+      items: [
+        {
+          title: "Food Items",
+          url: "/dashboard/food-items",
+        },
+        { title: "Menus", url: "/dashboard/menu" },
+        { title: "Disposes", url: "/dashboard/disposes" },
+        { title: "Inventories", url: "/dashboard/inventories" },
+      ],
+    },
+    {
+      title: "Logistics",
+      url: "#",
+      icon: <Truck />,
+      items: [{ title: "Delivery", url: "/dashboard/deliveries" }],
+    },
+    {
+      title: "Business",
+      url: "#",
+      icon: <CircleDollarSign />,
+      items: [{ title: "Daily Sales", url: "/dashboard/daily-sales" }],
     },
     {
       title: "Documentation",
       url: "#",
-      icon: (
-        <BookOpenIcon
-        />
-      ),
+      icon: <BookOpenIcon />,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "User Guide",
+          url: "/dashboard/user-guide",
         },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
+        { title: "API documents", url: "/dashboard/api-doc" },
         {
           title: "Changelog",
           url: "#",
+          disabled: true,
         },
       ],
     },
     {
       title: "Settings",
       url: "#",
-      icon: (
-        <Settings2Icon
-        />
-      ),
+      icon: <Settings2Icon />,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Layout",
+          url: "/dashboard/layout",
         },
         {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Language",
+          url: "/dashboard/language",
+          disabled: true,
         },
       ],
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Support",
       url: "#",
-      icon: (
-        <FrameIcon
-        />
-      ),
+      icon: <LifeBuoy />,
     },
     {
-      name: "Sales & Marketing",
+      name: "FAQs",
       url: "#",
-      icon: (
-        <PieChartIcon
-        />
-      ),
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: (
-        <MapIcon
-        />
-      ),
+      icon: <FileQuestionMark />,
     },
   ],
-}
+};
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  shops,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { shops: SelectShopType[] }) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <ShopSwitcher shops={shops} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
@@ -190,5 +158,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

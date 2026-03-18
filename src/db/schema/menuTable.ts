@@ -26,6 +26,6 @@ export const insertMenuSchema = createInsertSchema(menusTable);
 export const updateMenuSchema = createUpdateSchema(menusTable);
 export const selectMenuSchema = createSelectSchema(menusTable);
 
-export type InsertMenu = z.infer<typeof insertMenuSchema>;
-export type UpdateMenu = z.infer<typeof updateMenuSchema>;
-export type SelectMenu = z.infer<typeof selectMenuSchema>;
+export type InsertMenuType = z.infer<typeof insertMenuSchema>;
+export type UpdateMenuType = z.infer<typeof updateMenuSchema>;
+export type SelectMenuType = z.infer<typeof selectMenuSchema>;

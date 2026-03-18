@@ -15,16 +15,24 @@ import {
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { listShopFn } from "@/utils/shop/shop.function";
 
 export const Route = createFileRoute("/_protected/dashboard")({
+  loader: async () => {
+    const shops = await listShopFn({ data: { limit: 100, offset: 0 } });
+    return { shops };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { shops } = Route.useLoaderData();
+
+  
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar shops={shops} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
@@ -33,19 +41,7 @@ function RouteComponent() {
                 orientation="vertical"
                 className="mr-2 data-[orientation=vertical]:h-4"
               />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Build Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              <p>banner</p>
             </div>
           </header>
           <Outlet />

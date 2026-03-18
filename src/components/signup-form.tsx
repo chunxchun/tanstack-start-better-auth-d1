@@ -1,27 +1,29 @@
-import { useState } from "react"
-import { useForm } from "@tanstack/react-form"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
+import { useNavigate } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { authClient } from "@/lib/authClient"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/authClient";
 
 export function SignupForm({
   className,
   onSubmit: externalOnSubmit,
   ...props
 }: React.ComponentProps<"form">) {
-  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const getFieldError = (errors: Array<unknown>) => {
-    const firstError = errors.find((error) => typeof error === "string")
-    return typeof firstError === "string" ? firstError : null
-  }
+    const firstError = errors.find((error) => typeof error === "string");
+    return typeof firstError === "string" ? firstError : null;
+  };
 
   const form = useForm({
     defaultValues: {
@@ -31,34 +33,43 @@ export function SignupForm({
       confirmPassword: "",
     },
     onSubmit: async ({ value }) => {
-      setSubmitError(null)
+      try {
+        setSubmitError(null);
 
-      if (value.password !== value.confirmPassword) {
-        setSubmitError("Passwords do not match")
-        return
-      }
+        if (value.password !== value.confirmPassword) {
+          setSubmitError("Passwords do not match");
+          return;
+        }
 
-      const { error } = await authClient.signUp.email({
-        name: value.name,
-        email: value.email,
-        password: value.password,
-        callbackURL: "/dashboard",
-      })
+        const { error, data } = await authClient.signUp.email({
+          name: value.name,
+          email: value.email,
+          password: value.password,
+          callbackURL: "/dashboard",
+        });
 
-      if (error) {
-        setSubmitError(error.message || "Sign-up failed. Please try again.")
+        if (error) {
+          setSubmitError(error.message || "Sign-up failed. Please try again.");
+          return;
+        }
+
+        await navigate({ to: "/dashboard" });
+        
+      } catch (error) {
+        setSubmitError("An unexpected error occurred. Please try again.");
+        console.error(error);
       }
     },
-  })
+  });
 
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
       onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        externalOnSubmit?.(e)
-        form.handleSubmit()
+        e.preventDefault();
+        e.stopPropagation();
+        externalOnSubmit?.(e);
+        form.handleSubmit();
       }}
       {...props}
     >
@@ -73,14 +84,19 @@ export function SignupForm({
           name="name"
           validators={{
             onChange: ({ value }) => {
-              if (!value.trim()) return "Full name is required"
-              if (value.trim().length < 2) return "Full name must be at least 2 characters"
-              return undefined
+              if (!value.trim()) return "Full name is required";
+              if (value.trim().length < 2)
+                return "Full name must be at least 2 characters";
+              return undefined;
             },
           }}
         >
           {(field) => (
-            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
               <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
               <Input
                 id={field.name}
@@ -94,7 +110,9 @@ export function SignupForm({
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldError>
-                {field.state.meta.isTouched ? getFieldError(field.state.meta.errors) : null}
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
               </FieldError>
             </Field>
           )}
@@ -103,16 +121,20 @@ export function SignupForm({
           name="email"
           validators={{
             onChange: ({ value }) => {
-              if (!value) return "Email is required"
+              if (!value) return "Email is required";
               if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                return "Enter a valid email address"
+                return "Enter a valid email address";
               }
-              return undefined
+              return undefined;
             },
           }}
         >
           {(field) => (
-            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
               <FieldLabel htmlFor={field.name}>Email</FieldLabel>
               <Input
                 id={field.name}
@@ -126,10 +148,13 @@ export function SignupForm({
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email with anyone else.
+                We&apos;ll use this to contact you. We will not share your email
+                with anyone else.
               </FieldDescription>
               <FieldError>
-                {field.state.meta.isTouched ? getFieldError(field.state.meta.errors) : null}
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
               </FieldError>
             </Field>
           )}
@@ -138,14 +163,19 @@ export function SignupForm({
           name="password"
           validators={{
             onChange: ({ value }) => {
-              if (!value) return "Password is required"
-              if (value.length < 8) return "Password must be at least 8 characters"
-              return undefined
+              if (!value) return "Password is required";
+              if (value.length < 8)
+                return "Password must be at least 8 characters";
+              return undefined;
             },
           }}
         >
           {(field) => (
-            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
               <FieldLabel htmlFor={field.name}>Password</FieldLabel>
               <Input
                 id={field.name}
@@ -161,7 +191,9 @@ export function SignupForm({
                 Must be at least 8 characters long.
               </FieldDescription>
               <FieldError>
-                {field.state.meta.isTouched ? getFieldError(field.state.meta.errors) : null}
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
               </FieldError>
             </Field>
           )}
@@ -171,16 +203,20 @@ export function SignupForm({
           validators={{
             onChangeListenTo: ["password"],
             onChange: ({ value, fieldApi }) => {
-              if (!value) return "Please confirm your password"
+              if (!value) return "Please confirm your password";
               if (value !== fieldApi.form.getFieldValue("password")) {
-                return "Passwords do not match"
+                return "Passwords do not match";
               }
-              return undefined
+              return undefined;
             },
           }}
         >
           {(field) => (
-            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
               <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
               <Input
                 id={field.name}
@@ -194,7 +230,9 @@ export function SignupForm({
               />
               <FieldDescription>Please confirm your password.</FieldDescription>
               <FieldError>
-                {field.state.meta.isTouched ? getFieldError(field.state.meta.errors) : null}
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
               </FieldError>
             </Field>
           )}
@@ -230,5 +268,5 @@ export function SignupForm({
         </Field>
       </FieldGroup>
     </form>
-  )
+  );
 }

@@ -6,6 +6,7 @@ import {
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
+import { countryValues } from "./commonSchema";
 
 export const locationStatusValues = ["active", "inactive"] as const;
 export const locationStatusEnum = z.enum(locationStatusValues);
@@ -15,10 +16,15 @@ export const locationsTable = sqliteTable("locations", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name", { length: 100 }).notNull(),
   description: text("description", { length: 200 }),
-  address: text("address", { length: 100 }).notNull(),
   status: text("status", { enum: locationStatusValues })
     .notNull()
     .default("active"),
+  addressLine1: text("address_line1", { length: 255 }).notNull(),
+  addressLine2: text("address_line2", { length: 255 }),
+  addressCity: text("address_city", { length: 100 }).notNull(),
+  addressState: text("address_state", { length: 100 }),
+  addressPostalCode: text("address_postal_code", { length: 20 }),
+  addressCountry: text("address_country", { enum: countryValues }).notNull(),
   createdAt: integer("created_at")
     .notNull()
     .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
@@ -32,6 +38,6 @@ export const insertLocationSchema = createInsertSchema(locationsTable);
 export const updateLocationSchema = createUpdateSchema(locationsTable);
 export const selectLocationSchema = createSelectSchema(locationsTable);
 
-export type InsertLocation = z.infer<typeof insertLocationSchema>;
-export type UpdateLocation = z.infer<typeof updateLocationSchema>;
-export type SelectLocation = z.infer<typeof selectLocationSchema>;
+export type InsertLocationType = z.infer<typeof insertLocationSchema>;
+export type UpdateLocationType = z.infer<typeof updateLocationSchema>;
+export type SelectLocationType = z.infer<typeof selectLocationSchema>;

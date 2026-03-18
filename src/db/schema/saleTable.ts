@@ -8,7 +8,7 @@ import {
 import * as z from "zod";
 import { foodItemsTable } from "./foodItemTable";
 import { machinesTable } from "./machineTable";
-import { currencyValues } from "./commonEnums";
+import { currencyValues } from "./commonSchema";
 
 export const paymentMethodValues = [
   "cash",
@@ -57,6 +57,6 @@ export const insertSaleSchema = createInsertSchema(salesTable);
 export const updateSaleSchema = createUpdateSchema(salesTable);
 export const selectSaleSchema = createSelectSchema(salesTable);
 
-export type InsertSale = z.infer<typeof insertSaleSchema>;
-export type UpdateSale = z.infer<typeof updateSaleSchema>;
-export type SelectSale = z.infer<typeof selectSaleSchema>;
+export type InsertSaleType = z.infer<typeof insertSaleSchema>;
+export type UpdateSaleType = z.infer<typeof updateSaleSchema>;
+export type SelectSaleType = z.infer<typeof selectSaleSchema>;

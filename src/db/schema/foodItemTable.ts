@@ -13,7 +13,7 @@ import {
 } from "drizzle-orm/zod";
 import * as z from "zod";
 import { shopsTable } from "./shopTable";
-import { currencyValues } from "./commonEnums";
+import { currencyValues } from "./commonSchema";
 
 export const foodCategoryValues = ["bento", "snack", "drink"] as const;
 export const foodCategoryEnum = z.enum(foodCategoryValues);
@@ -55,6 +55,6 @@ export const insertFoodItemSchema = createInsertSchema(foodItemsTable);
 export const updateFoodItemSchema = createUpdateSchema(foodItemsTable);
 export const selectFoodItemSchema = createSelectSchema(foodItemsTable);
 
-export type InsertFoodItem = z.infer<typeof insertFoodItemSchema>;
-export type UpdateFoodItem = z.infer<typeof updateFoodItemSchema>;
-export type SelectFoodItem = z.infer<typeof selectFoodItemSchema>;
+export type InsertFoodItemType = z.infer<typeof insertFoodItemSchema>;
+export type UpdateFoodItemType = z.infer<typeof updateFoodItemSchema>;
+export type SelectFoodItemType = z.infer<typeof selectFoodItemSchema>;

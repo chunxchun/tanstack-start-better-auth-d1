@@ -1,18 +1,17 @@
 import { db } from "@/db";
-import { locationsTable, type InsertLocation, type UpdateLocation } from "@/db/schema";
+import {
+  locationsTable,
+  type InsertLocationType,
+  type UpdateLocationType,
+} from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listLocationHandler = async (
   limit: number = 10,
-  offset: number = 1,
+  offset: number = 0,
 ) => {
   try {
-    const result = await db
-      .select()
-      .from(locationsTable)
-      .limit(limit)
-      .offset(offset);
-    return result;
+    return await db.select().from(locationsTable).limit(limit).offset(offset);
   } catch (error) {
     console.error("Error listing locations:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
@@ -33,10 +32,10 @@ export const fetchLocationByIdHandler = async (id: number) => {
   }
 };
 
-export const createLocationHandler = async (location: InsertLocation) => {
+export const createLocationHandler = async (data: InsertLocationType) => {
   try {
-    const result = await db.insert(locationsTable).values(location).returning();
-    return result;
+    const [location] = await db.insert(locationsTable).values(data).returning();
+    return location;
   } catch (error) {
     console.error("Error creating location:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
@@ -45,15 +44,15 @@ export const createLocationHandler = async (location: InsertLocation) => {
 
 export const updateLocationByIdHandler = async (
   id: number,
-  location: UpdateLocation,
+  data: UpdateLocationType
 ) => {
   try {
-    const result = await db
+    const [location] = await db
       .update(locationsTable)
-      .set(location)
+      .set(data)
       .where(eq(locationsTable.id, id))
       .returning();
-    return result;
+    return location ?? null;
   } catch (error) {
     console.error("Error updating location:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
@@ -62,11 +61,11 @@ export const updateLocationByIdHandler = async (
 
 export const deleteLocationByIdHandler = async (id: number) => {
   try {
-    const result = await db
+    const [deleted] = await db
       .delete(locationsTable)
       .where(eq(locationsTable.id, id))
       .returning();
-    return result;
+    return deleted ?? null;
   } catch (error) {
     console.error("Error deleting location:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");

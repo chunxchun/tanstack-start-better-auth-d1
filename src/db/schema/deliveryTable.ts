@@ -54,6 +54,6 @@ export const insertDeliverySchema = createInsertSchema(deliveriesTable);
 export const updateDeliverySchema = createUpdateSchema(deliveriesTable);
 export const selectDeliverySchema = createSelectSchema(deliveriesTable);
 
-export type InsertDelivery = z.infer<typeof insertDeliverySchema>;
-export type UpdateDelivery = z.infer<typeof updateDeliverySchema>;
-export type SelectDelivery = z.infer<typeof selectDeliverySchema>;
+export type InsertDeliveryType = z.infer<typeof insertDeliverySchema>;
+export type UpdateDeliveryType = z.infer<typeof updateDeliverySchema>;
+export type SelectDeliveryType = z.infer<typeof selectDeliverySchema>;

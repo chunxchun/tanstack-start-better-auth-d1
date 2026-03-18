@@ -1,4 +1,4 @@
-import type { SelectLocation as Location } from "@/db/schema";
+import type { SelectLocationType as Location } from "@/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 

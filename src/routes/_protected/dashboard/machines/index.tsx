@@ -11,10 +11,13 @@ import {
 import { MachineForm } from "@/components/forms/machineForm";
 import { LocationForm } from "@/components/forms/locationForm";
 import type {
-  SelectMachine as Machine,
+  SelectMachineType as Machine,
+  InsertMachineType,
   MachineStatus,
-  SelectLocation as Location,
-  SelectShop as Shop,
+  SelectLocationType as Location,
+  SelectShopType as Shop,
+  UpdateMachineType,
+  InsertLocationType,
 } from "@/db/schema";
 import {
   createMachineFn,
@@ -37,10 +40,7 @@ import * as z from "zod";
 import { DataTable } from "@/components/dataTables/machine/machineDataTable";
 import { getMachineColumns } from "@/components/dataTables/machine/machineColumns";
 
-const searchSchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-  offset: z.coerce.number().int().min(0).default(0),
-});
+import { searchSchema } from "@/db/schema/commonSchema";
 
 export const Route = createFileRoute("/_protected/dashboard/machines/")({
   validateSearch: searchSchema,
@@ -129,24 +129,9 @@ function RouteComponent() {
     [],
   );
 
-  const handleCreateSubmit = async (values: {
-    locationId: number | null;
-    shopId: number | null;
-    name: string;
-    serialNumber: string;
-    status: MachineStatus | null;
-    description: string | null;
-    installationDate: string;
-    startWorkingHour: string;
-    closeWorkingHour: string;
-  }) => {
+  const handleCreateSubmit = async (values: InsertMachineType) => {
     try {
-      await createMachineFn({
-        data: {
-          ...values,
-          status: values.status ?? "active",
-        },
-      });
+      await createMachineFn({ data: values });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -154,35 +139,11 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: {
-    locationId: number | null;
-    shopId: number | null;
-    name: string;
-    serialNumber: string;
-    status: MachineStatus | null;
-    description: string | null;
-    installationDate: string;
-    startWorkingHour: string;
-    closeWorkingHour: string;
-  }) => {
+  const handleEditSubmit = async (values: UpdateMachineType) => {
     if (!selectedMachine) return;
 
     try {
-      await updateMachineByIdFn({
-        data: {
-          id: selectedMachine.id,
-          locationId: values.locationId,
-          shopId: values.shopId,
-          name: values.name,
-          serialNumber: values.serialNumber,
-          status: values.status ?? "active",
-          description: values.description,
-          installationDate: values.installationDate,
-          startWorkingHour: values.startWorkingHour,
-          closeWorkingHour: values.closeWorkingHour,
-        },
-      });
-
+      await updateMachineByIdFn({ data: values });
       setEditOpen(false);
       setSelectedMachine(null);
       await router.invalidate();
@@ -191,17 +152,7 @@ function RouteComponent() {
     }
   };
 
-  const handleCreateLocationSubmit = async (values: {
-    name: string;
-    description: string | null;
-    status: "active" | "inactive";
-    addressLine1: string;
-    addressLine2?: string | null;
-    addressCity: string;
-    addressState?: string | null;
-    addressPostalCode?: string | null;
-    addressCountry: string;
-  }) => {
+  const handleCreateLocationSubmit = async (values: InsertLocationType) => {
     try {
       await createLocationFn({ data: values });
       setCreateLocationOpen(false);
@@ -232,7 +183,6 @@ function RouteComponent() {
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
               <Button variant="default">
-                {" "}
                 <span>+</span>Create
               </Button>
             </DialogTrigger>

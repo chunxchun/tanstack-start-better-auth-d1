@@ -26,7 +26,9 @@ export const fetchLocationByIdFn = createServerFn({ method: "GET" })
 
 export const updateLocationByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateLocationSchema)
-  .handler(async ({ data }) => updateLocationByIdHandler(data.id as number, data));
+  .handler(async ({ data }) => {
+    return updateLocationByIdHandler(data.id as number, data);
+  });
 
 export const deleteLocationByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)

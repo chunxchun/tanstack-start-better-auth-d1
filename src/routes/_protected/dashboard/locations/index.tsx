@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LocationForm } from "@/components/forms/locationForm";
-import type { SelectLocation as Location, LocationStatus } from "@/db/schema";
+import type { SelectLocationType as Location, LocationStatus } from "@/db/schema";
 import {
   createLocationFn,
   deleteLocationByIdFn,
@@ -123,7 +123,7 @@ function RouteComponent() {
     addressPostalCode?: string | null;
     addressCountry: string;
   };
-
+ 
   const handleCreateSubmit = async (values: LocationFormValues) => {
     try {
       await createLocationFn({ data: values });
@@ -189,7 +189,7 @@ function RouteComponent() {
             </DialogContent>
           </Dialog>
         </div>
-        
+
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="text-sm text-muted-foreground">
             Page {currentPage}
