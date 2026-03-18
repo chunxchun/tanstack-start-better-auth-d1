@@ -13,17 +13,39 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiUploadRouteImport } from './routes/api/upload'
 import { Route as ProtectedSettingRouteImport } from './routes/_protected/setting'
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
 import { Route as ApiShopIndexRouteImport } from './routes/api/shop/index'
-import { Route as ProtectedDashboardIndexRouteImport } from './routes/_protected/dashboard/index'
+import { Route as ApiSaleIndexRouteImport } from './routes/api/sale/index'
+import { Route as ApiMenuIndexRouteImport } from './routes/api/menu/index'
+import { Route as ApiMachineIndexRouteImport } from './routes/api/machine/index'
+import { Route as ApiLocationIndexRouteImport } from './routes/api/location/index'
+import { Route as ApiInventoryIndexRouteImport } from './routes/api/inventory/index'
+import { Route as ApiFoodItemIndexRouteImport } from './routes/api/foodItem/index'
+import { Route as ApiDisposeIndexRouteImport } from './routes/api/dispose/index'
+import { Route as ApiDeliveryIndexRouteImport } from './routes/api/delivery/index'
 import { Route as ApiShopIdRouteImport } from './routes/api/shop/$id'
+import { Route as ApiSaleIdRouteImport } from './routes/api/sale/$id'
 import { Route as ApiR2UploadRouteImport } from './routes/api/r2/upload'
 import { Route as ApiR2DownloadRouteImport } from './routes/api/r2/download'
+import { Route as ApiMenuIdRouteImport } from './routes/api/menu/$id'
+import { Route as ApiMachineIdRouteImport } from './routes/api/machine/$id'
+import { Route as ApiLocationIdRouteImport } from './routes/api/location/$id'
+import { Route as ApiInventoryIdRouteImport } from './routes/api/inventory/$id'
+import { Route as ApiFoodItemIdRouteImport } from './routes/api/foodItem/$id'
+import { Route as ApiDisposeIdRouteImport } from './routes/api/dispose/$id'
+import { Route as ApiDeliveryIdRouteImport } from './routes/api/delivery/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedDashboardUserRouteImport } from './routes/_protected/dashboard/user'
 import { Route as ProtectedDashboardShopIndexRouteImport } from './routes/_protected/dashboard/shop/index'
+import { Route as ProtectedDashboardSaleIndexRouteImport } from './routes/_protected/dashboard/sale/index'
+import { Route as ProtectedDashboardMenuIndexRouteImport } from './routes/_protected/dashboard/menu/index'
+import { Route as ProtectedDashboardMachinesIndexRouteImport } from './routes/_protected/dashboard/machines/index'
+import { Route as ProtectedDashboardLocationsIndexRouteImport } from './routes/_protected/dashboard/locations/index'
+import { Route as ProtectedDashboardInventoryIndexRouteImport } from './routes/_protected/dashboard/inventory/index'
+import { Route as ProtectedDashboardFoodItemIndexRouteImport } from './routes/_protected/dashboard/food-item/index'
+import { Route as ProtectedDashboardDisposeIndexRouteImport } from './routes/_protected/dashboard/dispose/index'
+import { Route as ProtectedDashboardDeliveryIndexRouteImport } from './routes/_protected/dashboard/delivery/index'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -44,11 +66,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiUploadRoute = ApiUploadRouteImport.update({
-  id: '/api/upload',
-  path: '/api/upload',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProtectedSettingRoute = ProtectedSettingRouteImport.update({
   id: '/setting',
   path: '/setting',
@@ -64,14 +81,54 @@ const ApiShopIndexRoute = ApiShopIndexRouteImport.update({
   path: '/api/shop/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedDashboardIndexRoute = ProtectedDashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProtectedDashboardRoute,
+const ApiSaleIndexRoute = ApiSaleIndexRouteImport.update({
+  id: '/api/sale/',
+  path: '/api/sale/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMenuIndexRoute = ApiMenuIndexRouteImport.update({
+  id: '/api/menu/',
+  path: '/api/menu/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMachineIndexRoute = ApiMachineIndexRouteImport.update({
+  id: '/api/machine/',
+  path: '/api/machine/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLocationIndexRoute = ApiLocationIndexRouteImport.update({
+  id: '/api/location/',
+  path: '/api/location/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInventoryIndexRoute = ApiInventoryIndexRouteImport.update({
+  id: '/api/inventory/',
+  path: '/api/inventory/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFoodItemIndexRoute = ApiFoodItemIndexRouteImport.update({
+  id: '/api/foodItem/',
+  path: '/api/foodItem/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDisposeIndexRoute = ApiDisposeIndexRouteImport.update({
+  id: '/api/dispose/',
+  path: '/api/dispose/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDeliveryIndexRoute = ApiDeliveryIndexRouteImport.update({
+  id: '/api/delivery/',
+  path: '/api/delivery/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiShopIdRoute = ApiShopIdRouteImport.update({
   id: '/api/shop/$id',
   path: '/api/shop/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSaleIdRoute = ApiSaleIdRouteImport.update({
+  id: '/api/sale/$id',
+  path: '/api/sale/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiR2UploadRoute = ApiR2UploadRouteImport.update({
@@ -82,6 +139,41 @@ const ApiR2UploadRoute = ApiR2UploadRouteImport.update({
 const ApiR2DownloadRoute = ApiR2DownloadRouteImport.update({
   id: '/api/r2/download',
   path: '/api/r2/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMenuIdRoute = ApiMenuIdRouteImport.update({
+  id: '/api/menu/$id',
+  path: '/api/menu/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMachineIdRoute = ApiMachineIdRouteImport.update({
+  id: '/api/machine/$id',
+  path: '/api/machine/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLocationIdRoute = ApiLocationIdRouteImport.update({
+  id: '/api/location/$id',
+  path: '/api/location/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInventoryIdRoute = ApiInventoryIdRouteImport.update({
+  id: '/api/inventory/$id',
+  path: '/api/inventory/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiFoodItemIdRoute = ApiFoodItemIdRouteImport.update({
+  id: '/api/foodItem/$id',
+  path: '/api/foodItem/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDisposeIdRoute = ApiDisposeIdRouteImport.update({
+  id: '/api/dispose/$id',
+  path: '/api/dispose/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDeliveryIdRoute = ApiDeliveryIdRouteImport.update({
+  id: '/api/delivery/$id',
+  path: '/api/delivery/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -100,6 +192,54 @@ const ProtectedDashboardShopIndexRoute =
     path: '/shop/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardSaleIndexRoute =
+  ProtectedDashboardSaleIndexRouteImport.update({
+    id: '/sale/',
+    path: '/sale/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardMenuIndexRoute =
+  ProtectedDashboardMenuIndexRouteImport.update({
+    id: '/menu/',
+    path: '/menu/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardMachinesIndexRoute =
+  ProtectedDashboardMachinesIndexRouteImport.update({
+    id: '/machines/',
+    path: '/machines/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardLocationsIndexRoute =
+  ProtectedDashboardLocationsIndexRouteImport.update({
+    id: '/locations/',
+    path: '/locations/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardInventoryIndexRoute =
+  ProtectedDashboardInventoryIndexRouteImport.update({
+    id: '/inventory/',
+    path: '/inventory/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardFoodItemIndexRoute =
+  ProtectedDashboardFoodItemIndexRouteImport.update({
+    id: '/food-item/',
+    path: '/food-item/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardDisposeIndexRoute =
+  ProtectedDashboardDisposeIndexRouteImport.update({
+    id: '/dispose/',
+    path: '/dispose/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardDeliveryIndexRoute =
+  ProtectedDashboardDeliveryIndexRouteImport.update({
+    id: '/delivery/',
+    path: '/delivery/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -107,29 +247,74 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
-  '/api/upload': typeof ApiUploadRoute
   '/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/delivery/$id': typeof ApiDeliveryIdRoute
+  '/api/dispose/$id': typeof ApiDisposeIdRoute
+  '/api/foodItem/$id': typeof ApiFoodItemIdRoute
+  '/api/inventory/$id': typeof ApiInventoryIdRoute
+  '/api/location/$id': typeof ApiLocationIdRoute
+  '/api/machine/$id': typeof ApiMachineIdRoute
+  '/api/menu/$id': typeof ApiMenuIdRoute
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/sale/$id': typeof ApiSaleIdRoute
   '/api/shop/$id': typeof ApiShopIdRoute
-  '/dashboard/': typeof ProtectedDashboardIndexRoute
+  '/api/delivery/': typeof ApiDeliveryIndexRoute
+  '/api/dispose/': typeof ApiDisposeIndexRoute
+  '/api/foodItem/': typeof ApiFoodItemIndexRoute
+  '/api/inventory/': typeof ApiInventoryIndexRoute
+  '/api/location/': typeof ApiLocationIndexRoute
+  '/api/machine/': typeof ApiMachineIndexRoute
+  '/api/menu/': typeof ApiMenuIndexRoute
+  '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
+  '/dashboard/delivery/': typeof ProtectedDashboardDeliveryIndexRoute
+  '/dashboard/dispose/': typeof ProtectedDashboardDisposeIndexRoute
+  '/dashboard/food-item/': typeof ProtectedDashboardFoodItemIndexRoute
+  '/dashboard/inventory/': typeof ProtectedDashboardInventoryIndexRoute
+  '/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
+  '/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
+  '/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
+  '/dashboard/sale/': typeof ProtectedDashboardSaleIndexRoute
   '/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
-  '/api/upload': typeof ApiUploadRoute
   '/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/delivery/$id': typeof ApiDeliveryIdRoute
+  '/api/dispose/$id': typeof ApiDisposeIdRoute
+  '/api/foodItem/$id': typeof ApiFoodItemIdRoute
+  '/api/inventory/$id': typeof ApiInventoryIdRoute
+  '/api/location/$id': typeof ApiLocationIdRoute
+  '/api/machine/$id': typeof ApiMachineIdRoute
+  '/api/menu/$id': typeof ApiMenuIdRoute
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/sale/$id': typeof ApiSaleIdRoute
   '/api/shop/$id': typeof ApiShopIdRoute
-  '/dashboard': typeof ProtectedDashboardIndexRoute
+  '/api/delivery': typeof ApiDeliveryIndexRoute
+  '/api/dispose': typeof ApiDisposeIndexRoute
+  '/api/foodItem': typeof ApiFoodItemIndexRoute
+  '/api/inventory': typeof ApiInventoryIndexRoute
+  '/api/location': typeof ApiLocationIndexRoute
+  '/api/machine': typeof ApiMachineIndexRoute
+  '/api/menu': typeof ApiMenuIndexRoute
+  '/api/sale': typeof ApiSaleIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
+  '/dashboard/delivery': typeof ProtectedDashboardDeliveryIndexRoute
+  '/dashboard/dispose': typeof ProtectedDashboardDisposeIndexRoute
+  '/dashboard/food-item': typeof ProtectedDashboardFoodItemIndexRoute
+  '/dashboard/inventory': typeof ProtectedDashboardInventoryIndexRoute
+  '/dashboard/locations': typeof ProtectedDashboardLocationsIndexRoute
+  '/dashboard/machines': typeof ProtectedDashboardMachinesIndexRoute
+  '/dashboard/menu': typeof ProtectedDashboardMenuIndexRoute
+  '/dashboard/sale': typeof ProtectedDashboardSaleIndexRoute
   '/dashboard/shop': typeof ProtectedDashboardShopIndexRoute
 }
 export interface FileRoutesById {
@@ -140,14 +325,36 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_protected/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/_protected/setting': typeof ProtectedSettingRoute
-  '/api/upload': typeof ApiUploadRoute
   '/_protected/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/delivery/$id': typeof ApiDeliveryIdRoute
+  '/api/dispose/$id': typeof ApiDisposeIdRoute
+  '/api/foodItem/$id': typeof ApiFoodItemIdRoute
+  '/api/inventory/$id': typeof ApiInventoryIdRoute
+  '/api/location/$id': typeof ApiLocationIdRoute
+  '/api/machine/$id': typeof ApiMachineIdRoute
+  '/api/menu/$id': typeof ApiMenuIdRoute
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/sale/$id': typeof ApiSaleIdRoute
   '/api/shop/$id': typeof ApiShopIdRoute
-  '/_protected/dashboard/': typeof ProtectedDashboardIndexRoute
+  '/api/delivery/': typeof ApiDeliveryIndexRoute
+  '/api/dispose/': typeof ApiDisposeIndexRoute
+  '/api/foodItem/': typeof ApiFoodItemIndexRoute
+  '/api/inventory/': typeof ApiInventoryIndexRoute
+  '/api/location/': typeof ApiLocationIndexRoute
+  '/api/machine/': typeof ApiMachineIndexRoute
+  '/api/menu/': typeof ApiMenuIndexRoute
+  '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
+  '/_protected/dashboard/delivery/': typeof ProtectedDashboardDeliveryIndexRoute
+  '/_protected/dashboard/dispose/': typeof ProtectedDashboardDisposeIndexRoute
+  '/_protected/dashboard/food-item/': typeof ProtectedDashboardFoodItemIndexRoute
+  '/_protected/dashboard/inventory/': typeof ProtectedDashboardInventoryIndexRoute
+  '/_protected/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
+  '/_protected/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
+  '/_protected/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
+  '/_protected/dashboard/sale/': typeof ProtectedDashboardSaleIndexRoute
   '/_protected/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
 }
 export interface FileRouteTypes {
@@ -158,29 +365,74 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard'
     | '/setting'
-    | '/api/upload'
     | '/dashboard/user'
     | '/api/auth/$'
+    | '/api/delivery/$id'
+    | '/api/dispose/$id'
+    | '/api/foodItem/$id'
+    | '/api/inventory/$id'
+    | '/api/location/$id'
+    | '/api/machine/$id'
+    | '/api/menu/$id'
     | '/api/r2/download'
     | '/api/r2/upload'
+    | '/api/sale/$id'
     | '/api/shop/$id'
-    | '/dashboard/'
+    | '/api/delivery/'
+    | '/api/dispose/'
+    | '/api/foodItem/'
+    | '/api/inventory/'
+    | '/api/location/'
+    | '/api/machine/'
+    | '/api/menu/'
+    | '/api/sale/'
     | '/api/shop/'
+    | '/dashboard/delivery/'
+    | '/dashboard/dispose/'
+    | '/dashboard/food-item/'
+    | '/dashboard/inventory/'
+    | '/dashboard/locations/'
+    | '/dashboard/machines/'
+    | '/dashboard/menu/'
+    | '/dashboard/sale/'
     | '/dashboard/shop/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
+    | '/dashboard'
     | '/setting'
-    | '/api/upload'
     | '/dashboard/user'
     | '/api/auth/$'
+    | '/api/delivery/$id'
+    | '/api/dispose/$id'
+    | '/api/foodItem/$id'
+    | '/api/inventory/$id'
+    | '/api/location/$id'
+    | '/api/machine/$id'
+    | '/api/menu/$id'
     | '/api/r2/download'
     | '/api/r2/upload'
+    | '/api/sale/$id'
     | '/api/shop/$id'
-    | '/dashboard'
+    | '/api/delivery'
+    | '/api/dispose'
+    | '/api/foodItem'
+    | '/api/inventory'
+    | '/api/location'
+    | '/api/machine'
+    | '/api/menu'
+    | '/api/sale'
     | '/api/shop'
+    | '/dashboard/delivery'
+    | '/dashboard/dispose'
+    | '/dashboard/food-item'
+    | '/dashboard/inventory'
+    | '/dashboard/locations'
+    | '/dashboard/machines'
+    | '/dashboard/menu'
+    | '/dashboard/sale'
     | '/dashboard/shop'
   id:
     | '__root__'
@@ -190,14 +442,36 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_protected/dashboard'
     | '/_protected/setting'
-    | '/api/upload'
     | '/_protected/dashboard/user'
     | '/api/auth/$'
+    | '/api/delivery/$id'
+    | '/api/dispose/$id'
+    | '/api/foodItem/$id'
+    | '/api/inventory/$id'
+    | '/api/location/$id'
+    | '/api/machine/$id'
+    | '/api/menu/$id'
     | '/api/r2/download'
     | '/api/r2/upload'
+    | '/api/sale/$id'
     | '/api/shop/$id'
-    | '/_protected/dashboard/'
+    | '/api/delivery/'
+    | '/api/dispose/'
+    | '/api/foodItem/'
+    | '/api/inventory/'
+    | '/api/location/'
+    | '/api/machine/'
+    | '/api/menu/'
+    | '/api/sale/'
     | '/api/shop/'
+    | '/_protected/dashboard/delivery/'
+    | '/_protected/dashboard/dispose/'
+    | '/_protected/dashboard/food-item/'
+    | '/_protected/dashboard/inventory/'
+    | '/_protected/dashboard/locations/'
+    | '/_protected/dashboard/machines/'
+    | '/_protected/dashboard/menu/'
+    | '/_protected/dashboard/sale/'
     | '/_protected/dashboard/shop/'
   fileRoutesById: FileRoutesById
 }
@@ -206,11 +480,26 @@ export interface RootRouteChildren {
   ProtectedRoute: typeof ProtectedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
-  ApiUploadRoute: typeof ApiUploadRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiDeliveryIdRoute: typeof ApiDeliveryIdRoute
+  ApiDisposeIdRoute: typeof ApiDisposeIdRoute
+  ApiFoodItemIdRoute: typeof ApiFoodItemIdRoute
+  ApiInventoryIdRoute: typeof ApiInventoryIdRoute
+  ApiLocationIdRoute: typeof ApiLocationIdRoute
+  ApiMachineIdRoute: typeof ApiMachineIdRoute
+  ApiMenuIdRoute: typeof ApiMenuIdRoute
   ApiR2DownloadRoute: typeof ApiR2DownloadRoute
   ApiR2UploadRoute: typeof ApiR2UploadRoute
+  ApiSaleIdRoute: typeof ApiSaleIdRoute
   ApiShopIdRoute: typeof ApiShopIdRoute
+  ApiDeliveryIndexRoute: typeof ApiDeliveryIndexRoute
+  ApiDisposeIndexRoute: typeof ApiDisposeIndexRoute
+  ApiFoodItemIndexRoute: typeof ApiFoodItemIndexRoute
+  ApiInventoryIndexRoute: typeof ApiInventoryIndexRoute
+  ApiLocationIndexRoute: typeof ApiLocationIndexRoute
+  ApiMachineIndexRoute: typeof ApiMachineIndexRoute
+  ApiMenuIndexRoute: typeof ApiMenuIndexRoute
+  ApiSaleIndexRoute: typeof ApiSaleIndexRoute
   ApiShopIndexRoute: typeof ApiShopIndexRoute
 }
 
@@ -244,13 +533,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/upload': {
-      id: '/api/upload'
-      path: '/api/upload'
-      fullPath: '/api/upload'
-      preLoaderRoute: typeof ApiUploadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_protected/setting': {
       id: '/_protected/setting'
       path: '/setting'
@@ -272,18 +554,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiShopIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/dashboard/': {
-      id: '/_protected/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof ProtectedDashboardIndexRouteImport
-      parentRoute: typeof ProtectedDashboardRoute
+    '/api/sale/': {
+      id: '/api/sale/'
+      path: '/api/sale'
+      fullPath: '/api/sale/'
+      preLoaderRoute: typeof ApiSaleIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/menu/': {
+      id: '/api/menu/'
+      path: '/api/menu'
+      fullPath: '/api/menu/'
+      preLoaderRoute: typeof ApiMenuIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/machine/': {
+      id: '/api/machine/'
+      path: '/api/machine'
+      fullPath: '/api/machine/'
+      preLoaderRoute: typeof ApiMachineIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/location/': {
+      id: '/api/location/'
+      path: '/api/location'
+      fullPath: '/api/location/'
+      preLoaderRoute: typeof ApiLocationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/inventory/': {
+      id: '/api/inventory/'
+      path: '/api/inventory'
+      fullPath: '/api/inventory/'
+      preLoaderRoute: typeof ApiInventoryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/foodItem/': {
+      id: '/api/foodItem/'
+      path: '/api/foodItem'
+      fullPath: '/api/foodItem/'
+      preLoaderRoute: typeof ApiFoodItemIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/dispose/': {
+      id: '/api/dispose/'
+      path: '/api/dispose'
+      fullPath: '/api/dispose/'
+      preLoaderRoute: typeof ApiDisposeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/delivery/': {
+      id: '/api/delivery/'
+      path: '/api/delivery'
+      fullPath: '/api/delivery/'
+      preLoaderRoute: typeof ApiDeliveryIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/shop/$id': {
       id: '/api/shop/$id'
       path: '/api/shop/$id'
       fullPath: '/api/shop/$id'
       preLoaderRoute: typeof ApiShopIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sale/$id': {
+      id: '/api/sale/$id'
+      path: '/api/sale/$id'
+      fullPath: '/api/sale/$id'
+      preLoaderRoute: typeof ApiSaleIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/r2/upload': {
@@ -298,6 +636,55 @@ declare module '@tanstack/react-router' {
       path: '/api/r2/download'
       fullPath: '/api/r2/download'
       preLoaderRoute: typeof ApiR2DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/menu/$id': {
+      id: '/api/menu/$id'
+      path: '/api/menu/$id'
+      fullPath: '/api/menu/$id'
+      preLoaderRoute: typeof ApiMenuIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/machine/$id': {
+      id: '/api/machine/$id'
+      path: '/api/machine/$id'
+      fullPath: '/api/machine/$id'
+      preLoaderRoute: typeof ApiMachineIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/location/$id': {
+      id: '/api/location/$id'
+      path: '/api/location/$id'
+      fullPath: '/api/location/$id'
+      preLoaderRoute: typeof ApiLocationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/inventory/$id': {
+      id: '/api/inventory/$id'
+      path: '/api/inventory/$id'
+      fullPath: '/api/inventory/$id'
+      preLoaderRoute: typeof ApiInventoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/foodItem/$id': {
+      id: '/api/foodItem/$id'
+      path: '/api/foodItem/$id'
+      fullPath: '/api/foodItem/$id'
+      preLoaderRoute: typeof ApiFoodItemIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/dispose/$id': {
+      id: '/api/dispose/$id'
+      path: '/api/dispose/$id'
+      fullPath: '/api/dispose/$id'
+      preLoaderRoute: typeof ApiDisposeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/delivery/$id': {
+      id: '/api/delivery/$id'
+      path: '/api/delivery/$id'
+      fullPath: '/api/delivery/$id'
+      preLoaderRoute: typeof ApiDeliveryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -321,18 +708,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardShopIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/sale/': {
+      id: '/_protected/dashboard/sale/'
+      path: '/sale'
+      fullPath: '/dashboard/sale/'
+      preLoaderRoute: typeof ProtectedDashboardSaleIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/menu/': {
+      id: '/_protected/dashboard/menu/'
+      path: '/menu'
+      fullPath: '/dashboard/menu/'
+      preLoaderRoute: typeof ProtectedDashboardMenuIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/machines/': {
+      id: '/_protected/dashboard/machines/'
+      path: '/machines'
+      fullPath: '/dashboard/machines/'
+      preLoaderRoute: typeof ProtectedDashboardMachinesIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/locations/': {
+      id: '/_protected/dashboard/locations/'
+      path: '/locations'
+      fullPath: '/dashboard/locations/'
+      preLoaderRoute: typeof ProtectedDashboardLocationsIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/inventory/': {
+      id: '/_protected/dashboard/inventory/'
+      path: '/inventory'
+      fullPath: '/dashboard/inventory/'
+      preLoaderRoute: typeof ProtectedDashboardInventoryIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/food-item/': {
+      id: '/_protected/dashboard/food-item/'
+      path: '/food-item'
+      fullPath: '/dashboard/food-item/'
+      preLoaderRoute: typeof ProtectedDashboardFoodItemIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/dispose/': {
+      id: '/_protected/dashboard/dispose/'
+      path: '/dispose'
+      fullPath: '/dashboard/dispose/'
+      preLoaderRoute: typeof ProtectedDashboardDisposeIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/delivery/': {
+      id: '/_protected/dashboard/delivery/'
+      path: '/delivery'
+      fullPath: '/dashboard/delivery/'
+      preLoaderRoute: typeof ProtectedDashboardDeliveryIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
   }
 }
 
 interface ProtectedDashboardRouteChildren {
   ProtectedDashboardUserRoute: typeof ProtectedDashboardUserRoute
-  ProtectedDashboardIndexRoute: typeof ProtectedDashboardIndexRoute
+  ProtectedDashboardDeliveryIndexRoute: typeof ProtectedDashboardDeliveryIndexRoute
+  ProtectedDashboardDisposeIndexRoute: typeof ProtectedDashboardDisposeIndexRoute
+  ProtectedDashboardFoodItemIndexRoute: typeof ProtectedDashboardFoodItemIndexRoute
+  ProtectedDashboardInventoryIndexRoute: typeof ProtectedDashboardInventoryIndexRoute
+  ProtectedDashboardLocationsIndexRoute: typeof ProtectedDashboardLocationsIndexRoute
+  ProtectedDashboardMachinesIndexRoute: typeof ProtectedDashboardMachinesIndexRoute
+  ProtectedDashboardMenuIndexRoute: typeof ProtectedDashboardMenuIndexRoute
+  ProtectedDashboardSaleIndexRoute: typeof ProtectedDashboardSaleIndexRoute
   ProtectedDashboardShopIndexRoute: typeof ProtectedDashboardShopIndexRoute
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardUserRoute: ProtectedDashboardUserRoute,
-  ProtectedDashboardIndexRoute: ProtectedDashboardIndexRoute,
+  ProtectedDashboardDeliveryIndexRoute: ProtectedDashboardDeliveryIndexRoute,
+  ProtectedDashboardDisposeIndexRoute: ProtectedDashboardDisposeIndexRoute,
+  ProtectedDashboardFoodItemIndexRoute: ProtectedDashboardFoodItemIndexRoute,
+  ProtectedDashboardInventoryIndexRoute: ProtectedDashboardInventoryIndexRoute,
+  ProtectedDashboardLocationsIndexRoute: ProtectedDashboardLocationsIndexRoute,
+  ProtectedDashboardMachinesIndexRoute: ProtectedDashboardMachinesIndexRoute,
+  ProtectedDashboardMenuIndexRoute: ProtectedDashboardMenuIndexRoute,
+  ProtectedDashboardSaleIndexRoute: ProtectedDashboardSaleIndexRoute,
   ProtectedDashboardShopIndexRoute: ProtectedDashboardShopIndexRoute,
 }
 
@@ -358,11 +815,26 @@ const rootRouteChildren: RootRouteChildren = {
   ProtectedRoute: ProtectedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
-  ApiUploadRoute: ApiUploadRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiDeliveryIdRoute: ApiDeliveryIdRoute,
+  ApiDisposeIdRoute: ApiDisposeIdRoute,
+  ApiFoodItemIdRoute: ApiFoodItemIdRoute,
+  ApiInventoryIdRoute: ApiInventoryIdRoute,
+  ApiLocationIdRoute: ApiLocationIdRoute,
+  ApiMachineIdRoute: ApiMachineIdRoute,
+  ApiMenuIdRoute: ApiMenuIdRoute,
   ApiR2DownloadRoute: ApiR2DownloadRoute,
   ApiR2UploadRoute: ApiR2UploadRoute,
+  ApiSaleIdRoute: ApiSaleIdRoute,
   ApiShopIdRoute: ApiShopIdRoute,
+  ApiDeliveryIndexRoute: ApiDeliveryIndexRoute,
+  ApiDisposeIndexRoute: ApiDisposeIndexRoute,
+  ApiFoodItemIndexRoute: ApiFoodItemIndexRoute,
+  ApiInventoryIndexRoute: ApiInventoryIndexRoute,
+  ApiLocationIndexRoute: ApiLocationIndexRoute,
+  ApiMachineIndexRoute: ApiMachineIndexRoute,
+  ApiMenuIndexRoute: ApiMenuIndexRoute,
+  ApiSaleIndexRoute: ApiSaleIndexRoute,
   ApiShopIndexRoute: ApiShopIndexRoute,
 }
 export const routeTree = rootRouteImport
