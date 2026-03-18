@@ -1,3 +1,4 @@
+import { r2BaseUrl } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { env } from "cloudflare:workers";
 export const Route = createFileRoute("/api/r2/upload")({
@@ -27,7 +28,11 @@ export const Route = createFileRoute("/api/r2/upload")({
             },
           });
 
-          return new Response("File uploaded successfully", { status: 200 });
+          const fileUrl =`https://${r2BaseUrl}/${key}`
+          return new Response(JSON.stringify({ url: fileUrl }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
         } catch (error) {
           return new Response("Failed to upload file", { status: 500 });
         }

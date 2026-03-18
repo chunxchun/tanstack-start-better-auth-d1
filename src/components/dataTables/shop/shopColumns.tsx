@@ -32,6 +32,24 @@ export const getShopColumns = ({
     header: "Name",
   },
   {
+    accessorKey: "description",
+    header: "Description",
+  },
+  {
+    accessorKey: "bannerUrl",
+    header: "Banner",
+    cell: ({ getValue }) => {
+      const bannerUrl = getValue() as string | null;
+      return bannerUrl ? (
+        <img
+          src={bannerUrl}
+          alt="Shop Banner"
+          style={{ width: 100, height: 50, objectFit: "cover" }}
+        />
+      ) : null;
+    },
+  },
+  {
     accessorKey: "logoUrl",
     header: "Logo",
     cell: ({ getValue }) => {

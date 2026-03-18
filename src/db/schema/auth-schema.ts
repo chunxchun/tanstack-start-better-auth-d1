@@ -1,5 +1,11 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-orm/zod";
+import * as z from "zod";
 
 export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
@@ -87,3 +93,10 @@ export const verification = sqliteTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const insertUserSchema = createInsertSchema(user);
+export const updateUserSchema = createUpdateSchema(user);
+export const selectUserSchema = createSelectSchema(user);
+
+export type InsertUserType = z.infer<typeof insertUserSchema>;
+export type UpdateUserType = z.infer<typeof updateUserSchema>;
+export type SelectUserType = z.infer<typeof selectUserSchema>;

@@ -36,8 +36,13 @@ import { Route as ApiFoodItemIdRouteImport } from './routes/api/foodItem/$id'
 import { Route as ApiDisposeIdRouteImport } from './routes/api/dispose/$id'
 import { Route as ApiDeliveryIdRouteImport } from './routes/api/delivery/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+<<<<<<< HEAD
 import { Route as ProtectedDashboardUserIndexRouteImport } from './routes/_protected/dashboard/user/index'
 import { Route as ProtectedDashboardShopIndexRouteImport } from './routes/_protected/dashboard/shop/index'
+=======
+import { Route as ProtectedDashboardUsersIndexRouteImport } from './routes/_protected/dashboard/users/index'
+import { Route as ProtectedDashboardShopsIndexRouteImport } from './routes/_protected/dashboard/shops/index'
+>>>>>>> d540f35 (refactor)
 import { Route as ProtectedDashboardSaleIndexRouteImport } from './routes/_protected/dashboard/sale/index'
 import { Route as ProtectedDashboardMenuIndexRouteImport } from './routes/_protected/dashboard/menu/index'
 import { Route as ProtectedDashboardMachinesIndexRouteImport } from './routes/_protected/dashboard/machines/index'
@@ -181,6 +186,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+<<<<<<< HEAD
 const ProtectedDashboardUserIndexRoute =
   ProtectedDashboardUserIndexRouteImport.update({
     id: '/user/',
@@ -191,6 +197,18 @@ const ProtectedDashboardShopIndexRoute =
   ProtectedDashboardShopIndexRouteImport.update({
     id: '/shop/',
     path: '/shop/',
+=======
+const ProtectedDashboardUsersIndexRoute =
+  ProtectedDashboardUsersIndexRouteImport.update({
+    id: '/users/',
+    path: '/users/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardShopsIndexRoute =
+  ProtectedDashboardShopsIndexRouteImport.update({
+    id: '/shops/',
+    path: '/shops/',
+>>>>>>> d540f35 (refactor)
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
 const ProtectedDashboardSaleIndexRoute =
@@ -277,8 +295,13 @@ export interface FileRoutesByFullPath {
   '/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
   '/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
   '/dashboard/sale/': typeof ProtectedDashboardSaleIndexRoute
+<<<<<<< HEAD
   '/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
   '/dashboard/user/': typeof ProtectedDashboardUserIndexRoute
+=======
+  '/dashboard/shops/': typeof ProtectedDashboardShopsIndexRoute
+  '/dashboard/users/': typeof ProtectedDashboardUsersIndexRoute
+>>>>>>> d540f35 (refactor)
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -315,8 +338,13 @@ export interface FileRoutesByTo {
   '/dashboard/machines': typeof ProtectedDashboardMachinesIndexRoute
   '/dashboard/menu': typeof ProtectedDashboardMenuIndexRoute
   '/dashboard/sale': typeof ProtectedDashboardSaleIndexRoute
+<<<<<<< HEAD
   '/dashboard/shop': typeof ProtectedDashboardShopIndexRoute
   '/dashboard/user': typeof ProtectedDashboardUserIndexRoute
+=======
+  '/dashboard/shops': typeof ProtectedDashboardShopsIndexRoute
+  '/dashboard/users': typeof ProtectedDashboardUsersIndexRoute
+>>>>>>> d540f35 (refactor)
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -355,8 +383,13 @@ export interface FileRoutesById {
   '/_protected/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
   '/_protected/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
   '/_protected/dashboard/sale/': typeof ProtectedDashboardSaleIndexRoute
+<<<<<<< HEAD
   '/_protected/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
   '/_protected/dashboard/user/': typeof ProtectedDashboardUserIndexRoute
+=======
+  '/_protected/dashboard/shops/': typeof ProtectedDashboardShopsIndexRoute
+  '/_protected/dashboard/users/': typeof ProtectedDashboardUsersIndexRoute
+>>>>>>> d540f35 (refactor)
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -395,8 +428,13 @@ export interface FileRouteTypes {
     | '/dashboard/machines/'
     | '/dashboard/menu/'
     | '/dashboard/sale/'
+<<<<<<< HEAD
     | '/dashboard/shop/'
     | '/dashboard/user/'
+=======
+    | '/dashboard/shops/'
+    | '/dashboard/users/'
+>>>>>>> d540f35 (refactor)
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -433,8 +471,13 @@ export interface FileRouteTypes {
     | '/dashboard/machines'
     | '/dashboard/menu'
     | '/dashboard/sale'
+<<<<<<< HEAD
     | '/dashboard/shop'
     | '/dashboard/user'
+=======
+    | '/dashboard/shops'
+    | '/dashboard/users'
+>>>>>>> d540f35 (refactor)
   id:
     | '__root__'
     | '/'
@@ -472,8 +515,13 @@ export interface FileRouteTypes {
     | '/_protected/dashboard/machines/'
     | '/_protected/dashboard/menu/'
     | '/_protected/dashboard/sale/'
+<<<<<<< HEAD
     | '/_protected/dashboard/shop/'
     | '/_protected/dashboard/user/'
+=======
+    | '/_protected/dashboard/shops/'
+    | '/_protected/dashboard/users/'
+>>>>>>> d540f35 (refactor)
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -695,18 +743,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+<<<<<<< HEAD
     '/_protected/dashboard/user/': {
       id: '/_protected/dashboard/user/'
       path: '/user'
       fullPath: '/dashboard/user/'
       preLoaderRoute: typeof ProtectedDashboardUserIndexRouteImport
+=======
+    '/_protected/dashboard/users/': {
+      id: '/_protected/dashboard/users/'
+      path: '/users'
+      fullPath: '/dashboard/users/'
+      preLoaderRoute: typeof ProtectedDashboardUsersIndexRouteImport
+>>>>>>> d540f35 (refactor)
       parentRoute: typeof ProtectedDashboardRoute
     }
-    '/_protected/dashboard/shop/': {
-      id: '/_protected/dashboard/shop/'
-      path: '/shop'
-      fullPath: '/dashboard/shop/'
-      preLoaderRoute: typeof ProtectedDashboardShopIndexRouteImport
+    '/_protected/dashboard/shops/': {
+      id: '/_protected/dashboard/shops/'
+      path: '/shops'
+      fullPath: '/dashboard/shops/'
+      preLoaderRoute: typeof ProtectedDashboardShopsIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
     '/_protected/dashboard/sale/': {
@@ -777,8 +833,13 @@ interface ProtectedDashboardRouteChildren {
   ProtectedDashboardMachinesIndexRoute: typeof ProtectedDashboardMachinesIndexRoute
   ProtectedDashboardMenuIndexRoute: typeof ProtectedDashboardMenuIndexRoute
   ProtectedDashboardSaleIndexRoute: typeof ProtectedDashboardSaleIndexRoute
+<<<<<<< HEAD
   ProtectedDashboardShopIndexRoute: typeof ProtectedDashboardShopIndexRoute
   ProtectedDashboardUserIndexRoute: typeof ProtectedDashboardUserIndexRoute
+=======
+  ProtectedDashboardShopsIndexRoute: typeof ProtectedDashboardShopsIndexRoute
+  ProtectedDashboardUsersIndexRoute: typeof ProtectedDashboardUsersIndexRoute
+>>>>>>> d540f35 (refactor)
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
@@ -790,8 +851,13 @@ const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardMachinesIndexRoute: ProtectedDashboardMachinesIndexRoute,
   ProtectedDashboardMenuIndexRoute: ProtectedDashboardMenuIndexRoute,
   ProtectedDashboardSaleIndexRoute: ProtectedDashboardSaleIndexRoute,
+<<<<<<< HEAD
   ProtectedDashboardShopIndexRoute: ProtectedDashboardShopIndexRoute,
   ProtectedDashboardUserIndexRoute: ProtectedDashboardUserIndexRoute,
+=======
+  ProtectedDashboardShopsIndexRoute: ProtectedDashboardShopsIndexRoute,
+  ProtectedDashboardUsersIndexRoute: ProtectedDashboardUsersIndexRoute,
+>>>>>>> d540f35 (refactor)
 }
 
 const ProtectedDashboardRouteWithChildren =

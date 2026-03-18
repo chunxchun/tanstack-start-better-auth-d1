@@ -11,7 +11,7 @@ type ShopFormBaseProps = {
 type ShopFormCreateProps = ShopFormBaseProps & {
   initialData?: never;
   mode: "create";
-  onSubmit: (values: InsertShopType) => Promise<void>;
+  onSubmit: (values: InsertShopType, bannerFile?: File , logoFile?: File ) => Promise<void>;
 };
 
 type ShopFormViewProps = ShopFormBaseProps & {
@@ -23,7 +23,7 @@ type ShopFormViewProps = ShopFormBaseProps & {
 type ShopFormEditProps = ShopFormBaseProps & {
   initialData: UpdateShopType;
   mode: "edit";
-  onSubmit: (values: UpdateShopType) => Promise<void>;
+  onSubmit: (values: UpdateShopType, bannerFile?: File , logoFile?: File ) => Promise<void>;
 };
 
 export type ShopFormProps =

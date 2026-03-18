@@ -31,7 +31,7 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_protected/dashboard/user/")({
+export const Route = createFileRoute("/_protected/dashboard/users/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => listUserFn({ data: deps }),

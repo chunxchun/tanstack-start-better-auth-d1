@@ -1,14 +1,13 @@
 "use client";
 
-import * as React from "react";
-
+import type { Dispatch, SetStateAction } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
@@ -16,12 +15,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import type { SelectShopType as Shop } from "@/db/schema";
+import type { SelectShopType } from "@/db/schema";
 import { ChevronsUpDownIcon, PlusIcon } from "lucide-react";
+import { Button } from "./ui/button";
 
-export function ShopSwitcher({ shops }: { shops: Shop[] }) {
+export function ShopSwitcher({
+  shops,
+  activeShop,
+  setActiveShop,
+}: {
+  shops: SelectShopType[];
+  activeShop: SelectShopType;
+  setActiveShop: Dispatch<SetStateAction<SelectShopType>>;
+}) {
   const { isMobile } = useSidebar();
-  const [activeShop, setActiveShop] = React.useState(shops[0]);
 
   if (!activeShop) {
     return null;
@@ -85,10 +92,14 @@ export function ShopSwitcher({ shops }: { shops: Shop[] }) {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+              <Button onClick={() => {}}>
+                {/* <div className="flex size-6 items-center justify-center rounded-md border bg-transparent"> */}
                 <PlusIcon className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">Add shop</div>
+                {/* </div> */}
+                {/* <div className="font-medium text-muted-foreground"> */}
+                Add shop
+                {/* </div> */}
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

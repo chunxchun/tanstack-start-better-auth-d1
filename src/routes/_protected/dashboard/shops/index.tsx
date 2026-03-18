@@ -18,6 +18,10 @@ import type {
   UpdateShopType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
+<<<<<<< HEAD:src/routes/_protected/dashboard/shop/index.tsx
+=======
+import { uploadImage } from "@/lib/imageUpload";
+>>>>>>> d540f35 (refactor):src/routes/_protected/dashboard/shops/index.tsx
 import {
   createShopFn,
   deleteShopByIdFn,
@@ -31,7 +35,11 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 
+<<<<<<< HEAD:src/routes/_protected/dashboard/shop/index.tsx
 export const Route = createFileRoute("/_protected/dashboard/shop/")({
+=======
+export const Route = createFileRoute("/_protected/dashboard/shops/")({
+>>>>>>> d540f35 (refactor):src/routes/_protected/dashboard/shops/index.tsx
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => listShopFn({ data: deps }),
@@ -110,9 +118,52 @@ function RouteComponent() {
     [],
   );
 
+<<<<<<< HEAD:src/routes/_protected/dashboard/shop/index.tsx
   const handleCreateSubmit = async (values: InsertShopType) => {
+=======
+  const handleCreateSubmit = async (
+    values: InsertShopType,
+    banner?: File,
+    logo?: File,
+  ) => {
+>>>>>>> d540f35 (refactor):src/routes/_protected/dashboard/shops/index.tsx
     try {
-      await createShopFn({ data: values });
+      const result = await createShopFn({ data: values });
+      if (!result || result.length === 0) {
+        throw new Error("Failed to create shop: No result returned");
+      }
+
+      const shopId = result[0].id;
+
+      if (banner) {
+        const bannerExt = banner.name.split(".").pop();
+        const bannerKey = `shops/${shopId}/banner.${bannerExt}`;
+        const result = (await uploadImage(banner, bannerKey)) as {
+          url: string;
+        } | null;
+        console.log("Banner upload result:", result);
+        // You would then need to update the shop record with the banner URL
+        if (!result) {
+          throw new Error("Failed to upload banner image");
+        }
+        const bannerUrl = result.url as string;
+        await updateShopByIdFn({ data: { id: shopId, bannerUrl: bannerUrl } });
+      }
+
+      if (logo) {
+        const logoExt = logo.name.split(".").pop();
+        const logoKey = `shops/${shopId}/logo.${logoExt}`;
+        const result = (await uploadImage(logo, logoKey)) as {
+          url: string;
+        } | null;
+        console.log("Logo upload result:", result);
+        if (!result) {
+          throw new Error("Failed to upload logo image");
+        }
+        const logoUrl = result.url as string;
+        await updateShopByIdFn({ data: { id: shopId, logoUrl: logoUrl } });
+      }
+
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {

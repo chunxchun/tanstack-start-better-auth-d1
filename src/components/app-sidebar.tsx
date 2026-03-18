@@ -24,15 +24,11 @@ import {
   FileQuestionMark,
   LifeBuoy,
 } from "lucide-react";
-import type { SelectShopType } from "@/db/schema";
+import type { SelectShopType, SelectUserType } from "@/db/schema";
+import type { Dispatch, SetStateAction } from "react";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Profile",
@@ -40,6 +36,7 @@ const data = {
       icon: <BotIcon />,
       isActive: true,
       items: [
+        { title: "Shops", url: "/dashboard/shops" },
         {
           title: "Branding",
           url: "/dashboard/branding",
@@ -142,19 +139,31 @@ const data = {
 
 export function AppSidebar({
   shops,
+  user,
+  activeShop,
+  setActiveShop,
   ...props
-}: React.ComponentProps<typeof Sidebar> & { shops: SelectShopType[] }) {
+}: React.ComponentProps<typeof Sidebar> & {
+  shops: SelectShopType[];
+  user: SelectUserType;
+  activeShop: SelectShopType;
+  setActiveShop: Dispatch<SetStateAction<SelectShopType>>;
+}) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <ShopSwitcher shops={shops} />
+        <ShopSwitcher
+          shops={shops}
+          activeShop={activeShop}
+          setActiveShop={setActiveShop}
+        />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
