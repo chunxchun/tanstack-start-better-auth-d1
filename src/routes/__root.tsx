@@ -1,35 +1,25 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
+import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+// import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+// import { TanStackDevtools } from "@tanstack/react-devtools";
 
-import Header from '../components/Header'
-import NotFound from '../components/NotFound'
-import appCss from '../styles.css?url'
+import NotFound from "../components/NotFound";
+import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
+      { charSet: "utf-8" },
       {
-        charSet: 'utf-8',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
-        title: 'TanStack Start Starter',
-      },
+      { title: "Venchef Vending Machine Management System" },
     ],
-    links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootDocument,
-  notFoundComponent: NotFound,
-})
+  notFoundComponent: () => <NotFound />,
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -38,7 +28,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {/* <Header /> */}
         {children}
         {/* <TanStackDevtools
           config={{
@@ -54,5 +43,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

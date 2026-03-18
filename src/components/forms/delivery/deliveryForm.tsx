@@ -13,7 +13,7 @@ import {
   Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectDelivery as Delivery } from "@/db/schema";
+import type { SelectDeliveryType as Delivery } from "@/db/schema";
 
 type DeliverySubmitValues = Omit<Delivery, "id" | "createdAt" | "updatedAt">;
 

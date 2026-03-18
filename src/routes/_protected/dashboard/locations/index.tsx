@@ -1,15 +1,23 @@
+import { getLocationColumns } from "@/components/dataTables/location/locationColumns";
+import { DataTable } from "@/components/dataTables/location/locationDataTable";
+import { LocationForm } from "@/components/forms/location/locationForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LocationForm } from "@/components/forms/locationForm";
-import type { SelectLocationType as Location, LocationStatus } from "@/db/schema";
+import type {
+  InsertLocationType,
+  SelectLocationType as Location,
+  LocationStatus,
+  UpdateLocationType,
+} from "@/db/schema";
+import { searchSchema } from "@/db/schema/commonSchema";
 import {
   createLocationFn,
   deleteLocationByIdFn,
@@ -22,14 +30,6 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import * as z from "zod";
-import { DataTable } from "@/components/dataTables/location/locationDataTable";
-import { getLocationColumns } from "@/components/dataTables/location/locationColumns";
-
-const searchSchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-  offset: z.coerce.number().int().min(0).default(0),
-});
 
 export const Route = createFileRoute("/_protected/dashboard/locations/")({
   validateSearch: searchSchema,
@@ -112,19 +112,19 @@ function RouteComponent() {
     [],
   );
 
-  type LocationFormValues = {
-    name: string;
-    description: string | null;
-    status: LocationStatus;
-    addressLine1: string;
-    addressLine2?: string | null;
-    addressCity: string;
-    addressState?: string | null;
-    addressPostalCode?: string | null;
-    addressCountry: string;
-  };
- 
-  const handleCreateSubmit = async (values: LocationFormValues) => {
+  // type LocationFormValues = {
+  //   name: string;
+  //   description: string | null;
+  //   status: LocationStatus;
+  //   addressLine1: string;
+  //   addressLine2?: string | null;
+  //   addressCity: string;
+  //   addressState?: string | null;
+  //   addressPostalCode?: string | null;
+  //   addressCountry: string;
+  // };
+
+  const handleCreateSubmit = async (values: InsertLocationType) => {
     try {
       await createLocationFn({ data: values });
       setCreateOpen(false);
@@ -134,17 +134,11 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: LocationFormValues) => {
+  const handleEditSubmit = async (values: UpdateLocationType) => {
     if (!selectedLocation) return;
 
     try {
-      await updateLocationByIdFn({
-        data: {
-          id: selectedLocation.id,
-          ...values,
-        },
-      });
-
+      await updateLocationByIdFn({ data: values });
       setEditOpen(false);
       setSelectedLocation(null);
       await router.invalidate();

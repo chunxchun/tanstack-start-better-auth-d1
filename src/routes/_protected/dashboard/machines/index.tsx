@@ -1,34 +1,36 @@
+import { getMachineColumns } from "@/components/dataTables/machine/machineColumns";
+import { DataTable } from "@/components/dataTables/machine/machineDataTable";
+import { LocationForm } from "@/components/forms/location/locationForm";
+import { MachineForm } from "@/components/forms/machine/machineForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MachineForm } from "@/components/forms/machineForm";
-import { LocationForm } from "@/components/forms/locationForm";
 import type {
-  SelectMachineType as Machine,
+  InsertLocationType,
   InsertMachineType,
-  MachineStatus,
   SelectLocationType as Location,
+  SelectMachineType as Machine,
+  SelectMachineType,
   SelectShopType as Shop,
   UpdateMachineType,
-  InsertLocationType,
 } from "@/db/schema";
+import {
+  createLocationFn,
+  listLocationFn,
+} from "@/utils/location/location.function";
 import {
   createMachineFn,
   deleteMachineByIdFn,
   listMachineFn,
   updateMachineByIdFn,
 } from "@/utils/machine/machine.function";
-import {
-  listLocationFn,
-  createLocationFn,
-} from "@/utils/location/location.function";
 import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
@@ -36,9 +38,6 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import * as z from "zod";
-import { DataTable } from "@/components/dataTables/machine/machineDataTable";
-import { getMachineColumns } from "@/components/dataTables/machine/machineColumns";
 
 import { searchSchema } from "@/db/schema/commonSchema";
 
@@ -261,10 +260,7 @@ function RouteComponent() {
         >
           <MachineForm
             mode="view"
-            initialData={selectedMachine ?? undefined}
-            locations={locations as Location[]}
-            shops={shops as Shop[]}
-            onCreateLocation={() => setCreateLocationOpen(true)}
+            initialData={selectedMachine as SelectMachineType}
             onCancel={() => {
               setViewOpen(false);
               setSelectedMachine(null);
@@ -286,7 +282,7 @@ function RouteComponent() {
         >
           <MachineForm
             mode="edit"
-            initialData={selectedMachine ?? undefined}
+            initialData={selectedMachine as UpdateMachineType}
             locations={locations as Location[]}
             shops={shops as Shop[]}
             onCreateLocation={() => setCreateLocationOpen(true)}

@@ -1,31 +1,35 @@
+import { getDisposeColumns } from "@/components/dataTables/dispose/disposeColumns";
+import { DataTable } from "@/components/dataTables/dispose/disposeDataTable";
+import { DisposeForm } from "@/components/forms/dispose/disposeForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DisposeForm } from "@/components/forms/disposeForm";
-import type { SelectDispose as Dispose } from "@/db/schema";
+import type {
+  SelectDisposeType as Dispose,
+  InsertDisposeType,
+  SelectDisposeType,
+  UpdateDisposeType,
+} from "@/db/schema";
+import { searchSchema } from "@/db/schema/commonSchema";
 import {
   createDisposeFn,
   deleteDisposeByIdFn,
   listDisposeFn,
   updateDisposeByIdFn,
 } from "@/utils/dispose/dispose.function";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import * as z from "zod";
-import { DataTable } from "@/components/dataTables/dispose/disposeDataTable";
-import { getDisposeColumns } from "@/components/dataTables/dispose/disposeColumns";
-
-const searchSchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-  offset: z.coerce.number().int().min(0).default(0),
-});
 
 export const Route = createFileRoute("/_protected/dashboard/dispose/")({
   validateSearch: searchSchema,
@@ -49,25 +53,6 @@ function RouteComponent() {
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
   const hasNextPage = data.length === limit;
-
-  const columns = useMemo(
-    () =>
-      getDisposeColumns({
-        onView: (dispose) => {
-          setSelectedDispose(dispose);
-          setViewOpen(true);
-        },
-        onEdit: (dispose) => {
-          setSelectedDispose(dispose);
-          setEditOpen(true);
-        },
-        onDelete: (dispose) => {
-          setSelectedDispose(dispose);
-          setDeleteOpen(true);
-        },
-      }),
-    [],
-  );
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -97,13 +82,33 @@ function RouteComponent() {
 
   const handleLimitChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const nextLimit = Number(event.target.value);
+
     updatePagination({
       limit: nextLimit,
       offset: 0,
     });
   };
 
-  const handleCreateSubmit = async (values: Omit<Dispose, "id" | "createdAt" | "updatedAt">) => {
+  const columns = useMemo(
+    () =>
+      getDisposeColumns({
+        onView: (dispose) => {
+          setSelectedDispose(dispose);
+          setViewOpen(true);
+        },
+        onEdit: (dispose) => {
+          setSelectedDispose(dispose);
+          setEditOpen(true);
+        },
+        onDelete: (dispose) => {
+          setSelectedDispose(dispose);
+          setDeleteOpen(true);
+        },
+      }),
+    [],
+  );
+
+  const handleCreateSubmit = async (values: InsertDisposeType) => {
     try {
       await createDisposeFn({ data: values });
       setCreateOpen(false);
@@ -113,17 +118,11 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: Omit<Dispose, "id" | "createdAt" | "updatedAt">) => {
+  const handleEditSubmit = async (values: UpdateDisposeType) => {
     if (!selectedDispose) return;
 
     try {
-      await updateDisposeByIdFn({
-        data: {
-          id: selectedDispose.id,
-          ...values,
-        },
-      });
-
+      await updateDisposeByIdFn({ data: values });
       setEditOpen(false);
       setSelectedDispose(null);
       await router.invalidate();
@@ -148,12 +147,37 @@ function RouteComponent() {
   return (
     <>
       <div className="container mx-auto px-10 py-10">
-        <h1 className="mb-6 text-2xl font-bold">Dispose</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Dispose</h1>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <span>+</span>Create
+              </Button>
+            </DialogTrigger>
+            <DialogContent
+              className="min-w-[50vw]"
+              onInteractOutside={(e) => e.preventDefault()}
+            >
+              <DisposeForm
+                mode="create"
+                onSubmit={handleCreateSubmit}
+                onCancel={() => setCreateOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">Page {currentPage}</div>
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage}
+          </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground" htmlFor="dispose-page-size">
+            <label
+              className="text-sm text-muted-foreground"
+              htmlFor="dispose-page-size"
+            >
               Rows
             </label>
             <select
@@ -168,10 +192,20 @@ function RouteComponent() {
               <option value={50}>50</option>
             </select>
 
-            <Button type="button" variant="outline" onClick={goToPreviousPage} disabled={!hasPreviousPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToPreviousPage}
+              disabled={!hasPreviousPage}
+            >
               Previous
             </Button>
-            <Button type="button" variant="outline" onClick={goToNextPage} disabled={!hasNextPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToNextPage}
+              disabled={!hasNextPage}
+            >
               Next
             </Button>
           </div>
@@ -180,19 +214,6 @@ function RouteComponent() {
         <DataTable columns={columns} data={data} />
       </div>
 
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Create Dispose</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
-          <DisposeForm
-            mode="create"
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-
       <Dialog
         open={viewOpen}
         onOpenChange={(open) => {
@@ -200,10 +221,13 @@ function RouteComponent() {
           if (!open) setSelectedDispose(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DisposeForm
             mode="view"
-            initialData={selectedDispose ?? undefined}
+            initialData={selectedDispose as SelectDisposeType}
             onCancel={() => {
               setViewOpen(false);
               setSelectedDispose(null);
@@ -219,10 +243,13 @@ function RouteComponent() {
           if (!open) setSelectedDispose(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DisposeForm
             mode="edit"
-            initialData={selectedDispose ?? undefined}
+            initialData={selectedDispose as UpdateDisposeType}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);
@@ -260,8 +287,12 @@ function RouteComponent() {
             >
               Cancel
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteConfirm}>
-              Yes, delete
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+            >
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

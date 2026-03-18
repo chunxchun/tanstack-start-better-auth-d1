@@ -1,55 +1,49 @@
-import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import {
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
-  Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectInventory as Inventory } from "@/db/schema";
+import type { InsertMenuType, UpdateMenuType } from "@/db/schema/menuTable";
+import { useForm } from "@tanstack/react-form";
+import type { MenuFormProps } from "./menuFormType";
 
-type InventorySubmitValues = Omit<Inventory, "id" | "createdAt" | "updatedAt">;
-
-type InventoryFormBaseProps = {
-  initialData?: Partial<Inventory>;
-  onCancel?: () => void;
-};
-
-type InventoryFormViewProps = InventoryFormBaseProps & {
-  mode: "view";
-  onSubmit?: never;
-};
-
-type InventoryFormEditProps = InventoryFormBaseProps & {
-  mode: "create" | "edit";
-  onSubmit: (values: InventorySubmitValues) => Promise<void>;
-};
-
-type InventoryFormProps = InventoryFormViewProps | InventoryFormEditProps;
-
-export function InventoryForm({ mode, initialData, onSubmit, onCancel }: InventoryFormProps) {
+export function MenuForm({
+  mode,
+  initialData,
+  onSubmit,
+  onCancel,
+}: MenuFormProps) {
   const form = useForm({
-    defaultValues: {
-      machineId: initialData?.machineId ?? 0,
-      foodItemId: initialData?.foodItemId ?? 0,
-      quantity: initialData?.quantity ?? 0,
-      date: initialData?.date ?? "",
+    defaultValues: initialData || {
+      name: null,
+      description: null,
+      coverPhotoUrl: null,
+      date: new Date().toISOString().slice(0, 10),
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
+      try {
+        if (mode === "edit") {
+          const data = value as UpdateMenuType;
+          await onSubmit(data);
+        }
 
-      await onSubmit({
-        machineId: value.machineId,
-        foodItemId: value.foodItemId,
-        quantity: value.quantity,
-        date: value.date,
-      });
+        if (mode === "create") {
+          const data = value as InsertMenuType;
+          await onSubmit(data);
+        }
+      } catch (error) {
+        console.error("Error submitting menu form:", error);
+      }
     },
   });
 
@@ -66,63 +60,67 @@ export function InventoryForm({ mode, initialData, onSubmit, onCancel }: Invento
     >
       <DialogHeader>
         <DialogTitle>
-          {mode === "view" ? "Inventory Details" : isCreate ? "Create Inventory" : "Edit Inventory"}
+          {mode === "view"
+            ? "Menu Details"
+            : isCreate
+              ? "Create Menu"
+              : "Edit Menu"}
         </DialogTitle>
         <DialogDescription>
           {isReadOnly
-            ? "View inventory details."
+            ? "View menu details."
             : "Fill out the form below and click save when you're done."}
         </DialogDescription>
       </DialogHeader>
 
       <FieldGroup>
-        <form.Field name="machineId">
+        <form.Field name="name">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>Machine ID</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
               <Input
                 id={field.name}
                 name={field.name}
-                type="number"
-                value={String(field.state.value)}
+                value={field.state.value}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) => field.handleChange(e.target.value)}
               />
             </Field>
           )}
         </form.Field>
 
-        <form.Field name="foodItemId">
+        <form.Field name="description">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>Food Item ID</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
               <Input
                 id={field.name}
                 name={field.name}
-                type="number"
-                value={String(field.state.value)}
+                value={field.state.value ?? ""}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) => field.handleChange(e.target.value || null)}
               />
             </Field>
           )}
         </form.Field>
 
-        <form.Field name="quantity">
+        <form.Field name="coverPhotoUrl">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>Quantity</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Cover Photo URL</FieldLabel>
               <Input
                 id={field.name}
                 name={field.name}
-                type="number"
-                value={String(field.state.value)}
+                value={field.state.value ?? ""}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) => field.handleChange(e.target.value || null)}
               />
+              <FieldDescription>
+                Optional public URL for menu cover photo.
+              </FieldDescription>
             </Field>
           )}
         </form.Field>
@@ -149,7 +147,9 @@ export function InventoryForm({ mode, initialData, onSubmit, onCancel }: Invento
         <Button type="button" variant="outline" onClick={onCancel}>
           Close
         </Button>
-        {!isReadOnly ? <Button type="submit">{isCreate ? "Create" : "Save"}</Button> : null}
+        {!isReadOnly ? (
+          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
+        ) : null}
       </DialogFooter>
     </form>
   );

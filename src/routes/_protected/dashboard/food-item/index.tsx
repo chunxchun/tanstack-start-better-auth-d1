@@ -1,31 +1,35 @@
+import { getFoodItemColumns } from "@/components/dataTables/foodItem/foodItemColumns";
+import { DataTable } from "@/components/dataTables/foodItem/foodItemDataTable";
+import { FoodItemForm } from "@/components/forms/foodItem/foodItemForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FoodItemForm } from "@/components/forms/foodItemForm";
-import type { SelectFoodItem as FoodItem } from "@/db/schema";
+import type {
+  SelectFoodItemType as FoodItem,
+  InsertFoodItemType,
+  SelectFoodItemType,
+  UpdateFoodItemType,
+} from "@/db/schema";
+import { searchSchema } from "@/db/schema/commonSchema";
 import {
   createFoodItemFn,
   deleteFoodItemByIdFn,
   listFoodItemFn,
   updateFoodItemByIdFn,
 } from "@/utils/foodItem/foodItem.function";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import * as z from "zod";
-import { DataTable } from "@/components/dataTables/foodItem/foodItemDataTable";
-import { getFoodItemColumns } from "@/components/dataTables/foodItem/foodItemColumns";
-
-const searchSchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-  offset: z.coerce.number().int().min(0).default(0),
-});
 
 export const Route = createFileRoute("/_protected/dashboard/food-item/")({
   validateSearch: searchSchema,
@@ -43,31 +47,14 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedFoodItem, setSelectedFoodItem] = useState<FoodItem | null>(null);
+  const [selectedFoodItem, setSelectedFoodItem] = useState<FoodItem | null>(
+    null,
+  );
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
   const hasNextPage = data.length === limit;
-
-  const columns = useMemo(
-    () =>
-      getFoodItemColumns({
-        onView: (foodItem) => {
-          setSelectedFoodItem(foodItem);
-          setViewOpen(true);
-        },
-        onEdit: (foodItem) => {
-          setSelectedFoodItem(foodItem);
-          setEditOpen(true);
-        },
-        onDelete: (foodItem) => {
-          setSelectedFoodItem(foodItem);
-          setDeleteOpen(true);
-        },
-      }),
-    [],
-  );
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -97,13 +84,33 @@ function RouteComponent() {
 
   const handleLimitChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const nextLimit = Number(event.target.value);
+
     updatePagination({
       limit: nextLimit,
       offset: 0,
     });
   };
 
-  const handleCreateSubmit = async (values: Omit<FoodItem, "id" | "createdAt" | "updatedAt">) => {
+  const columns = useMemo(
+    () =>
+      getFoodItemColumns({
+        onView: (foodItem) => {
+          setSelectedFoodItem(foodItem);
+          setViewOpen(true);
+        },
+        onEdit: (foodItem) => {
+          setSelectedFoodItem(foodItem);
+          setEditOpen(true);
+        },
+        onDelete: (foodItem) => {
+          setSelectedFoodItem(foodItem);
+          setDeleteOpen(true);
+        },
+      }),
+    [],
+  );
+
+  const handleCreateSubmit = async (values: InsertFoodItemType) => {
     try {
       await createFoodItemFn({ data: values });
       setCreateOpen(false);
@@ -113,17 +120,11 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: Omit<FoodItem, "id" | "createdAt" | "updatedAt">) => {
+  const handleEditSubmit = async (values: UpdateFoodItemType) => {
     if (!selectedFoodItem) return;
 
     try {
-      await updateFoodItemByIdFn({
-        data: {
-          id: selectedFoodItem.id,
-          ...values,
-        },
-      });
-
+      await updateFoodItemByIdFn({ data: values });
       setEditOpen(false);
       setSelectedFoodItem(null);
       await router.invalidate();
@@ -148,12 +149,37 @@ function RouteComponent() {
   return (
     <>
       <div className="container mx-auto px-10 py-10">
-        <h1 className="mb-6 text-2xl font-bold">Food Items</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Food Items</h1>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <span>+</span>Create
+              </Button>
+            </DialogTrigger>
+            <DialogContent
+              className="min-w-[50vw]"
+              onInteractOutside={(e) => e.preventDefault()}
+            >
+              <FoodItemForm
+                mode="create"
+                onSubmit={handleCreateSubmit}
+                onCancel={() => setCreateOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">Page {currentPage}</div>
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage}
+          </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground" htmlFor="food-item-page-size">
+            <label
+              className="text-sm text-muted-foreground"
+              htmlFor="food-item-page-size"
+            >
               Rows
             </label>
             <select
@@ -168,10 +194,20 @@ function RouteComponent() {
               <option value={50}>50</option>
             </select>
 
-            <Button type="button" variant="outline" onClick={goToPreviousPage} disabled={!hasPreviousPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToPreviousPage}
+              disabled={!hasPreviousPage}
+            >
               Previous
             </Button>
-            <Button type="button" variant="outline" onClick={goToNextPage} disabled={!hasNextPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToNextPage}
+              disabled={!hasNextPage}
+            >
               Next
             </Button>
           </div>
@@ -180,19 +216,6 @@ function RouteComponent() {
         <DataTable columns={columns} data={data} />
       </div>
 
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Create Food Item</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
-          <FoodItemForm
-            mode="create"
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-
       <Dialog
         open={viewOpen}
         onOpenChange={(open) => {
@@ -200,10 +223,13 @@ function RouteComponent() {
           if (!open) setSelectedFoodItem(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <FoodItemForm
             mode="view"
-            initialData={selectedFoodItem ?? undefined}
+            initialData={selectedFoodItem as SelectFoodItemType}
             onCancel={() => {
               setViewOpen(false);
               setSelectedFoodItem(null);
@@ -219,10 +245,13 @@ function RouteComponent() {
           if (!open) setSelectedFoodItem(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <FoodItemForm
             mode="edit"
-            initialData={selectedFoodItem ?? undefined}
+            initialData={selectedFoodItem as UpdateFoodItemType}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);
@@ -244,8 +273,10 @@ function RouteComponent() {
             <DialogTitle>Delete food item</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete
-              {selectedFoodItem ? ` ${selectedFoodItem.name}` : " this food item"}?
-              This action cannot be undone.
+              {selectedFoodItem
+                ? ` ${selectedFoodItem.name}`
+                : " this food item"}
+              ? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 
@@ -260,8 +291,12 @@ function RouteComponent() {
             >
               Cancel
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteConfirm}>
-              Yes, delete
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+            >
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

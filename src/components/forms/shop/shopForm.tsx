@@ -1,53 +1,53 @@
-import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import {
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
-  Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectShop as Shop } from "@/db/schema";
+import type {
+  InsertShopType,
+  UpdateShopType
+} from "@/db/schema";
+import { useForm } from "@tanstack/react-form";
+import type { ShopFormProps } from "./shopFormType";
 
-type ShopSubmitValues = Omit<Shop, "id" | "createdAt" | "updatedAt">;
-
-type ShopFormBaseProps = {
-  initialData?: Partial<Shop>;
-  shopId?: number;
-  onCancel?: () => void;
-};
-
-type ShopFormViewProps = ShopFormBaseProps & {
-  mode: "view";
-  onSubmit?: never;
-};
-
-type ShopFormEditProps = ShopFormBaseProps & {
-  mode: "create" | "edit";
-  onSubmit: (values: ShopSubmitValues) => Promise<void>;
-};
-
-type ShopFormProps = ShopFormViewProps | ShopFormEditProps;
-
-export function ShopForm({ mode, initialData, onSubmit, onCancel }: ShopFormProps) {
+export function ShopForm({
+  mode,
+  initialData,
+  onSubmit,
+  onCancel,
+}: ShopFormProps) {
   const form = useForm({
-    defaultValues: {
-      name: initialData?.name ?? "",
-      logoUrl: initialData?.logoUrl ?? null,
+    defaultValues: initialData || {
+      name: "",
+      description: "",
+      bannerUrl: null,
+      logoUrl: null,
+      videoUrl: null,
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
+      try {
+        if (mode === "edit") {
+          const data = value as UpdateShopType;
+          await onSubmit(data);
+        }
 
-      await onSubmit({
-        name: value.name,
-        logoUrl: value.logoUrl,
-      });
+        if (mode === "create") {
+          const data = value as InsertShopType;
+          await onSubmit(data);
+        }
+      } catch (error) {
+        console.error("Error submitting shop form:", error);
+      }
     },
   });
 
@@ -64,7 +64,11 @@ export function ShopForm({ mode, initialData, onSubmit, onCancel }: ShopFormProp
     >
       <DialogHeader>
         <DialogTitle>
-          {mode === "view" ? "Shop Details" : isCreate ? "Create Shop" : "Edit Shop"}
+          {mode === "view"
+            ? "Shop Details"
+            : isCreate
+              ? "Create Shop"
+              : "Edit Shop"}
         </DialogTitle>
         <DialogDescription>
           {isReadOnly

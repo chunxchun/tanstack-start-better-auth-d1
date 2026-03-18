@@ -1,4 +1,4 @@
-import type { SelectShop as Shop } from "@/db/schema";
+import type { SelectShopType as Shop } from "@/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
@@ -18,7 +18,11 @@ type ShopColumnsOptions = {
   onDelete: (shop: Shop) => void;
 };
 
-export const getShopColumns = ({ onView, onEdit, onDelete }: ShopColumnsOptions): ColumnDef<Shop>[] => [
+export const getShopColumns = ({
+  onView,
+  onEdit,
+  onDelete,
+}: ShopColumnsOptions): ColumnDef<Shop>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -38,7 +42,7 @@ export const getShopColumns = ({ onView, onEdit, onDelete }: ShopColumnsOptions)
           alt="Shop Logo"
           style={{ width: 50, height: 50, objectFit: "cover" }}
         />
-      ) : <p>-</p>;
+      ) : null;
     },
   },
   {
@@ -58,9 +62,7 @@ export const getShopColumns = ({ onView, onEdit, onDelete }: ShopColumnsOptions)
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onView(shop)}
-            >
+            <DropdownMenuItem onClick={() => onView(shop)}>
               View details
             </DropdownMenuItem>
 

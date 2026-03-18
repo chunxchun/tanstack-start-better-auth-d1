@@ -1,16 +1,16 @@
-import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
-  Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,75 +20,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   machineModeValues,
   machineStatusValues,
-  type SelectMachineType as Machine,
+  type InsertMachineType,
   type MachineMode,
   type MachineStatus,
-  type SelectLocationType as Location,
-  type SelectShopType as Shop,
   type MachineVersion,
-  type InsertMachineType,
   type UpdateMachineType,
 } from "@/db/schema";
-
-// type MachineSubmitValues = Omit<Machine, "id" | "createdAt" | "updatedAt">;
-
-type MachineFormBaseProps = {
-  initialData?: Partial<Machine>;
-  locations?: Location[];
-  shops?: Shop[];
-  onCreateLocation?: () => void;
-  onCancel?: () => void;
-};
-
-type MachineFormViewProps = MachineFormBaseProps & {
-  mode: "view";
-  onSubmit?: never;
-};
-
-type MachineFormEditProps = MachineFormBaseProps & {
-  mode: "edit";
-  onSubmit: (values: UpdateMachineType) => Promise<void>;
-};
-
-type MachineFormInsertProps = MachineFormBaseProps & {
-  mode: "create";
-  onSubmit: (values: InsertMachineType) => Promise<void>;
-};
-
-type MachineFormProps = MachineFormViewProps | MachineFormEditProps | MachineFormInsertProps;
+import { useForm } from "@tanstack/react-form";
+import type { MachineFormProps } from "./machineFormType";
 
 export function MachineForm({
   mode,
   initialData,
-  locations = [],
-  shops = [],
+  locations,
+  shops,
   onCreateLocation,
   onSubmit,
   onCancel,
 }: MachineFormProps) {
   const form = useForm({
-    defaultValues: {
-      locationId: initialData?.locationId ?? null,
-      shopId: initialData?.shopId ?? null,
-      name: initialData?.name ?? "",
-      serialNumber: initialData?.serialNumber ?? "",
-      status: initialData?.status ?? "active",
-      version: initialData?.version ?? null,
-      mode: initialData?.mode ?? null,
-      dayEndStockAutoReset: initialData?.dayEndStockAutoReset ?? false,
-      description: initialData?.description ?? null,
-      installationDate: initialData?.installationDate ?? "",
-      startWorkingHour: initialData?.startWorkingHour ?? "",
-      closeWorkingHour: initialData?.closeWorkingHour ?? "",
+    defaultValues: initialData || {
+      locationId: null,
+      shopId: null,
+      name: "",
+      serialNumber: "",
+      status: "active",
+      version: "V6",
+      mode: "rent",
+      dayEndStockAutoReset: false,
+      description: "",
+      installationDate: new Date().toISOString().slice(0, 10),
+      startWorkingHour: "09:00",
+      closeWorkingHour: "18:00",
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
       try {
-        await onSubmit(value);
+        if (mode === "edit") {
+          const data = value as UpdateMachineType;
+          await onSubmit(data);
+        }
+
+        if (mode === "create") {
+          const data = value as InsertMachineType;
+          await onSubmit(data);
+        }
       } catch (error) {
         console.error("Error submitting form:", error);
       }
@@ -238,7 +217,7 @@ export function MachineForm({
             {(field) => (
               <Field>
                 <FieldLabel htmlFor={field.name}>Location</FieldLabel>
-                {locations.length === 0 ? (
+                {locations?.length === 0 ? (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <span>No locations yet.</span>
                     {onCreateLocation && !isReadOnly && (
@@ -265,7 +244,7 @@ export function MachineForm({
                       <SelectValue placeholder="-- Select location --" />
                     </SelectTrigger>
                     <SelectContent>
-                      {locations.map((loc) => (
+                      {locations?.map((loc) => (
                         <SelectItem key={loc.id} value={String(loc.id)}>
                           {loc.name}
                         </SelectItem>
@@ -297,7 +276,7 @@ export function MachineForm({
                     <SelectValue placeholder="-- Select shop --" />
                   </SelectTrigger>
                   <SelectContent>
-                    {shops.map((shop) => (
+                    {shops?.map((shop) => (
                       <SelectItem key={shop.id} value={String(shop.id)}>
                         {shop.name}
                       </SelectItem>

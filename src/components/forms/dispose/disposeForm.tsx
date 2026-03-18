@@ -1,59 +1,44 @@
-import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import {
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  FieldGroup,
-  FieldLabel,
-  Field,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectDispose as Dispose } from "@/db/schema";
+import type { InsertDisposeType, UpdateDisposeType } from "@/db/schema";
+import { useForm } from "@tanstack/react-form";
+import type { DisposeFormProps } from "./disposeFormType";
 
-type DisposeSubmitValues = Omit<Dispose, "id" | "createdAt" | "updatedAt">;
-
-type DisposeFormBaseProps = {
-  initialData?: Partial<Dispose>;
-  onCancel?: () => void;
-};
-
-type DisposeFormViewProps = DisposeFormBaseProps & {
-  mode: "view";
-  onSubmit?: never;
-};
-
-type DisposeFormEditProps = DisposeFormBaseProps & {
-  mode: "create" | "edit";
-  onSubmit: (values: DisposeSubmitValues) => Promise<void>;
-};
-
-type DisposeFormProps = DisposeFormViewProps | DisposeFormEditProps;
-
-export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFormProps) {
+export function DisposeForm({
+  mode,
+  initialData,
+  onSubmit,
+  onCancel,
+}: DisposeFormProps) {
   const form = useForm({
-    defaultValues: {
-      machineId: initialData?.machineId ?? 0,
-      foodItemId: initialData?.foodItemId ?? 0,
-      disposeDate: initialData?.disposeDate ?? "",
-      disposeTime: initialData?.disposeTime ?? "",
-      quantity: initialData?.quantity ?? 0,
-      disposeReason: initialData?.disposeReason ?? "other",
+    defaultValues: initialData || {
+      machineId: null,
+      foodItemId: null,
+      disposeDate: new Date().toISOString().slice(0, 10),
+      disposeTime: "18:00",
+      quantity: 1,
+      disposeReason: "other",
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
+      try {
+        if (mode === "edit") {
+          await onSubmit(value as UpdateDisposeType);
+        }
 
-      await onSubmit({
-        machineId: value.machineId,
-        foodItemId: value.foodItemId,
-        disposeDate: value.disposeDate,
-        disposeTime: value.disposeTime,
-        quantity: value.quantity,
-        disposeReason: value.disposeReason,
-      });
+        if (mode === "create") {
+          await onSubmit(value as InsertDisposeType);
+        }
+      } catch (error) {
+        console.error("Error submitting dispose form:", error);
+      }
     },
   });
 
@@ -70,7 +55,11 @@ export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFo
     >
       <DialogHeader>
         <DialogTitle>
-          {mode === "view" ? "Dispose Details" : isCreate ? "Create Dispose" : "Edit Dispose"}
+          {mode === "view"
+            ? "Dispose Details"
+            : isCreate
+              ? "Create Dispose"
+              : "Edit Dispose"}
         </DialogTitle>
         <DialogDescription>
           {isReadOnly
@@ -91,7 +80,9 @@ export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFo
                 value={String(field.state.value)}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  field.handleChange(Number(e.target.value) || 0)
+                }
               />
             </Field>
           )}
@@ -108,7 +99,9 @@ export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFo
                 value={String(field.state.value)}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  field.handleChange(Number(e.target.value) || 0)
+                }
               />
             </Field>
           )}
@@ -159,7 +152,9 @@ export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFo
                 value={String(field.state.value)}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  field.handleChange(Number(e.target.value) || 0)
+                }
               />
             </Field>
           )}
@@ -178,7 +173,11 @@ export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFo
                 onBlur={field.handleBlur}
                 onChange={(e) =>
                   field.handleChange(
-                    e.target.value as "expired" | "damaged" | "refunded" | "other",
+                    e.target.value as
+                      | "expired"
+                      | "damaged"
+                      | "refunded"
+                      | "other",
                   )
                 }
               >
@@ -196,7 +195,9 @@ export function DisposeForm({ mode, initialData, onSubmit, onCancel }: DisposeFo
         <Button type="button" variant="outline" onClick={onCancel}>
           Close
         </Button>
-        {!isReadOnly ? <Button type="submit">{isCreate ? "Create" : "Save"}</Button> : null}
+        {!isReadOnly ? (
+          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
+        ) : null}
       </DialogFooter>
     </form>
   );

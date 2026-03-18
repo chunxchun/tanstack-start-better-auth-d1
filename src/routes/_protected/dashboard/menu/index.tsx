@@ -1,31 +1,35 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MenuForm } from "@/components/forms/menuForm";
-import type { SelectMenu as Menu } from "@/db/schema";
+import { MenuForm } from "@/components/forms/menu/menuForm";
+import type {
+  InsertMenuType,
+  SelectMenuType,
+  SelectMenuType as Menu,
+  UpdateMenuType,
+} from "@/db/schema";
+import { searchSchema } from "@/db/schema/commonSchema";
 import {
   createMenuFn,
   deleteMenuByIdFn,
   listMenuFn,
   updateMenuByIdFn,
 } from "@/utils/menu/menu.function";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import * as z from "zod";
 import { DataTable } from "@/components/dataTables/menu/menuDataTable";
 import { getMenuColumns } from "@/components/dataTables/menu/menuColumns";
-
-const searchSchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-  offset: z.coerce.number().int().min(0).default(0),
-});
 
 export const Route = createFileRoute("/_protected/dashboard/menu/")({
   validateSearch: searchSchema,
@@ -49,25 +53,6 @@ function RouteComponent() {
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
   const hasNextPage = data.length === limit;
-
-  const columns = useMemo(
-    () =>
-      getMenuColumns({
-        onView: (menu) => {
-          setSelectedMenu(menu);
-          setViewOpen(true);
-        },
-        onEdit: (menu) => {
-          setSelectedMenu(menu);
-          setEditOpen(true);
-        },
-        onDelete: (menu) => {
-          setSelectedMenu(menu);
-          setDeleteOpen(true);
-        },
-      }),
-    [],
-  );
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -106,7 +91,26 @@ function RouteComponent() {
     });
   };
 
-  const handleCreateSubmit = async (values: Omit<Menu, "id" | "createdAt" | "updatedAt">) => {
+  const columns = useMemo(
+    () =>
+      getMenuColumns({
+        onView: (menu) => {
+          setSelectedMenu(menu);
+          setViewOpen(true);
+        },
+        onEdit: (menu) => {
+          setSelectedMenu(menu);
+          setEditOpen(true);
+        },
+        onDelete: (menu) => {
+          setSelectedMenu(menu);
+          setDeleteOpen(true);
+        },
+      }),
+    [],
+  );
+
+  const handleCreateSubmit = async (values: InsertMenuType) => {
     try {
       await createMenuFn({ data: values });
       setCreateOpen(false);
@@ -116,16 +120,11 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: Omit<Menu, "id" | "createdAt" | "updatedAt">) => {
+  const handleEditSubmit = async (values: UpdateMenuType) => {
     if (!selectedMenu) return;
 
     try {
-      await updateMenuByIdFn({
-        data: {
-          id: selectedMenu.id,
-          ...values,
-        },
-      });
+      await updateMenuByIdFn({ data: values });
 
       setEditOpen(false);
       setSelectedMenu(null);
@@ -151,12 +150,37 @@ function RouteComponent() {
   return (
     <>
       <div className="container mx-auto px-10 py-10">
-        <h1 className="mb-6 text-2xl font-bold">Menus</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Menu</h1>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <span>+</span>Create
+              </Button>
+            </DialogTrigger>
+            <DialogContent
+              className="min-w-[50vw]"
+              onInteractOutside={(e) => e.preventDefault()}
+            >
+              <MenuForm
+                mode="create"
+                onSubmit={handleCreateSubmit}
+                onCancel={() => setCreateOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">Page {currentPage}</div>
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage}
+          </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground" htmlFor="menu-page-size">
+            <label
+              className="text-sm text-muted-foreground"
+              htmlFor="menu-page-size"
+            >
               Rows
             </label>
             <select
@@ -171,10 +195,20 @@ function RouteComponent() {
               <option value={50}>50</option>
             </select>
 
-            <Button type="button" variant="outline" onClick={goToPreviousPage} disabled={!hasPreviousPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToPreviousPage}
+              disabled={!hasPreviousPage}
+            >
               Previous
             </Button>
-            <Button type="button" variant="outline" onClick={goToNextPage} disabled={!hasNextPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToNextPage}
+              disabled={!hasNextPage}
+            >
               Next
             </Button>
           </div>
@@ -183,19 +217,6 @@ function RouteComponent() {
         <DataTable columns={columns} data={data} />
       </div>
 
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Create Menu</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
-          <MenuForm
-            mode="create"
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-
       <Dialog
         open={viewOpen}
         onOpenChange={(open) => {
@@ -203,10 +224,13 @@ function RouteComponent() {
           if (!open) setSelectedMenu(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <MenuForm
             mode="view"
-            initialData={selectedMenu ?? undefined}
+            initialData={selectedMenu as SelectMenuType}
             onCancel={() => {
               setViewOpen(false);
               setSelectedMenu(null);
@@ -222,10 +246,13 @@ function RouteComponent() {
           if (!open) setSelectedMenu(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <MenuForm
             mode="edit"
-            initialData={selectedMenu ?? undefined}
+            initialData={selectedMenu as UpdateMenuType}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);
@@ -263,8 +290,12 @@ function RouteComponent() {
             >
               Cancel
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteConfirm}>
-              Yes, delete
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+            >
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

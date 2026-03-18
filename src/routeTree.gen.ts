@@ -36,7 +36,7 @@ import { Route as ApiFoodItemIdRouteImport } from './routes/api/foodItem/$id'
 import { Route as ApiDisposeIdRouteImport } from './routes/api/dispose/$id'
 import { Route as ApiDeliveryIdRouteImport } from './routes/api/delivery/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as ProtectedDashboardUserRouteImport } from './routes/_protected/dashboard/user'
+import { Route as ProtectedDashboardUserIndexRouteImport } from './routes/_protected/dashboard/user/index'
 import { Route as ProtectedDashboardShopIndexRouteImport } from './routes/_protected/dashboard/shop/index'
 import { Route as ProtectedDashboardSaleIndexRouteImport } from './routes/_protected/dashboard/sale/index'
 import { Route as ProtectedDashboardMenuIndexRouteImport } from './routes/_protected/dashboard/menu/index'
@@ -181,11 +181,12 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedDashboardUserRoute = ProtectedDashboardUserRouteImport.update({
-  id: '/user',
-  path: '/user',
-  getParentRoute: () => ProtectedDashboardRoute,
-} as any)
+const ProtectedDashboardUserIndexRoute =
+  ProtectedDashboardUserIndexRouteImport.update({
+    id: '/user/',
+    path: '/user/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardShopIndexRoute =
   ProtectedDashboardShopIndexRouteImport.update({
     id: '/shop/',
@@ -247,7 +248,6 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
-  '/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/delivery/$id': typeof ApiDeliveryIdRoute
   '/api/dispose/$id': typeof ApiDisposeIdRoute
@@ -278,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
   '/dashboard/sale/': typeof ProtectedDashboardSaleIndexRoute
   '/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
+  '/dashboard/user/': typeof ProtectedDashboardUserIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -285,7 +286,6 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
-  '/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/delivery/$id': typeof ApiDeliveryIdRoute
   '/api/dispose/$id': typeof ApiDisposeIdRoute
@@ -316,6 +316,7 @@ export interface FileRoutesByTo {
   '/dashboard/menu': typeof ProtectedDashboardMenuIndexRoute
   '/dashboard/sale': typeof ProtectedDashboardSaleIndexRoute
   '/dashboard/shop': typeof ProtectedDashboardShopIndexRoute
+  '/dashboard/user': typeof ProtectedDashboardUserIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -325,7 +326,6 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_protected/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/_protected/setting': typeof ProtectedSettingRoute
-  '/_protected/dashboard/user': typeof ProtectedDashboardUserRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/delivery/$id': typeof ApiDeliveryIdRoute
   '/api/dispose/$id': typeof ApiDisposeIdRoute
@@ -356,6 +356,7 @@ export interface FileRoutesById {
   '/_protected/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
   '/_protected/dashboard/sale/': typeof ProtectedDashboardSaleIndexRoute
   '/_protected/dashboard/shop/': typeof ProtectedDashboardShopIndexRoute
+  '/_protected/dashboard/user/': typeof ProtectedDashboardUserIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -365,7 +366,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard'
     | '/setting'
-    | '/dashboard/user'
     | '/api/auth/$'
     | '/api/delivery/$id'
     | '/api/dispose/$id'
@@ -396,6 +396,7 @@ export interface FileRouteTypes {
     | '/dashboard/menu/'
     | '/dashboard/sale/'
     | '/dashboard/shop/'
+    | '/dashboard/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -403,7 +404,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/dashboard'
     | '/setting'
-    | '/dashboard/user'
     | '/api/auth/$'
     | '/api/delivery/$id'
     | '/api/dispose/$id'
@@ -434,6 +434,7 @@ export interface FileRouteTypes {
     | '/dashboard/menu'
     | '/dashboard/sale'
     | '/dashboard/shop'
+    | '/dashboard/user'
   id:
     | '__root__'
     | '/'
@@ -442,7 +443,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_protected/dashboard'
     | '/_protected/setting'
-    | '/_protected/dashboard/user'
     | '/api/auth/$'
     | '/api/delivery/$id'
     | '/api/dispose/$id'
@@ -473,6 +473,7 @@ export interface FileRouteTypes {
     | '/_protected/dashboard/menu/'
     | '/_protected/dashboard/sale/'
     | '/_protected/dashboard/shop/'
+    | '/_protected/dashboard/user/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -694,11 +695,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/dashboard/user': {
-      id: '/_protected/dashboard/user'
+    '/_protected/dashboard/user/': {
+      id: '/_protected/dashboard/user/'
       path: '/user'
-      fullPath: '/dashboard/user'
-      preLoaderRoute: typeof ProtectedDashboardUserRouteImport
+      fullPath: '/dashboard/user/'
+      preLoaderRoute: typeof ProtectedDashboardUserIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
     '/_protected/dashboard/shop/': {
@@ -768,7 +769,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface ProtectedDashboardRouteChildren {
-  ProtectedDashboardUserRoute: typeof ProtectedDashboardUserRoute
   ProtectedDashboardDeliveryIndexRoute: typeof ProtectedDashboardDeliveryIndexRoute
   ProtectedDashboardDisposeIndexRoute: typeof ProtectedDashboardDisposeIndexRoute
   ProtectedDashboardFoodItemIndexRoute: typeof ProtectedDashboardFoodItemIndexRoute
@@ -778,10 +778,10 @@ interface ProtectedDashboardRouteChildren {
   ProtectedDashboardMenuIndexRoute: typeof ProtectedDashboardMenuIndexRoute
   ProtectedDashboardSaleIndexRoute: typeof ProtectedDashboardSaleIndexRoute
   ProtectedDashboardShopIndexRoute: typeof ProtectedDashboardShopIndexRoute
+  ProtectedDashboardUserIndexRoute: typeof ProtectedDashboardUserIndexRoute
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
-  ProtectedDashboardUserRoute: ProtectedDashboardUserRoute,
   ProtectedDashboardDeliveryIndexRoute: ProtectedDashboardDeliveryIndexRoute,
   ProtectedDashboardDisposeIndexRoute: ProtectedDashboardDisposeIndexRoute,
   ProtectedDashboardFoodItemIndexRoute: ProtectedDashboardFoodItemIndexRoute,
@@ -791,6 +791,7 @@ const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardMenuIndexRoute: ProtectedDashboardMenuIndexRoute,
   ProtectedDashboardSaleIndexRoute: ProtectedDashboardSaleIndexRoute,
   ProtectedDashboardShopIndexRoute: ProtectedDashboardShopIndexRoute,
+  ProtectedDashboardUserIndexRoute: ProtectedDashboardUserIndexRoute,
 }
 
 const ProtectedDashboardRouteWithChildren =

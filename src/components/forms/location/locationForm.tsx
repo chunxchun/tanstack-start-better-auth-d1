@@ -1,16 +1,15 @@
-import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import {
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
-  Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,37 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { SelectLocationType } from "@/db/schema";
+import type {
+  InsertLocationType,
+  UpdateLocationType
+} from "@/db/schema";
 import { countryValues } from "@/db/schema/commonSchema";
-
-type LocationSubmitValues = {
-  name: string;
-  description: string | null;
-  status: "active" | "inactive";
-  addressLine1: string;
-  addressLine2?: string | null;
-  addressCity: string;
-  addressState?: string | null;
-  addressPostalCode?: string | null;
-  addressCountry: string;
-};
-
-type LocationFormBaseProps = {
-  initialData?: Partial<SelectLocationType>;
-  onCancel?: () => void;
-};
-
-type LocationFormViewProps = LocationFormBaseProps & {
-  mode: "view";
-  onSubmit?: never;
-};
-
-type LocationFormEditProps = LocationFormBaseProps & {
-  mode: "create" | "edit";
-  onSubmit: (values: LocationSubmitValues) => Promise<void>;
-};
-
-type LocationFormProps = LocationFormViewProps | LocationFormEditProps;
+import { useForm } from "@tanstack/react-form";
+import type { LocationFormProps } from "./locationFormType";
 
 export function LocationForm({
   mode,
@@ -59,30 +34,32 @@ export function LocationForm({
   onCancel,
 }: LocationFormProps) {
   const form = useForm({
-    defaultValues: {
-      name: initialData?.name ?? "",
-      description: initialData?.description ?? null,
-      status: initialData?.status ?? "active",
-      addressLine1: initialData?.addressLine1 ?? "",
-      addressLine2: initialData?.addressLine2 ?? null,
-      addressCity: initialData?.addressCity ?? "",
-      addressState: initialData?.addressState ?? null,
-      addressPostalCode: initialData?.addressPostalCode ?? null,
-      addressCountry: initialData?.addressCountry ?? "",
+    defaultValues: initialData || {
+      name: "",
+      description: null,
+      status: "active",
+      addressLine1: "",
+      addressLine2: null,
+      addressCity: null,
+      addressState: null,
+      addressPostalCode: null,
+      addressCountry: "Australia",
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
-      await onSubmit({
-        name: value.name,
-        description: value.description,
-        status: value.status,
-        addressLine1: value.addressLine1,
-        addressLine2: value.addressLine2,
-        addressCity: value.addressCity,
-        addressState: value.addressState,
-        addressPostalCode: value.addressPostalCode,
-        addressCountry: value.addressCountry,
-      });
+      try {
+        if (mode === "edit") {
+          const data = value as UpdateLocationType;
+          await onSubmit(data);
+        }
+
+        if (mode === "create") {
+          const data = value as InsertLocationType;
+          await onSubmit(data);
+        }
+      } catch (error) {
+        console.error("Error submitting location form:", error);
+      }
     },
   });
 
@@ -99,11 +76,13 @@ export function LocationForm({
     >
       <DialogHeader>
         <DialogTitle>
-          {mode === "view"
-            ? "Location Details"
-            : isCreate
-              ? <span className="font-bold">Create Location</span>
-              : "Edit Location"}
+          {mode === "view" ? (
+            "Location Details"
+          ) : isCreate ? (
+            <span className="font-bold">Create Location</span>
+          ) : (
+            "Edit Location"
+          )}
         </DialogTitle>
         <DialogDescription>
           {isReadOnly

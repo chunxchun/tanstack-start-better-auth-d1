@@ -9,14 +9,15 @@ const featureProps = {
     "Manage every machine from one dashboard, monitor inventory in real time, and track live sales performance so you can make faster, smarter business decisions.",
   imageSrc:
     "https://pub-2b0addf01b884fb58892ece1dc10f22d.r2.dev/logos/feature.jpg",
-  imageAlt: "Vending machine management dashboard with real-time sales analytics",
+  imageAlt:
+    "Vending machine management dashboard with real-time sales analytics",
   buttonPrimary: {
     text: "Open Dashboard",
     href: "/dashboard",
   },
   buttonSecondary: {
     text: "View Live Metrics",
-    href: "/dashboard/shop",
+    href: "/dashboard/sales",
   },
   className: "",
 };

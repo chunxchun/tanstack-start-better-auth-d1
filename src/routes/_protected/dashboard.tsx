@@ -27,8 +27,8 @@ export const Route = createFileRoute("/_protected/dashboard")({
 
 function RouteComponent() {
   const { shops } = Route.useLoaderData();
+  const { user } = Route.useRouteContext();
 
-  
   return (
     <TooltipProvider>
       <SidebarProvider>
@@ -42,6 +42,7 @@ function RouteComponent() {
                 className="mr-2 data-[orientation=vertical]:h-4"
               />
               <p>banner</p>
+              <p>{user.name}</p>
             </div>
           </header>
           <Outlet />

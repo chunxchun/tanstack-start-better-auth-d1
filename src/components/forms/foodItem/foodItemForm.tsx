@@ -1,64 +1,54 @@
-import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import {
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
-  Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectFoodItem as FoodItem } from "@/db/schema";
+import type {
+  InsertFoodItemType,
+  UpdateFoodItemType,
+} from "@/db/schema/foodItemTable";
+import { useForm } from "@tanstack/react-form";
+import type { FoodItemFormProps } from "./foodItemFormType";
 
-type FoodItemSubmitValues = Omit<FoodItem, "id" | "createdAt" | "updatedAt">;
-
-type FoodItemFormBaseProps = {
-  initialData?: Partial<FoodItem>;
-  onCancel?: () => void;
-};
-
-type FoodItemFormViewProps = FoodItemFormBaseProps & {
-  mode: "view";
-  onSubmit?: never;
-};
-
-type FoodItemFormEditProps = FoodItemFormBaseProps & {
-  mode: "create" | "edit";
-  onSubmit: (values: FoodItemSubmitValues) => Promise<void>;
-};
-
-type FoodItemFormProps = FoodItemFormViewProps | FoodItemFormEditProps;
-
-export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItemFormProps) {
+export function FoodItemForm({
+  mode,
+  initialData,
+  onSubmit,
+  onCancel,
+}: FoodItemFormProps) {
   const form = useForm({
-    defaultValues: {
-      shopId: initialData?.shopId ?? 0,
-      name: initialData?.name ?? "",
-      imageUrl: initialData?.imageUrl ?? null,
-      description: initialData?.description ?? null,
-      category: initialData?.category ?? "bento",
-      skuCode: initialData?.skuCode ?? "",
-      price: initialData?.price ?? 0,
-      currency: initialData?.currency ?? "AUD",
+    defaultValues: initialData || {
+      shopId: null,
+      name: "",
+      imageUrl: null,
+      description: null,
+      category: "bento",
+      skuCode: "",
+      price: null,
+      currency: "AUD",
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
+      try {
+        if (mode === "edit") {
+          await onSubmit(value as UpdateFoodItemType);
+        }
 
-      await onSubmit({
-        shopId: value.shopId,
-        name: value.name,
-        imageUrl: value.imageUrl,
-        description: value.description,
-        category: value.category,
-        skuCode: value.skuCode,
-        price: value.price,
-        currency: value.currency,
-      });
+        if (mode === "create") {
+          await onSubmit(value as InsertFoodItemType);
+        }
+      } catch (error) {
+        console.error("Error submitting food item form:", error);
+      }
     },
   });
 
@@ -75,7 +65,11 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
     >
       <DialogHeader>
         <DialogTitle>
-          {mode === "view" ? "Food Item Details" : isCreate ? "Create Food Item" : "Edit Food Item"}
+          {mode === "view"
+            ? "Food Item Details"
+            : isCreate
+              ? "Create Food Item"
+              : "Edit Food Item"}
         </DialogTitle>
         <DialogDescription>
           {isReadOnly
@@ -96,7 +90,9 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
                 value={String(field.state.value)}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  field.handleChange(Number(e.target.value) || 0)
+                }
               />
             </Field>
           )}
@@ -146,7 +142,9 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value || null)}
               />
-              <FieldDescription>Optional short item description.</FieldDescription>
+              <FieldDescription>
+                Optional short item description.
+              </FieldDescription>
             </Field>
           )}
         </form.Field>
@@ -162,7 +160,11 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
                 value={field.state.value ?? "bento"}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value as "bento" | "snack" | "drink")}
+                onChange={(e) =>
+                  field.handleChange(
+                    e.target.value as "bento" | "snack" | "drink",
+                  )
+                }
               >
                 <option value="bento">bento</option>
                 <option value="snack">snack</option>
@@ -200,7 +202,9 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
                 value={String(field.state.value)}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                onChange={(e) =>
+                  field.handleChange(Number(e.target.value) || 0)
+                }
               />
             </Field>
           )}
@@ -218,7 +222,9 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
                 onChange={(e) =>
-                  field.handleChange(e.target.value as "HKD" | "AUD" | "USD" | "EUR" | "JPY")
+                  field.handleChange(
+                    e.target.value as "HKD" | "AUD" | "USD" | "EUR" | "JPY",
+                  )
                 }
               >
                 <option value="HKD">HKD</option>
@@ -236,7 +242,9 @@ export function FoodItemForm({ mode, initialData, onSubmit, onCancel }: FoodItem
         <Button type="button" variant="outline" onClick={onCancel}>
           Close
         </Button>
-        {!isReadOnly ? <Button type="submit">{isCreate ? "Create" : "Save"}</Button> : null}
+        {!isReadOnly ? (
+          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
+        ) : null}
       </DialogFooter>
     </form>
   );
