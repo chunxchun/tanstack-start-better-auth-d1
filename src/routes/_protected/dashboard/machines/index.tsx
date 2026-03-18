@@ -9,14 +9,29 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { MachineForm } from "@/components/forms/machineForm";
-import type { SelectMachine as Machine } from "@/db/schema";
+import { LocationForm } from "@/components/forms/locationForm";
+import type {
+  SelectMachine as Machine,
+  MachineStatus,
+  SelectLocation as Location,
+  SelectShop as Shop,
+} from "@/db/schema";
 import {
   createMachineFn,
   deleteMachineByIdFn,
   listMachineFn,
   updateMachineByIdFn,
 } from "@/utils/machine/machine.function";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  listLocationFn,
+  createLocationFn,
+} from "@/utils/location/location.function";
+import { listShopFn } from "@/utils/shop/shop.function";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 import * as z from "zod";
 import { DataTable } from "@/components/dataTables/machine/machineDataTable";
@@ -30,12 +45,19 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_protected/dashboard/machines/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listMachineFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [machines, locations, shops] = await Promise.all([
+      listMachineFn({ data: deps }),
+      listLocationFn({ data: { limit: 100, offset: 0 } }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { machines, locations, shops };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { machines: data, locations, shops } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -43,6 +65,7 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [createLocationOpen, setCreateLocationOpen] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
 
   const { limit, offset } = search;
@@ -108,9 +131,10 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: {
     locationId: number | null;
+    shopId: number | null;
     name: string;
     serialNumber: string;
-    status: "active" | "inactive" | "maintenance" | null;
+    status: MachineStatus | null;
     description: string | null;
     installationDate: string;
     startWorkingHour: string;
@@ -132,9 +156,10 @@ function RouteComponent() {
 
   const handleEditSubmit = async (values: {
     locationId: number | null;
+    shopId: number | null;
     name: string;
     serialNumber: string;
-    status: "active" | "inactive" | "maintenance" | null;
+    status: MachineStatus | null;
     description: string | null;
     installationDate: string;
     startWorkingHour: string;
@@ -147,6 +172,7 @@ function RouteComponent() {
         data: {
           id: selectedMachine.id,
           locationId: values.locationId,
+          shopId: values.shopId,
           name: values.name,
           serialNumber: values.serialNumber,
           status: values.status ?? "active",
@@ -162,6 +188,26 @@ function RouteComponent() {
       await router.invalidate();
     } catch (error) {
       console.error("Failed to update machine:", error);
+    }
+  };
+
+  const handleCreateLocationSubmit = async (values: {
+    name: string;
+    description: string | null;
+    status: "active" | "inactive";
+    addressLine1: string;
+    addressLine2?: string | null;
+    addressCity: string;
+    addressState?: string | null;
+    addressPostalCode?: string | null;
+    addressCountry: string;
+  }) => {
+    try {
+      await createLocationFn({ data: values });
+      setCreateLocationOpen(false);
+      await router.invalidate();
+    } catch (error) {
+      console.error("Failed to create location:", error);
     }
   };
 
@@ -181,11 +227,41 @@ function RouteComponent() {
   return (
     <>
       <div className="container mx-auto px-10 py-10">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Machines</h1>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">
+                {" "}
+                <span>+</span>Create
+              </Button>
+            </DialogTrigger>
+            <DialogContent
+              className="min-w-[50vw]"
+              onInteractOutside={(e) => e.preventDefault()}
+            >
+              <MachineForm
+                mode="create"
+                locations={locations as Location[]}
+                shops={shops as Shop[]}
+                onCreateLocation={() => setCreateLocationOpen(true)}
+                onSubmit={handleCreateSubmit}
+                onCancel={() => setCreateOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">Page {currentPage}</div>
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage}
+          </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground" htmlFor="machine-page-size">
+            <label
+              className="text-sm text-muted-foreground"
+              htmlFor="machine-page-size"
+            >
               Rows
             </label>
             <select
@@ -200,30 +276,27 @@ function RouteComponent() {
               <option value={50}>50</option>
             </select>
 
-            <Button type="button" variant="outline" onClick={goToPreviousPage} disabled={!hasPreviousPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToPreviousPage}
+              disabled={!hasPreviousPage}
+            >
               Previous
             </Button>
-            <Button type="button" variant="outline" onClick={goToNextPage} disabled={!hasNextPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToNextPage}
+              disabled={!hasNextPage}
+            >
               Next
             </Button>
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data as Machine[]} />
       </div>
-
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Create Machine</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
-          <MachineForm
-            mode="create"
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
 
       <Dialog
         open={viewOpen}
@@ -232,10 +305,16 @@ function RouteComponent() {
           if (!open) setSelectedMachine(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <MachineForm
             mode="view"
             initialData={selectedMachine ?? undefined}
+            locations={locations as Location[]}
+            shops={shops as Shop[]}
+            onCreateLocation={() => setCreateLocationOpen(true)}
             onCancel={() => {
               setViewOpen(false);
               setSelectedMachine(null);
@@ -251,10 +330,16 @@ function RouteComponent() {
           if (!open) setSelectedMachine(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <MachineForm
             mode="edit"
             initialData={selectedMachine ?? undefined}
+            locations={locations as Location[]}
+            shops={shops as Shop[]}
+            onCreateLocation={() => setCreateLocationOpen(true)}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);
@@ -271,7 +356,10 @@ function RouteComponent() {
           if (!open) setSelectedMachine(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>Delete machine</DialogTitle>
             <DialogDescription>
@@ -280,7 +368,6 @@ function RouteComponent() {
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-
           <DialogFooter>
             <Button
               type="button"
@@ -292,10 +379,27 @@ function RouteComponent() {
             >
               Cancel
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteConfirm}>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+            >
               Yes, delete
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={createLocationOpen} onOpenChange={setCreateLocationOpen}>
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
+          <LocationForm
+            mode="create"
+            onSubmit={handleCreateLocationSubmit}
+            onCancel={() => setCreateLocationOpen(false)}
+          />
         </DialogContent>
       </Dialog>
     </>

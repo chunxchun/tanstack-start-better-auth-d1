@@ -13,12 +13,31 @@ import {
   Field,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectMachine as Machine } from "@/db/schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  machineModeValues,
+  machineStatusValues,
+  type SelectMachine as Machine,
+  type MachineMode,
+  type MachineStatus,
+  type SelectLocation as Location,
+  type SelectShop as Shop,
+} from "@/db/schema";
 
 type MachineSubmitValues = Omit<Machine, "id" | "createdAt" | "updatedAt">;
 
 type MachineFormBaseProps = {
   initialData?: Partial<Machine>;
+  locations?: Location[];
+  shops?: Shop[];
+  onCreateLocation?: () => void;
   onCancel?: () => void;
 };
 
@@ -34,13 +53,25 @@ type MachineFormEditProps = MachineFormBaseProps & {
 
 type MachineFormProps = MachineFormViewProps | MachineFormEditProps;
 
-export function MachineForm({ mode, initialData, onSubmit, onCancel }: MachineFormProps) {
+export function MachineForm({
+  mode,
+  initialData,
+  locations = [],
+  shops = [],
+  onCreateLocation,
+  onSubmit,
+  onCancel,
+}: MachineFormProps) {
   const form = useForm({
     defaultValues: {
       locationId: initialData?.locationId ?? null,
+      shopId: initialData?.shopId ?? null,
       name: initialData?.name ?? "",
       serialNumber: initialData?.serialNumber ?? "",
       status: initialData?.status ?? "active",
+      version: initialData?.version ?? null,
+      mode: initialData?.mode ?? null,
+      dayEndStockAutoReset: initialData?.dayEndStockAutoReset ?? false,
       description: initialData?.description ?? null,
       installationDate: initialData?.installationDate ?? "",
       startWorkingHour: initialData?.startWorkingHour ?? "",
@@ -51,9 +82,13 @@ export function MachineForm({ mode, initialData, onSubmit, onCancel }: MachineFo
 
       await onSubmit({
         locationId: value.locationId,
+        shopId: value.shopId,
         name: value.name,
         serialNumber: value.serialNumber,
         status: value.status,
+        version: value.version,
+        mode: value.mode,
+        dayEndStockAutoReset: value.dayEndStockAutoReset,
         description: value.description,
         installationDate: value.installationDate,
         startWorkingHour: value.startWorkingHour,
@@ -75,7 +110,13 @@ export function MachineForm({ mode, initialData, onSubmit, onCancel }: MachineFo
     >
       <DialogHeader>
         <DialogTitle>
-          {mode === "view" ? "Machine Details" : isCreate ? "Create Machine" : "Edit Machine"}
+          {mode === "view" ? (
+            "Machine Details"
+          ) : isCreate ? (
+            <span className="font-bold">Create Machine</span>
+          ) : (
+            "Edit Machine"
+          )}
         </DialogTitle>
         <DialogDescription>
           {isReadOnly
@@ -84,80 +125,188 @@ export function MachineForm({ mode, initialData, onSubmit, onCancel }: MachineFo
         </DialogDescription>
       </DialogHeader>
 
-      <FieldGroup>
-        <form.Field name="locationId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Location ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={field.state.value ?? ""}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value ? Number(e.target.value) : null)}
-              />
-              <FieldDescription>Optional location id for this machine.</FieldDescription>
-            </Field>
-          )}
-        </form.Field>
+      <FieldGroup className="py-8">
+        {/* ── Identity ── */}
+        <div className="grid grid-cols-2 gap-x-4">
+          <form.Field name="name">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </Field>
+            )}
+          </form.Field>
 
-        <form.Field name="name">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+          <form.Field name="serialNumber">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Serial Number</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </Field>
+            )}
+          </form.Field>
+        </div>
 
-        <form.Field name="serialNumber">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Serial Number</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* ── Status & Mode ── */}
+        <div className="grid grid-cols-2 gap-x-4">
+          <form.Field name="status">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                <Select
+                  value={field.state.value ?? "active"}
+                  disabled={isReadOnly}
+                  onValueChange={(val) =>
+                    field.handleChange(val as MachineStatus)
+                  }
+                >
+                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {machineStatusValues.map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
+          </form.Field>
 
-        <form.Field name="status">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-              <select
-                id={field.name}
-                name={field.name}
-                className="h-9 rounded-md border bg-background px-2 text-sm"
-                value={field.state.value ?? "active"}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(e.target.value as "active" | "inactive" | "maintenance")
-                }
-              >
-                <option value="active">active</option>
-                <option value="inactive">inactive</option>
-                <option value="maintenance">maintenance</option>
-              </select>
-            </Field>
-          )}
-        </form.Field>
+          <form.Field name="mode">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Mode</FieldLabel>
+                <Select
+                  value={field.state.value ?? ""}
+                  disabled={isReadOnly}
+                  onValueChange={(val) =>
+                    field.handleChange(val as MachineMode)
+                  }
+                >
+                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                    <SelectValue/>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {machineModeValues.map((mode) => (
+                      <SelectItem key={mode} value={mode}>
+                        {mode}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
+          </form.Field>
+        </div>
 
+        {/* ── Version & Location ── */}
+        <div className="grid grid-cols-2 gap-x-4">
+          <form.Field name="version">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Version</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value ?? ""}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value || null)}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <form.Field name="locationId">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Location</FieldLabel>
+                {locations.length === 0 ? (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>No locations yet.</span>
+                    {onCreateLocation && !isReadOnly && (
+                      <button
+                        type="button"
+                        className="text-primary underline underline-offset-2"
+                        onClick={onCreateLocation}
+                      >
+                        + Create location
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <Select
+                    value={field.state.value != null ? String(field.state.value) : ""}
+                    disabled={isReadOnly}
+                    onValueChange={(val) =>
+                      field.handleChange(val ? Number(val) : null)
+                    }
+                  >
+                    <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                      <SelectValue placeholder="-- Select location --" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {locations.map((loc) => (
+                        <SelectItem key={loc.id} value={String(loc.id)}>
+                          {loc.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </Field>
+            )}
+          </form.Field>
+        </div>
+
+        {/* ── Shop ── */}
+        <div className="grid grid-cols-2 gap-x-4">
+          <form.Field name="shopId">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Shop</FieldLabel>
+                <Select
+                  value={field.state.value != null ? String(field.state.value) : ""}
+                  disabled={isReadOnly}
+                  onValueChange={(val) =>
+                    field.handleChange(val ? Number(val) : null)
+                  }
+                >
+                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                    <SelectValue placeholder="-- Select shop --" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {shops.map((shop) => (
+                      <SelectItem key={shop.id} value={String(shop.id)}>
+                        {shop.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            )}
+          </form.Field>
+          <div />
+        </div>
+
+        {/* ── Description ── */}
         <form.Field name="description">
           {(field) => (
             <Field>
@@ -174,53 +323,86 @@ export function MachineForm({ mode, initialData, onSubmit, onCancel }: MachineFo
           )}
         </form.Field>
 
-        <form.Field name="installationDate">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Installation Date</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="date"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* ── Schedule ── */}
+        <div className="grid grid-cols-2 gap-x-4">
+          <form.Field name="installationDate">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Installation Date</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="date"
+                  value={field.state.value}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </Field>
+            )}
+          </form.Field>
 
-        <form.Field name="startWorkingHour">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Start Working Hour</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="time"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+          <div />
+        </div>
 
-        <form.Field name="closeWorkingHour">
+        <div className="grid grid-cols-2 gap-x-4">
+          <form.Field name="startWorkingHour">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Start Working Hour</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="time"
+                  value={field.state.value}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </Field>
+            )}
+          </form.Field>
+
+          <form.Field name="closeWorkingHour">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Close Working Hour</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="time"
+                  value={field.state.value}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </Field>
+            )}
+          </form.Field>
+        </div>
+
+        {/* ── Settings ── */}
+        <form.Field name="dayEndStockAutoReset">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>Close Working Hour</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="time"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={field.name}
+                  checked={field.state.value ?? false}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onCheckedChange={(checked) =>
+                    field.handleChange(checked === true)
+                  }
+                />
+                <FieldLabel htmlFor={field.name}>
+                  Day End Stock Auto Reset
+                </FieldLabel>
+              </div>
+              <FieldDescription>
+                Automatically reset machine stock at the end of the day. If
+                disabled, you must manually input the dispose quantity each day.
+              </FieldDescription>
             </Field>
           )}
         </form.Field>

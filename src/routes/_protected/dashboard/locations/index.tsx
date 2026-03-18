@@ -9,14 +9,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LocationForm } from "@/components/forms/locationForm";
-import type { SelectLocation as Location } from "@/db/schema";
+import type { SelectLocation as Location, LocationStatus } from "@/db/schema";
 import {
   createLocationFn,
   deleteLocationByIdFn,
   listLocationFn,
   updateLocationByIdFn,
 } from "@/utils/location/location.function";
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 import * as z from "zod";
 import { DataTable } from "@/components/dataTables/location/locationDataTable";
@@ -43,7 +47,9 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null,
+  ); // LocationWithAddress
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
@@ -106,12 +112,19 @@ function RouteComponent() {
     [],
   );
 
-  const handleCreateSubmit = async (values: {
+  type LocationFormValues = {
     name: string;
-    address: string;
     description: string | null;
-    status: "active" | "inactive";
-  }) => {
+    status: LocationStatus;
+    addressLine1: string;
+    addressLine2?: string | null;
+    addressCity: string;
+    addressState?: string | null;
+    addressPostalCode?: string | null;
+    addressCountry: string;
+  };
+
+  const handleCreateSubmit = async (values: LocationFormValues) => {
     try {
       await createLocationFn({ data: values });
       setCreateOpen(false);
@@ -121,22 +134,14 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: {
-    name: string;
-    address: string;
-    description: string | null;
-    status: "active" | "inactive";
-  }) => {
+  const handleEditSubmit = async (values: LocationFormValues) => {
     if (!selectedLocation) return;
 
     try {
       await updateLocationByIdFn({
         data: {
           id: selectedLocation.id,
-          name: values.name,
-          address: values.address,
-          description: values.description,
-          status: values.status,
+          ...values,
         },
       });
 
@@ -164,11 +169,37 @@ function RouteComponent() {
   return (
     <>
       <div className="container mx-auto px-10 py-10">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Locations</h1>
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="default">
+                <span>+</span> Create
+              </Button>
+            </DialogTrigger>
+            <DialogContent
+              className="min-w-[50vw]"
+              onInteractOutside={(e) => e.preventDefault()}
+            >
+              <LocationForm
+                mode="create"
+                onSubmit={handleCreateSubmit}
+                onCancel={() => setCreateOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+        
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">Page {currentPage}</div>
+          <div className="text-sm text-muted-foreground">
+            Page {currentPage}
+          </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground" htmlFor="location-page-size">
+            <label
+              className="text-sm text-muted-foreground"
+              htmlFor="location-page-size"
+            >
               Rows
             </label>
             <select
@@ -183,30 +214,27 @@ function RouteComponent() {
               <option value={50}>50</option>
             </select>
 
-            <Button type="button" variant="outline" onClick={goToPreviousPage} disabled={!hasPreviousPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToPreviousPage}
+              disabled={!hasPreviousPage}
+            >
               Previous
             </Button>
-            <Button type="button" variant="outline" onClick={goToNextPage} disabled={!hasNextPage}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToNextPage}
+              disabled={!hasNextPage}
+            >
               Next
             </Button>
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data as Location[]} />
       </div>
-
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Create Location</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-sm">
-          <LocationForm
-            mode="create"
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
 
       <Dialog
         open={viewOpen}
@@ -215,7 +243,10 @@ function RouteComponent() {
           if (!open) setSelectedLocation(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <LocationForm
             mode="view"
             initialData={selectedLocation ?? undefined}
@@ -234,7 +265,10 @@ function RouteComponent() {
           if (!open) setSelectedLocation(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <LocationForm
             mode="edit"
             initialData={selectedLocation ?? undefined}
@@ -254,13 +288,18 @@ function RouteComponent() {
           if (!open) setSelectedLocation(null);
         }}
       >
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent
+          className="min-w-[50vw]"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>Delete location</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete
-              {selectedLocation ? ` ${selectedLocation.name}` : " this location"}?
-              This action cannot be undone.
+              {selectedLocation
+                ? ` ${selectedLocation.name}`
+                : " this location"}
+              ? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 
@@ -275,7 +314,11 @@ function RouteComponent() {
             >
               Cancel
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDeleteConfirm}>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+            >
               Yes, delete
             </Button>
           </DialogFooter>

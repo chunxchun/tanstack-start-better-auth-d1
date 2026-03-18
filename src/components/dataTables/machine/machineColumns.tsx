@@ -40,6 +40,19 @@ export const getMachineColumns = ({
     header: "Status",
   },
   {
+    accessorKey: "version",
+    header: "Version",
+  },
+  {
+    accessorKey: "mode",
+    header: "Mode",
+  },
+  {
+    accessorKey: "dayEndAutoReset",
+    header: "Day End Auto Reset",
+    cell: ({ row }) => (row.original.dayEndStockAutoReset ? "Yes" : "No"),
+  },
+  {
     accessorKey: "locationId",
     header: "Location ID",
   },

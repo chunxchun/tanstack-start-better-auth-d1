@@ -32,8 +32,14 @@ export const getLocationColumns = ({
     header: "Name",
   },
   {
-    accessorKey: "address",
-    header: "Address",
+    accessorKey: "addressLine1",
+    header: "Street",
+  },
+  {
+    id: "cityCountry",
+    header: "City / Country",
+    cell: ({ row }) =>
+      `${row.original.addressCity}, ${row.original.addressCountry}`,
   },
   {
     accessorKey: "status",

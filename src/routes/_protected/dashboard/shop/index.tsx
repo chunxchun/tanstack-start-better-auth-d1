@@ -172,6 +172,7 @@ function RouteComponent() {
   return (
     <>
       <div className="container mx-auto px-10 py-10">
+        <h1 className="mb-6 text-2xl font-bold">Shops</h1>
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="text-sm text-muted-foreground">
             Page {currentPage}
