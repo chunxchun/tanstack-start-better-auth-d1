@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { shopTable, type InsertShop, type UpdateShop } from "@/db/schema";
+import { shopsTable, type InsertShop, type UpdateShop } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listShopHandler = async (
@@ -9,7 +9,7 @@ export const listShopHandler = async (
   try {
     const result = await db
       .select()
-      .from(shopTable)
+      .from(shopsTable)
       .limit(limit)
       .offset(offset);
     return result;
@@ -23,8 +23,8 @@ export const fetchShopByIdHandler = async (id: number) => {
   try {
     const result = await db
       .select()
-      .from(shopTable)
-      .where(eq(shopTable.id, id))
+      .from(shopsTable)
+      .where(eq(shopsTable.id, id))
       .limit(1);
     return result[0] ?? null;
   } catch (error) {
@@ -37,8 +37,8 @@ export const fetchShopByNameHandler = async (name: string) => {
   try {
     const result = await db
       .select()
-      .from(shopTable)
-      .where(eq(shopTable.name, name));
+      .from(shopsTable)
+      .where(eq(shopsTable.name, name));
     return result;
   } catch (error) {
     console.error("Error fetching shop by name:", error);
@@ -48,7 +48,7 @@ export const fetchShopByNameHandler = async (name: string) => {
 
 export const createShopHandler = async (shop: InsertShop) => {
   try {
-    const result = await db.insert(shopTable).values(shop).returning();
+    const result = await db.insert(shopsTable).values(shop).returning();
     return result;
   } catch (error) {
     console.error("Error creating shop:", error);
@@ -59,9 +59,9 @@ export const createShopHandler = async (shop: InsertShop) => {
 export const updateShopHandlerById = async (id: number, shop: UpdateShop) => {
   try {
     const result = await db
-      .update(shopTable)
+      .update(shopsTable)
       .set(shop)
-      .where(eq(shopTable.id, id))
+      .where(eq(shopsTable.id, id))
       .returning();
     return result;
   } catch (error) {
@@ -73,8 +73,8 @@ export const updateShopHandlerById = async (id: number, shop: UpdateShop) => {
 export const deleteShopByIdHandler = async (id: number) => {
   try {
     const result = await db
-      .delete(shopTable)
-      .where(eq(shopTable.id, id))
+      .delete(shopsTable)
+      .where(eq(shopsTable.id, id))
       .returning();
     return result;
   } catch (error) {
