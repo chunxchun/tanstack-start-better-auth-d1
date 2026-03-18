@@ -1,5 +1,9 @@
 import { db } from "@/db";
-import { shopsTable, type InsertShop, type UpdateShop } from "@/db/schema";
+import {
+  shopsTable,
+  type InsertShopType,
+  type UpdateShopType,
+} from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listShopHandler = async (
@@ -46,7 +50,7 @@ export const fetchShopByNameHandler = async (name: string) => {
   }
 };
 
-export const createShopHandler = async (shop: InsertShop) => {
+export const createShopHandler = async (shop: InsertShopType) => {
   try {
     const result = await db.insert(shopsTable).values(shop).returning();
     return result;
@@ -56,7 +60,10 @@ export const createShopHandler = async (shop: InsertShop) => {
   }
 };
 
-export const updateShopHandlerById = async (id: number, shop: UpdateShop) => {
+export const updateShopHandlerById = async (
+  id: number,
+  shop: UpdateShopType,
+) => {
   try {
     const result = await db
       .update(shopsTable)
