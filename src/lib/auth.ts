@@ -17,6 +17,21 @@ const trustedOrigins = [
 ].filter((origin): origin is string => Boolean(origin));
 
 export const auth = betterAuth({
+  user: {
+    additionalFields: {
+      role: {
+        type: ["admin", "manager", "staff"],
+        required: true,
+        defaultValue: "user",
+        input: false, // don't allow user to set role
+      },
+      shopId: {
+        type: "number",
+        required: false,
+        input: false,
+      },
+    },
+  },
   emailAndPassword: { enabled: true },
   database: drizzleAdapter(db, {
     provider: "sqlite", // or "mysql", "sqlite"
