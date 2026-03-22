@@ -12,12 +12,9 @@
     "test": "vitest run",
     "deploy": "pnpm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "db:generate": "drizzle-kit generate --out ./drizzle/migrations",
-    "db:push": "drizzle-kit push",
-    "db:pull": "drizzle-kit pull",
-    "db:drop": "drizzle-kit drop",
-    "db:reset": "drizzle-kit reset",
-    "db:local:push": "wrangler d1 execute hono-better-auth-demo-d1 --local --file='./drizzle/migrations/seed.sql'"
+    "db:generate": "drizzle-kit generate --schema ./src/db/schema/index.ts --dialect sqlite --out ./drizzle/migrations",
+    "db:local:reset": "wrangler d1 execute hono-better-auth-demo-d1 --local --file='./drizzle/migrations/seed.sql'",
+    "db:remote:reset": "wrangler d1 execute hono-better-auth-demo-d1 --remote --file='./drizzle/migrations/seed.sql'"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.13.8",

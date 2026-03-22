@@ -12,4 +12,4 @@ export * from "./menuMachineTable";
 export * from "./menuTable";
 export * from "./saleTable";
 export * from "./shopTable";
-export * from "./systemUserTable";
+// export * from "./systemUserTable";
