@@ -13,7 +13,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { InsertDeliveryType, UpdateDeliveryType } from "@/db/schema";
+import {
+  deliveryStatusValues,
+  type InsertDeliveryType,
+  type UpdateDeliveryType,
+} from "@/db/schema";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -99,6 +103,7 @@ export function DeliveryForm({
           {/* Row: destination location & machine */}
           <div className="flex gap-4">
             <div className="w-1/2">
+              {/* destination  */}
               <form.Field name="destinationLocationId">
                 {(field) => (
                   <Field>
@@ -124,28 +129,34 @@ export function DeliveryForm({
               </form.Field>
             </div>
             <div className="w-1/2">
+              {/* machine */}
               <form.Field name="machineId">
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor={field.name}>Machine</FieldLabel>
-                    <Input
-                      required
-                      id={field.name}
-                      name={field.name}
-                      type="number"
+                    <Select
                       value={String(field.state.value)}
                       disabled={isReadOnly}
-                      onBlur={field.handleBlur}
-                      onChange={(e) =>
-                        field.handleChange(Number(e.target.value) || 0)
-                      }
-                    />
+                      onValueChange={(e) => field.handleChange(Number(e))}
+                    >
+                      <SelectTrigger onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select a machine" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {machines?.map((machine) => (
+                          <SelectItem key={machine.id} value={machine.name}>
+                            {machine.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </Field>
                 )}
               </form.Field>
             </div>
           </div>
 
+          {/* courier reference */}
           <form.Field name="courierReference">
             {(field) => (
               <Field>
@@ -168,6 +179,7 @@ export function DeliveryForm({
           {/* Row: delivery date & time */}
           <div className="flex gap-4">
             <div className="w-1/2">
+              {/* delivery date */}
               <form.Field name="deliverDate">
                 {(field) => (
                   <Field>
@@ -185,6 +197,7 @@ export function DeliveryForm({
                 )}
               </form.Field>
             </div>
+            {/* delivery time */}
             <div className="w-1/2">
               <form.Field name="deliverTime">
                 {(field) => (
@@ -205,35 +218,35 @@ export function DeliveryForm({
             </div>
           </div>
 
-          <form.Field name="status">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                <select
-                  id={field.name}
-                  name={field.name}
-                  className="h-9 rounded-md border bg-background px-2 text-sm"
-                  value={field.state.value ?? "pending"}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) =>
-                    field.handleChange(
-                      e.target.value as
-                        | "pending"
-                        | "scheduled"
-                        | "delivered"
-                        | "cancelled",
-                    )
-                  }
-                >
-                  <option value="pending">pending</option>
-                  <option value="scheduled">scheduled</option>
-                  <option value="delivered">delivered</option>
-                  <option value="cancelled">cancelled</option>
-                </select>
-              </Field>
-            )}
-          </form.Field>
+          {/* status */}
+          <div className="w-1/2">
+            <form.Field name="status">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                  <Select
+                    value={field.state.value}
+                    disabled={isReadOnly}
+                    onValueChange={(e) => field.handleChange(e)}
+                  >
+                    <SelectTrigger onBlur={field.handleBlur}>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {deliveryStatusValues.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldDescription>
+                    Status of the delivery. Defaults to "scheduled".
+                  </FieldDescription>
+                </Field>
+              )}
+            </form.Field>
+          </div>
         </FieldGroup>
       </CardContent>
 
