@@ -1,17 +1,15 @@
-import { LocationForm } from "../forms/locationForm";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import type { SelectShopType } from "@/db/schema";
 import type {
   SelectLocationType,
   UpdateLocationType,
 } from "@/db/schema/locationTable";
+import { LocationForm } from "../forms/locationForm";
 
 export default function EditLocationDialog({
   open,

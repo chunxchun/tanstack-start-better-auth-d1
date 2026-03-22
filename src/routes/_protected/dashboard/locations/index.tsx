@@ -7,7 +7,6 @@ import ViewLocationDialog from "@/components/location/dialogs/ViewLocationDialog
 import { Button } from "@/components/ui/button";
 import type {
   InsertLocationType,
-  SelectLocationType as Location,
   SelectLocationType,
   UpdateLocationType,
 } from "@/db/schema";
@@ -49,9 +48,8 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null,
-  );
+  const [selectedLocation, setSelectedLocation] =
+    useState<SelectLocationType | null>(null);
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
@@ -237,7 +235,7 @@ function RouteComponent() {
           setSelectedLocation(null);
           setViewOpen(false);
         }}
-        location={selectedLocation as SelectLocationType}
+        data={selectedLocation as SelectLocationType}
       />
 
       <EditLocationDialog

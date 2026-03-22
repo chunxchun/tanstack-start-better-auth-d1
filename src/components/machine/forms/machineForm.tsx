@@ -102,59 +102,68 @@ export function MachineForm({
       </CardHeader>
       <CardContent className="overflow-auto mt-8 mb-8">
         <FieldGroup>
-          {/* location  */}
-          <form.Field name="locationId">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Location</FieldLabel>
-                <Select
-                  value={String(field.state.value)}
-                  disabled={isReadOnly}
-                  onValueChange={(value) => field.handleChange(Number(value))}
-                >
-                  <SelectTrigger onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select a location" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locations?.map((location) => (
-                      <SelectItem key={location.id} value={String(location.id)}>
-                        {location.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
-
-          {/* shop */}
-          <form.Field name="shopId">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Shop</FieldLabel>
-                <Select
-                  value={String(field.state.value)}
-                  disabled={isReadOnly}
-                  onValueChange={(val) =>
-                    field.handleChange(val as unknown as number)
-                  }
-                >
-                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select a shop" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {shops
-                      ? shops.map((shop) => (
-                          <SelectItem key={shop.id} value={String(shop.id)}>
-                            {shop.name}
+          {/* Row: location & shop */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <form.Field name="locationId">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Location</FieldLabel>
+                    <Select
+                      value={String(field.state.value)}
+                      disabled={isReadOnly}
+                      onValueChange={(value) =>
+                        field.handleChange(Number(value))
+                      }
+                    >
+                      <SelectTrigger onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select a location" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {locations?.map((location) => (
+                          <SelectItem
+                            key={location.id}
+                            value={String(location.id)}
+                          >
+                            {location.name}
                           </SelectItem>
-                        ))
-                      : null}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+            <div className="w-1/2">
+              <form.Field name="shopId">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Shop</FieldLabel>
+                    <Select
+                      value={String(field.state.value)}
+                      disabled={isReadOnly}
+                      onValueChange={(val) =>
+                        field.handleChange(val as unknown as number)
+                      }
+                    >
+                      <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select a shop" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {shops
+                          ? shops.map((shop) => (
+                              <SelectItem key={shop.id} value={String(shop.id)}>
+                                {shop.name}
+                              </SelectItem>
+                            ))
+                          : null}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+          </div>
 
           {/* name */}
           <form.Field name="name">
@@ -188,86 +197,114 @@ export function MachineForm({
             )}
           </form.Field>
 
-          {/* status */}
-          <form.Field name="status">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                <Select
-                  value={field.state.value as string}
-                  disabled={isReadOnly}
-                  onValueChange={(val) =>
-                    field.handleChange(val as unknown as string)
-                  }
-                >
-                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {machineStatusValues.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
+          {/* Row: status & version */}
+          <div className="flex gap-4 mt-4">
+            <div className="w-1/2">
+              {/* status */}
+              <form.Field name="status">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                    <Select
+                      value={field.state.value as string}
+                      disabled={isReadOnly}
+                      onValueChange={(val) =>
+                        field.handleChange(val as unknown as string)
+                      }
+                    >
+                      <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {machineStatusValues.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+            <div className="w-1/2">
+              {/* version */}
+              <form.Field name="version">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Version</FieldLabel>
+                    <Select
+                      value={field.state.value as string}
+                      disabled={isReadOnly}
+                      onValueChange={(val) =>
+                        field.handleChange(val as unknown as string)
+                      }
+                    >
+                      <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select version  " />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {machineVersionValues.map((version) => (
+                          <SelectItem key={version} value={version}>
+                            {version}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+          </div>
 
-          {/* version */}
-          <form.Field name="version">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Version</FieldLabel>
-                <Select
-                  value={field.state.value as string}
-                  disabled={isReadOnly}
-                  onValueChange={(val) =>
-                    field.handleChange(val as unknown as string)
-                  }
-                >
-                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select version  " />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {machineVersionValues.map((version) => (
-                      <SelectItem key={version} value={version}>
-                        {version}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
-
-          {/* mode */}
-          <form.Field name="mode">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Mode</FieldLabel>
-                <Select
-                  value={field.state.value as string}
-                  disabled={isReadOnly}
-                  onValueChange={(val) =>
-                    field.handleChange(val as unknown as string)
-                  }
-                >
-                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select mode" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {machineModeValues.map((mode) => (
-                      <SelectItem key={mode} value={mode}>
-                        {mode}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
+          {/* Row: mode & dayEndStockAutoReset */}
+          <div className="flex gap-4 mt-4">
+            <div className="w-1/2">
+              {/* mode */}
+              <form.Field name="mode">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Mode</FieldLabel>
+                    <Select
+                      value={field.state.value as string}
+                      disabled={isReadOnly}
+                      onValueChange={(val) =>
+                        field.handleChange(val as unknown as string)
+                      }
+                    >
+                      <SelectTrigger id={field.name} onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {machineModeValues.map((mode) => (
+                          <SelectItem key={mode} value={mode}>
+                            {mode}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+            <div className="w-1/2 flex items-center">
+              {/* day end stock auto reset */}
+              <form.Field name="dayEndStockAutoReset">
+                {(field) => (
+                  <Field orientation="horizontal">
+                    <FieldLabel htmlFor={field.name}>
+                      Day End Stock Auto Reset
+                    </FieldLabel>
+                    <Checkbox
+                      name={field.name}
+                      checked={field.state.value as boolean}
+                      defaultChecked
+                    />
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+          </div>
 
           {/* description */}
           <form.Field name="description">
@@ -285,10 +322,10 @@ export function MachineForm({
             )}
           </form.Field>
 
-          {/* day end stock auto reset */}
+          {/* day end stock auto reset
           <form.Field name="dayEndStockAutoReset">
             {(field) => (
-              <Field>
+              <Field orientation="horizontal">
                 <FieldLabel htmlFor={field.name}>
                   Day End Stock Auto Reset
                 </FieldLabel>
@@ -299,7 +336,7 @@ export function MachineForm({
                 />
               </Field>
             )}
-          </form.Field>
+          </form.Field> */}
         </FieldGroup>
       </CardContent>
       <CardFooter>

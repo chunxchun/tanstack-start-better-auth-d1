@@ -75,3 +75,18 @@ export const searchSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(10),
   offset: z.coerce.number().int().min(0).default(0),
 });
+
+export type CreateDialogProps<FetchType, InsertType> = {
+  open: boolean;
+  shops: FetchType[]; // Replace `any` with the appropriate type for your shops
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (values: InsertType) => Promise<void>;
+  onCancel: () => void;
+};
+
+export type ViewDialogProps<T> = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCancel: () => void;
+  data: T;
+};
