@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { SaleForm } from "@/components/forms/sale/saleForm";
+import { SaleForm } from "@/components/sale/forms/saleForm";
 import type {
   InsertSaleType,
   SelectSaleType,
@@ -28,8 +28,8 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import { DataTable } from "@/components/dataTables/sale/saleDataTable";
-import { getSaleColumns } from "@/components/dataTables/sale/saleColumns";
+import { DataTable } from "@/components/sale/dataTables/saleDataTable";
+import { getSaleColumns } from "@/components/sale/dataTables/saleColumns";
 
 export const Route = createFileRoute("/_protected/dashboard/sale/")({
   validateSearch: searchSchema,

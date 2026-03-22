@@ -1,6 +1,6 @@
-import { getInventoryColumns } from "@/components/dataTables/inventory/inventoryColumns";
-import { DataTable } from "@/components/dataTables/inventory/inventoryDataTable";
-import { InventoryForm } from "@/components/forms/inventory/inventoryForm";
+import { getInventoryColumns } from "@/components/inventory/dataTables/inventoryColumns";
+import { DataTable } from "@/components/inventory/dataTables/inventoryDataTable";
+import { InventoryForm } from "@/components/inventory/forms/inventoryForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

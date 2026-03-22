@@ -115,7 +115,11 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertLocationType) => {
     try {
-      await createLocationFn({ data: values });
+      const result = await createLocationFn({ data: values });
+      if (!result || result.length === 0) {
+        throw new Error("Failed to create location: No result returned");
+      }
+      console.log("Create location result:", result);
       toast.success("Location created successfully");
     } catch (error) {
       console.error("Failed to create location:", error);

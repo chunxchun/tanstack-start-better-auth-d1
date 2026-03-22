@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MenuForm } from "@/components/forms/menu/menuForm";
+import { MenuForm } from "@/components/menu/forms/menuForm";
 import type {
   InsertMenuType,
   SelectMenuType,
@@ -28,8 +28,8 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import { DataTable } from "@/components/dataTables/menu/menuDataTable";
-import { getMenuColumns } from "@/components/dataTables/menu/menuColumns";
+import { DataTable } from "@/components/menu/dataTables/menuDataTable";
+import { getMenuColumns } from "@/components/menu/dataTables/menuColumns";
 
 export const Route = createFileRoute("/_protected/dashboard/menu/")({
   validateSearch: searchSchema,

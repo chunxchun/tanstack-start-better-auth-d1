@@ -84,7 +84,7 @@ export function UserForm({
     >
       <CardHeader>
         <CardTitle>
-          {mode === "view"
+          {isReadOnly
             ? "User Details"
             : isCreate
               ? "Create User"

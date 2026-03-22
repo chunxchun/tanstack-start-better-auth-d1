@@ -1,6 +1,6 @@
-import { getDisposeColumns } from "@/components/dataTables/dispose/disposeColumns";
-import { DataTable } from "@/components/dataTables/dispose/disposeDataTable";
-import { DisposeForm } from "@/components/forms/dispose/disposeForm";
+import { getDisposeColumns } from "@/components/dispose/dataTables/disposeColumns";
+import { DataTable } from "@/components/dispose/dataTables/disposeDataTable";
+import { DisposeForm } from "@/components/dispose/forms/disposeForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

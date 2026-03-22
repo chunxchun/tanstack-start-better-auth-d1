@@ -90,7 +90,7 @@ export function MachineForm({
     >
       <CardHeader>
         <CardTitle>
-          {mode === "create"
+          {isReadOnly
             ? "Machine Details"
             : isCreate
               ? "Create Machine"

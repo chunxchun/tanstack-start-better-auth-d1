@@ -1,6 +1,6 @@
-import { getDeliveryColumns } from "@/components/dataTables/delivery/deliveryColumns";
-import { DataTable } from "@/components/dataTables/delivery/deliveryDataTable";
-import { DeliveryForm } from "@/components/forms/delivery/deliveryForm";
+import { getDeliveryColumns } from "@/components/delivery/dataTables/deliveryColumns";
+import { DataTable } from "@/components/delivery/dataTables/deliveryDataTable";
+import { DeliveryForm } from "@/components/delivery/forms/deliveryForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

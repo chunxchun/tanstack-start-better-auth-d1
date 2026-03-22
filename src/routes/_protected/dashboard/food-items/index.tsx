@@ -1,6 +1,6 @@
-import { getFoodItemColumns } from "@/components/dataTables/foodItem/foodItemColumns";
-import { DataTable } from "@/components/dataTables/foodItem/foodItemDataTable";
-import { FoodItemForm } from "@/components/forms/foodItem/foodItemForm";
+import { getFoodItemColumns } from "@/components/foodItem/dataTables/foodItemColumns";
+import { DataTable } from "@/components/foodItem/dataTables/foodItemDataTable";
+import { FoodItemForm } from "@/components/foodItem/forms/foodItemForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
