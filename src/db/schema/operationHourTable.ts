@@ -25,7 +25,7 @@ export const dailyOperationHours = sqliteTable("daily_operation_hours", {
 
 export const insertDailyOperationHourSchema =
   createInsertSchema(dailyOperationHours);
-  
+
 export const operationHoursTable = sqliteTable("operation_hours", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("name", { length: 100 }),
@@ -71,7 +71,7 @@ export const operationHoursTable = sqliteTable("operation_hours", {
   ).references(() => dailyOperationHours.id, {
     onDelete: "restrict",
     onUpdate: "restrict",
-  }), 
+  }),
   createdAt: integer("created_at")
     .notNull()
     .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
@@ -81,10 +81,18 @@ export const operationHoursTable = sqliteTable("operation_hours", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertOperationHourSchema =
-  createInsertSchema(operationHoursTable);
-export const updateOperationHourSchema =
-  createUpdateSchema(operationHoursTable);
+export const insertOperationHourSchema = createInsertSchema(
+  operationHoursTable,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateOperationHourSchema = createUpdateSchema(
+  operationHoursTable,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectOperationHourSchema =
   createSelectSchema(operationHoursTable);
 

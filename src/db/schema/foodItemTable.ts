@@ -39,7 +39,7 @@ export const foodItemsTable = sqliteTable(
     price: real("price").notNull(),
     currency: text("currency", { enum: currencyValues })
       .notNull()
-      .default("AUD"), 
+      .default("AUD"),
     createdAt: integer("created_at")
       .notNull()
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
@@ -51,8 +51,14 @@ export const foodItemsTable = sqliteTable(
   (table) => [unique().on(table.shopId, table.skuCode)],
 );
 
-export const insertFoodItemSchema = createInsertSchema(foodItemsTable);
-export const updateFoodItemSchema = createUpdateSchema(foodItemsTable);
+export const insertFoodItemSchema = createInsertSchema(foodItemsTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateFoodItemSchema = createUpdateSchema(foodItemsTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectFoodItemSchema = createSelectSchema(foodItemsTable);
 
 export type InsertFoodItemType = z.infer<typeof insertFoodItemSchema>;

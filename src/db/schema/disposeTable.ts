@@ -56,8 +56,14 @@ export const disposesTable = sqliteTable("disposes", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertDisposeSchema = createInsertSchema(disposesTable);
-export const updateDisposeSchema = createUpdateSchema(disposesTable);
+export const insertDisposeSchema = createInsertSchema(disposesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateDisposeSchema = createUpdateSchema(disposesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectDisposeSchema = createSelectSchema(disposesTable);
 
 export type InsertDisposeType = z.infer<typeof insertDisposeSchema>;

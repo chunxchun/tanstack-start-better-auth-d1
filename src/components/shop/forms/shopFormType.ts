@@ -2,10 +2,10 @@ import type {
   InsertShopType,
   SelectShopType,
   UpdateShopType,
-} from "@/db/schema";
+} from "@/db/schema/shopTable";
 
 type ShopFormBaseProps = {
-  onCancel?: () => void;
+  onCancel: () => void;
 };
 
 type ShopFormCreateProps = ShopFormBaseProps & {

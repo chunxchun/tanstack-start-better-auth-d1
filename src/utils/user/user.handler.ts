@@ -1,15 +1,9 @@
 import { db } from "@/db";
 import {
-  user,
   user as userTable,
   type InsertUserType,
-  type UpdateUserType,
+  type UpdateUserType
 } from "@/db/schema/authSchema";
-// import {
-//   systemUsersTable,
-//   type InsertSystemUserType,
-//   type UpdateSystemUserType,
-// } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listUserHandler = async (

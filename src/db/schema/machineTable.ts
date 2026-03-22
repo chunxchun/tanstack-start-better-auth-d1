@@ -9,7 +9,6 @@ import * as z from "zod";
 import { locationsTable } from "./locationTable";
 import { shopsTable } from "./shopTable";
 
-
 export const machineVersionValues = ["V5", "V6"] as const;
 export const machineVersionEnum = z.enum(machineVersionValues);
 export type MachineVersion = (typeof machineVersionValues)[number];
@@ -41,7 +40,9 @@ export const machinesTable = sqliteTable("machines", {
   status: text("status", { enum: machineStatusValues }).default("active"),
   version: text("version", { enum: machineVersionValues }).notNull(),
   mode: text("mode", { enum: machineModeValues }).notNull(),
-  dayEndStockAutoReset: integer("day_end_stock_auto_reset", { mode: "boolean" }).default(false),
+  dayEndStockAutoReset: integer("day_end_stock_auto_reset", {
+    mode: "boolean",
+  }).default(false),
   description: text("description", { length: 200 }),
   installationDate: text("installation_date").notNull(), // ISO 8601 format (YYYY-MM-DD)
   startWorkingHour: text("start_working_hour").notNull(), // HH:MM format (e.g., "09:00")
@@ -55,8 +56,14 @@ export const machinesTable = sqliteTable("machines", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertMachineSchema = createInsertSchema(machinesTable);
-export const updateMachineSchema = createUpdateSchema(machinesTable);
+export const insertMachineSchema = createInsertSchema(machinesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateMachineSchema = createUpdateSchema(machinesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectMachineSchema = createSelectSchema(machinesTable);
 
 export type InsertMachineType = z.infer<typeof insertMachineSchema>;

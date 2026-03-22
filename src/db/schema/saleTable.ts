@@ -22,13 +22,13 @@ export type PaymentMethod = (typeof paymentMethodValues)[number];
 
 export const salesTable = sqliteTable("sales", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-    shopId: integer("shop_id")
-      .notNull()
-      .references(() => shopsTable.id, {
-        onDelete: "restrict",
-        onUpdate: "restrict",
-      }),
-    machineId: integer("machine_id")
+  shopId: integer("shop_id")
+    .notNull()
+    .references(() => shopsTable.id, {
+      onDelete: "restrict",
+      onUpdate: "restrict",
+    }),
+  machineId: integer("machine_id")
     .notNull()
     .references(() => machinesTable.id, {
       onDelete: "restrict",
@@ -60,8 +60,14 @@ export const salesTable = sqliteTable("sales", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`), // Store as ISO-8601 timestamp
 });
 
-export const insertSaleSchema = createInsertSchema(salesTable);
-export const updateSaleSchema = createUpdateSchema(salesTable);
+export const insertSaleSchema = createInsertSchema(salesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateSaleSchema = createUpdateSchema(salesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectSaleSchema = createSelectSchema(salesTable);
 
 export type InsertSaleType = z.infer<typeof insertSaleSchema>;

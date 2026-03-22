@@ -44,8 +44,8 @@ export function UserForm({
 
   const form = useForm({
     defaultValues: initialData || {
-      shopId: null,
       name: "",
+      shopId: null,
       displayName: null,
       role: "staff" as UserRoleType,
     },
@@ -99,6 +99,7 @@ export function UserForm({
 
       <CardContent className="overflow-auto mt-8 mb-8">
         <FieldGroup>
+          {/* shop */}
           <form.Field name="shopId">
             {(field) => (
               <Field>

@@ -41,8 +41,14 @@ export const inventoriesTable = sqliteTable("inventories", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertInventorySchema = createInsertSchema(inventoriesTable);
-export const updateInventorySchema = createUpdateSchema(inventoriesTable);
+export const insertInventorySchema = createInsertSchema(inventoriesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateInventorySchema = createUpdateSchema(inventoriesTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectInventorySchema = createSelectSchema(inventoriesTable);
 
 export type InsertInventoryType = z.infer<typeof insertInventorySchema>;

@@ -33,8 +33,18 @@ export const deliverItemsTable = sqliteTable("deliver_items", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertDeliverItemSchema = createInsertSchema(deliverItemsTable);
-export const updateDeliverItemSchema = createUpdateSchema(deliverItemsTable);
+export const insertDeliverItemSchema = createInsertSchema(
+  deliverItemsTable,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateDeliverItemSchema = createUpdateSchema(
+  deliverItemsTable,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectDeliverItemSchema = createSelectSchema(deliverItemsTable);
 
 export type InsertDeliverItemType = z.infer<typeof insertDeliverItemSchema>;

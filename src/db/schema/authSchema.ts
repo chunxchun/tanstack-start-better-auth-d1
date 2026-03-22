@@ -103,8 +103,14 @@ export const verification = sqliteTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const insertUserSchema = createInsertSchema(user);
-export const updateUserSchema = createUpdateSchema(user);
+export const insertUserSchema = createInsertSchema(user).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateUserSchema = createUpdateSchema(user).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectUserSchema = createSelectSchema(user);
 
 export type InsertUserType = z.infer<typeof insertUserSchema>;

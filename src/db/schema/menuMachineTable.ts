@@ -1,9 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
-  integer,
-  sqliteTable,
-  unique
-} from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, unique } from "drizzle-orm/sqlite-core";
 import {
   createInsertSchema,
   createSelectSchema,
@@ -34,8 +30,18 @@ export const menusMachinesTable = sqliteTable(
   (table) => [unique().on(table.menuId, table.machineId)],
 );
 
-export const insertMenuMachineSchema = createInsertSchema(menusMachinesTable);
-export const updateMenuMachineSchema = createUpdateSchema(menusMachinesTable);
+export const insertMenuMachineSchema = createInsertSchema(
+  menusMachinesTable,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateMenuMachineSchema = createUpdateSchema(
+  menusMachinesTable,
+).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectMenuMachineSchema = createSelectSchema(menusMachinesTable);
 
 export type InsertMenuMachineType = z.infer<typeof insertMenuMachineSchema>;

@@ -41,8 +41,14 @@ export const locationsTable = sqliteTable("locations", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertLocationSchema = createInsertSchema(locationsTable);
-export const updateLocationSchema = createUpdateSchema(locationsTable);
+export const insertLocationSchema = createInsertSchema(locationsTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateLocationSchema = createUpdateSchema(locationsTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectLocationSchema = createSelectSchema(locationsTable);
 
 export type InsertLocationType = z.infer<typeof insertLocationSchema>;

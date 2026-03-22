@@ -29,8 +29,14 @@ export const menusTable = sqliteTable("menus", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertMenuSchema = createInsertSchema(menusTable);
-export const updateMenuSchema = createUpdateSchema(menusTable);
+export const insertMenuSchema = createInsertSchema(menusTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateMenuSchema = createUpdateSchema(menusTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectMenuSchema = createSelectSchema(menusTable);
 
 export type InsertMenuType = z.infer<typeof insertMenuSchema>;

@@ -1,20 +1,14 @@
-import { getLocationColumns } from "@/components/dataTables/location/locationColumns";
-import { DataTable } from "@/components/dataTables/location/locationDataTable";
-import { LocationForm } from "@/components/forms/location/locationForm";
+import { getLocationColumns } from "@/components/location/dataTables/locationColumns";
+import { DataTable } from "@/components/location/dataTables/locationDataTable";
+import CreateLocationDialog from "@/components/location/dialogs/CreateLocationDialog";
+import DeleteLocationDialog from "@/components/location/dialogs/DeleteLocationDialog";
+import EditLocationDialog from "@/components/location/dialogs/EditLocationDialog";
+import ViewLocationDialog from "@/components/location/dialogs/ViewLocationDialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type {
   InsertLocationType,
   SelectLocationType as Location,
-  LocationStatus,
+  SelectLocationType,
   UpdateLocationType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
@@ -24,22 +18,30 @@ import {
   listLocationFn,
   updateLocationByIdFn,
 } from "@/utils/location/location.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_protected/dashboard/locations/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listLocationFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [locations, shops] = await Promise.all([
+      listLocationFn({ data: deps }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { locations, shops };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { locations, shops } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -49,12 +51,11 @@ function RouteComponent() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null,
-  ); // LocationWithAddress
-
+  );
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = locations.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -112,25 +113,16 @@ function RouteComponent() {
     [],
   );
 
-  // type LocationFormValues = {
-  //   name: string;
-  //   description: string | null;
-  //   status: LocationStatus;
-  //   addressLine1: string;
-  //   addressLine2?: string | null;
-  //   addressCity: string;
-  //   addressState?: string | null;
-  //   addressPostalCode?: string | null;
-  //   addressCountry: string;
-  // };
-
   const handleCreateSubmit = async (values: InsertLocationType) => {
     try {
       await createLocationFn({ data: values });
-      setCreateOpen(false);
-      await router.invalidate();
+      toast.success("Location created successfully");
     } catch (error) {
       console.error("Failed to create location:", error);
+      toast.error("Failed to create location");
+    } finally {
+      setCreateOpen(false);
+      await router.invalidate();
     }
   };
 
@@ -138,12 +130,20 @@ function RouteComponent() {
     if (!selectedLocation) return;
 
     try {
-      await updateLocationByIdFn({ data: values });
+      const result = await updateLocationByIdFn({ data: values });
+
+      if (!result || result.length === 0) {
+        throw new Error("Failed to update location: No result returned");
+      }
+
+      toast.success("Location updated successfully");
+    } catch (error) {
+      console.error("Failed to update location:", error);
+      toast.error("Failed to update location");
+    } finally {
       setEditOpen(false);
       setSelectedLocation(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to update location:", error);
     }
   };
 
@@ -152,11 +152,14 @@ function RouteComponent() {
 
     try {
       await deleteLocationByIdFn({ data: { id: selectedLocation.id } });
+      toast.success("Location deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete location:", error);
+      toast.error("Failed to delete location");
+    } finally {
       setDeleteOpen(false);
       setSelectedLocation(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to delete location:", error);
     }
   };
 
@@ -165,23 +168,13 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Locations</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span> Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <LocationForm
-                mode="create"
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateLocationDialog
+            open={createOpen}
+            shops={shops}
+            onOpenChange={setCreateOpen}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -227,97 +220,50 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data as Location[]} />
+        <DataTable columns={columns} data={locations} />
       </div>
 
-      <Dialog
+      <ViewLocationDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedLocation(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <LocationForm
-            mode="view"
-            initialData={selectedLocation ?? undefined}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedLocation(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setSelectedLocation(null);
+          setViewOpen(false);
+        }}
+        location={selectedLocation as SelectLocationType}
+      />
 
-      <Dialog
+      <EditLocationDialog
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedLocation(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <LocationForm
-            mode="edit"
-            initialData={selectedLocation ?? undefined}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedLocation(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedLocation(null);
+        }}
+        shops={shops}
+        location={selectedLocation as SelectLocationType}
+      />
 
-      <Dialog
+      <DeleteLocationDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedLocation(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DialogHeader>
-            <DialogTitle>Delete location</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedLocation
-                ? ` ${selectedLocation.name}`
-                : " this location"}
-              ? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedLocation(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Yes, delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedLocation(null);
+        }}
+        onDelete={handleDeleteConfirm}
+        location={selectedLocation as SelectLocationType}
+      />
     </>
   );
 }

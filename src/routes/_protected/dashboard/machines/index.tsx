@@ -1,24 +1,11 @@
-import { getMachineColumns } from "@/components/dataTables/machine/machineColumns";
-import { DataTable } from "@/components/dataTables/machine/machineDataTable";
-import { LocationForm } from "@/components/forms/location/locationForm";
-import { MachineForm } from "@/components/forms/machine/machineForm";
+import { getMachineColumns } from "@/components/machine/dataTables/machineColumns";
+import { DataTable } from "@/components/machine/dataTables/machineDataTable";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type {
   InsertLocationType,
   InsertMachineType,
-  SelectLocationType as Location,
   SelectMachineType as Machine,
   SelectMachineType,
-  SelectShopType as Shop,
   UpdateMachineType,
 } from "@/db/schema";
 import {
@@ -39,7 +26,12 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 
+import CreateMachineDialog from "@/components/machine/dialogs/CreateMachineDialog";
+import EditMachineDialog from "@/components/machine/dialogs/EditMachineDialog";
+import ViewMachineDialog from "@/components/machine/dialogs/ViewMachineDialog";
+import DeleteMachineDialog from "@/components/machine/dialogs/DeleteMachineDialog";
 import { searchSchema } from "@/db/schema/commonSchema";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_protected/dashboard/machines/")({
   validateSearch: searchSchema,
@@ -56,7 +48,7 @@ export const Route = createFileRoute("/_protected/dashboard/machines/")({
 });
 
 function RouteComponent() {
-  const { machines: data, locations, shops } = Route.useLoaderData();
+  const { machines, locations, shops } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -70,7 +62,7 @@ function RouteComponent() {
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = machines.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -131,10 +123,13 @@ function RouteComponent() {
   const handleCreateSubmit = async (values: InsertMachineType) => {
     try {
       await createMachineFn({ data: values });
-      setCreateOpen(false);
-      await router.invalidate();
+      toast.success("Machine created successfully");
     } catch (error) {
       console.error("Failed to create machine:", error);
+      toast.error("Failed to create machine");
+    } finally {
+      setCreateOpen(false);
+      await router.invalidate();
     }
   };
 
@@ -142,22 +137,33 @@ function RouteComponent() {
     if (!selectedMachine) return;
 
     try {
-      await updateMachineByIdFn({ data: values });
+      const result = await updateMachineByIdFn({ data: values });
+
+      if (!result || result.length === 0) {
+        throw new Error("Failed to update machine: No result returned");
+      }
+
+      toast.success("Machine updated successfully");
+    } catch (error) {
+      console.error("Failed to update machine:", error);
+      toast.error("Failed to update machine");
+    } finally {
       setEditOpen(false);
       setSelectedMachine(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to update machine:", error);
     }
   };
 
   const handleCreateLocationSubmit = async (values: InsertLocationType) => {
     try {
       await createLocationFn({ data: values });
-      setCreateLocationOpen(false);
-      await router.invalidate();
+      toast.success("Location created successfully");
     } catch (error) {
       console.error("Failed to create location:", error);
+      toast.error("Failed to create location");
+    } finally {
+      setCreateLocationOpen(false);
+      await router.invalidate();
     }
   };
 
@@ -166,11 +172,14 @@ function RouteComponent() {
 
     try {
       await deleteMachineByIdFn({ data: { id: selectedMachine.id } });
+      toast.success("Machine deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete machine:", error);
+      toast.error("Failed to delete machine");
+    } finally {
       setDeleteOpen(false);
       setSelectedMachine(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to delete machine:", error);
     }
   };
 
@@ -179,26 +188,14 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Machines</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <MachineForm
-                mode="create"
-                locations={locations as Location[]}
-                shops={shops as Shop[]}
-                onCreateLocation={() => setCreateLocationOpen(true)}
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateMachineDialog
+            open={createOpen}
+            shops={shops}
+            locations={locations}
+            onOpenChange={setCreateOpen}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -244,110 +241,51 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data as Machine[]} />
+        <DataTable columns={columns} data={machines as Machine[]} />
       </div>
 
-      <Dialog
+      <ViewMachineDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedMachine(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <MachineForm
-            mode="view"
-            initialData={selectedMachine as SelectMachineType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedMachine(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setSelectedMachine(null);
+          setViewOpen(false);
+        }}
+        machine={selectedMachine as SelectMachineType}
+      />
 
-      <Dialog
+      <EditMachineDialog
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedMachine(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <MachineForm
-            mode="edit"
-            initialData={selectedMachine as UpdateMachineType}
-            locations={locations as Location[]}
-            shops={shops as Shop[]}
-            onCreateLocation={() => setCreateLocationOpen(true)}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedMachine(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedMachine(null);
+        }}
+        shops={shops}
+        locations={locations}
+        machine={selectedMachine as SelectMachineType}
+      />
 
-      <Dialog
+      <DeleteMachineDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedMachine(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DialogHeader>
-            <DialogTitle>Delete machine</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedMachine ? ` ${selectedMachine.name}` : " this machine"}?
-              This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedMachine(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Yes, delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={createLocationOpen} onOpenChange={setCreateLocationOpen}>
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <LocationForm
-            mode="create"
-            onSubmit={handleCreateLocationSubmit}
-            onCancel={() => setCreateLocationOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
+        onDelete={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedMachine(null);
+        }}
+        machine={selectedMachine as SelectMachineType}
+      />
     </>
   );
 }
