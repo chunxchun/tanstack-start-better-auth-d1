@@ -1,16 +1,25 @@
 import { db } from "@/db";
 import {
-  systemUsersTable,
-  type InsertSystemUserType,
-  type UpdateSystemUserType,
-} from "@/db/schema";
+  user,
+  user as userTable,
+  type InsertUserType,
+  type UpdateUserType,
+} from "@/db/schema/authSchema";
+// import {
+//   systemUsersTable,
+//   type InsertSystemUserType,
+//   type UpdateSystemUserType,
+// } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export const listUserHandler = async (limit: number = 10, offset: number = 0) => {
+export const listUserHandler = async (
+  limit: number = 10,
+  offset: number = 0,
+) => {
   try {
     const result = await db
       .select()
-      .from(systemUsersTable)
+      .from(userTable)
       .limit(limit)
       .offset(offset);
     return result;
@@ -20,12 +29,12 @@ export const listUserHandler = async (limit: number = 10, offset: number = 0) =>
   }
 };
 
-export const fetchUserByIdHandler = async (id: number) => {
+export const fetchUserByIdHandler = async (id: string) => {
   try {
     const result = await db
       .select()
-      .from(systemUsersTable)
-      .where(eq(systemUsersTable.id, id))
+      .from(userTable)
+      .where(eq(userTable.id, id))
       .limit(1);
     return result[0] ?? null;
   } catch (error) {
@@ -34,9 +43,9 @@ export const fetchUserByIdHandler = async (id: number) => {
   }
 };
 
-export const createUserHandler = async (user: InsertSystemUserType) => {
+export const createUserHandler = async (user: InsertUserType) => {
   try {
-    const result = await db.insert(systemUsersTable).values(user).returning();
+    const result = await db.insert(userTable).values(user).returning();
     return result;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -45,14 +54,14 @@ export const createUserHandler = async (user: InsertSystemUserType) => {
 };
 
 export const updateUserByIdHandler = async (
-  id: number,
-  user: UpdateSystemUserType,
+  id: string,
+  user: UpdateUserType,
 ) => {
   try {
     const result = await db
-      .update(systemUsersTable)
+      .update(userTable)
       .set(user)
-      .where(eq(systemUsersTable.id, id))
+      .where(eq(userTable.id, id))
       .returning();
     return result;
   } catch (error) {
@@ -61,11 +70,11 @@ export const updateUserByIdHandler = async (
   }
 };
 
-export const deleteUserByIdHandler = async (id: number) => {
+export const deleteUserByIdHandler = async (id: string) => {
   try {
     const result = await db
-      .delete(systemUsersTable)
-      .where(eq(systemUsersTable.id, id))
+      .delete(userTable)
+      .where(eq(userTable.id, id))
       .returning();
     return result;
   } catch (error) {

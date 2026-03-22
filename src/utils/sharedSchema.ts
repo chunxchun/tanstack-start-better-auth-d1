@@ -5,9 +5,15 @@ export const paginationSchema = z.object({
   offset: z.coerce.number().int().min(0).default(0),
 });
 
-export const idSchema = z.object({
+export const integerIdSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
+
+export const stringIdSchema = z.object({
+  id: z.coerce.string().min(1),
+});
+
+export const idSchema = z.union([integerIdSchema, stringIdSchema]);
 
 export const R2UploadResponseSchema = z.object({
   url: z.string().url(),

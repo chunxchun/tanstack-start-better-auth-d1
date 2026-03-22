@@ -22,13 +22,13 @@ export const auth = betterAuth({
       role: {
         type: ["admin", "manager", "staff"],
         required: true,
-        defaultValue: "user",
-        input: false, // don't allow user to set role
+        defaultValue: "staff",
+        input: true, // don't allow user to set role
       },
       shopId: {
         type: "number",
         required: false,
-        input: false,
+        input: true,
       },
     },
   },

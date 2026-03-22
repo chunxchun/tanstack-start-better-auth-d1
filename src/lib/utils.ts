@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function buildR2AccessKey(
   folder: string,
-  id: number,
+  id: number|string,
   asset: string,
   file: File,
 ) {

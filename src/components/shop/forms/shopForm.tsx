@@ -15,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import type {
   InsertShopType,
-  SelectShopType,
   UpdateShopType,
 } from "@/db/schema";
 import { getVersionedImageUrl } from "@/lib/utils";
@@ -30,7 +29,6 @@ export function ShopForm({
   onSubmit,
   onCancel,
 }: ShopFormProps) {
-  const initialShop = initialData as SelectShopType | null | undefined;
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -151,7 +149,7 @@ export function ShopForm({
                     (() => {
                       const logoSrc = getVersionedImageUrl(
                         field.state.value,
-                        initialShop?.updatedAt,
+                        initialData?.updatedAt,
                       );
                       return logoSrc ? (
                         <img
@@ -200,7 +198,7 @@ export function ShopForm({
                     (() => {
                       const bannerSrc = getVersionedImageUrl(
                         field.state.value,
-                        initialShop?.updatedAt,
+                        initialData?.updatedAt,
                       );
                       return bannerSrc ? (
                         <img

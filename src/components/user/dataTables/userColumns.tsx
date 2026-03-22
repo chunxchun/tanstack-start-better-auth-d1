@@ -7,28 +7,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { SelectSystemUserType as User } from "@/db/schema";
+import type { SelectUserType as User } from "@/db/schema/authSchema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 type UserColumnsOptions = {
+  rowNumberOffset?: number;
   onView: (user: User) => void;
   onEdit: (user: User) => void;
   onDelete: (user: User) => void;
 };
 
 export const getUserColumns = ({
+  rowNumberOffset = 0,
   onView,
   onEdit,
   onDelete,
 }: UserColumnsOptions): ColumnDef<User>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "rowNumber",
+    header: "#",
+    cell: ({ row }) => {
+      return (
+        <span className="font-mono">{rowNumberOffset + row.index + 1}</span>
+      );
+    },
   },
   {
     accessorKey: "shopId",
     header: "Shop",
+    cell: ({ getValue }) => {
+      const shopId = getValue() as number | null;
+      return shopId ?? <span>-</span>;
+    },
   },
   {
     accessorKey: "name",
@@ -65,7 +76,10 @@ export const getUserColumns = ({
             <DropdownMenuItem onClick={() => onEdit(user)}>
               Edit user
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500" onClick={() => onDelete(user)}>
+            <DropdownMenuItem
+              className="text-red-500"
+              onClick={() => onDelete(user)}
+            >
               Delete user
             </DropdownMenuItem>
           </DropdownMenuContent>

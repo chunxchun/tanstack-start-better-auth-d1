@@ -51,13 +51,14 @@ CREATE TABLE `user` (
 	`email` text NOT NULL UNIQUE,
 	`email_verified` integer DEFAULT false NOT NULL,
 	`image` text,
-	`display_name` text(100) NOT NULL,
+	`display_name` text(100),
 	`role` text DEFAULT 'staff' NOT NULL,
 	`shop_id` integer,
-	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
-	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
+	`updated_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
 	CONSTRAINT `fk_user_shop_id_shops_id_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+
 --> statement-breakpoint
 CREATE TABLE `verification` (
 	`id` text PRIMARY KEY,

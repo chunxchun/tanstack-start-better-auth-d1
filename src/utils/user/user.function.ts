@@ -1,9 +1,10 @@
-import {
-  insertSystemUserSchema,
-  updateSystemUserSchema,
-} from "@/db/schema/systemUserTable";
+// import {
+//   insertSystemUserSchema,
+//   updateSystemUserSchema,
+// } from "@/db/schema/systemUserTable";
+import { insertUserSchema, updateUserSchema } from "@/db/schema/authSchema";
 import { createServerFn } from "@tanstack/react-start";
-import { idSchema, paginationSchema } from "../sharedSchema";
+import { paginationSchema, stringIdSchema } from "../sharedSchema";
 import {
   createUserHandler,
   deleteUserByIdHandler,
@@ -17,17 +18,22 @@ export const listUserFn = createServerFn({ method: "GET" })
   .handler(async ({ data }) => listUserHandler(data.limit, data.offset));
 
 export const createUserFn = createServerFn({ method: "POST" })
-  .inputValidator(insertSystemUserSchema)
+  .inputValidator(insertUserSchema)
   .handler(async ({ data }) => createUserHandler(data));
 
 export const fetchUserByIdFn = createServerFn({ method: "GET" })
-  .inputValidator(idSchema)
+  .inputValidator(stringIdSchema)
   .handler(async ({ data }) => fetchUserByIdHandler(data.id));
 
 export const updateUserByIdFn = createServerFn({ method: "POST" })
-  .inputValidator(updateSystemUserSchema)
-  .handler(async ({ data }) => updateUserByIdHandler(data.id as number, data));
+  .inputValidator(updateUserSchema)
+  .handler(async ({ data }) => {
+    if (!data.id) {
+      throw new Error("User id is required for update");
+    }
+    return updateUserByIdHandler(data.id, data);
+  });
 
 export const deleteUserByIdFn = createServerFn({ method: "GET" })
-  .inputValidator(idSchema)
+  .inputValidator(stringIdSchema)
   .handler(async ({ data }) => deleteUserByIdHandler(data.id));

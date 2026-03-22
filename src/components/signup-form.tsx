@@ -41,11 +41,12 @@ export function SignupForm({
           return;
         }
 
-        const { error, data } = await authClient.signUp.email({
+        const { error } = await authClient.signUp.email({
           name: value.name,
           email: value.email,
           password: value.password,
           callbackURL: "/dashboard",
+          role: "admin",
         });
 
         if (error) {
@@ -54,7 +55,6 @@ export function SignupForm({
         }
 
         await navigate({ to: "/dashboard" });
-        
       } catch (error) {
         setSubmitError("An unexpected error occurred. Please try again.");
         console.error(error);

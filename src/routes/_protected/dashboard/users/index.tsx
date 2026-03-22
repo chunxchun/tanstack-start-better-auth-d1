@@ -1,22 +1,15 @@
-import { getUserColumns } from "@/components/dataTables/user/userColumns";
-import { DataTable } from "@/components/dataTables/user/userDataTable";
-import { UserForm } from "@/components/forms/user/userForm";
+import CreateUserDialog from "@/components/user/dialogs/CreateUserDialog";
+import DeleteUserDialog from "@/components/user/dialogs/DeleteUserDialog";
+import EditUserDialog from "@/components/user/dialogs/EditUserDialog";
+import ViewUserDialog from "@/components/user/dialogs/ViewUserDialog";
+import { getUserColumns } from "@/components/user/dataTables/userColumns";
+import { DataTable } from "@/components/user/dataTables/userDataTable";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type {
-  InsertSystemUserType,
-  SelectSystemUserType,
-  SelectSystemUserType as User,
-  UpdateSystemUserType,
-} from "@/db/schema";
+  InsertUserType,
+  SelectUserType,
+  UpdateUserType,
+} from "@/db/schema/authSchema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import {
   createUserFn,
@@ -30,16 +23,25 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
+import { getImageUrl } from "@/utils/user/user.helper";
+import { toast } from "sonner";
+import { listShopFn } from "@/utils/shop/shop.function";
 
 export const Route = createFileRoute("/_protected/dashboard/users/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listUserFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [users, shops] = await Promise.all([
+      listUserFn({ data: deps }),
+      listShopFn({ data: { limit: 100, offset: 0 } })
+    ]);
+    return { users, shops };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const {users, shops} = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -47,12 +49,12 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<SelectUserType | null>(null);
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = users.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -94,6 +96,7 @@ function RouteComponent() {
   const columns = useMemo(
     () =>
       getUserColumns({
+        rowNumberOffset: offset,
         onView: (user) => {
           setSelectedUser(user);
           setViewOpen(true);
@@ -107,29 +110,69 @@ function RouteComponent() {
           setDeleteOpen(true);
         },
       }),
-    [],
+    [offset],
   );
 
-  const handleCreateSubmit = async (values: InsertSystemUserType) => {
+  const handleCreateSubmit = async (
+    values: InsertUserType,
+    image: File | null = null,
+  ) => {
     try {
-      await createUserFn({ data: values });
-      setCreateOpen(false);
-      await router.invalidate();
+      const result = await createUserFn({ data: values });
+      if (!result || result.length === 0) {
+        throw new Error("Failed to create user: No result returned");
+      }
+
+      const userId = result[0].id;
+
+      let imageUrl: string | null = null;
+
+      if (image) {
+        imageUrl = await getImageUrl(image, userId);
+      }
+
+      await updateUserByIdFn({
+        data: {
+          id: userId,
+          image: imageUrl ?? null,
+        },
+      });
+
+      toast.success("User created successfully");
     } catch (error) {
       console.error("Failed to create user:", error);
+      toast.error("Failed to create user");
+    } finally {
+      setCreateOpen(false);
+      await router.invalidate();
     }
   };
 
-  const handleEditSubmit = async (values: UpdateSystemUserType) => {
+  const handleEditSubmit = async (
+    values: UpdateUserType,
+    image: File | null = null,
+  ) => {
     if (!selectedUser) return;
 
     try {
-      await updateUserByIdFn({ data: values });
+      if (image) {
+        values.image = await getImageUrl(image, selectedUser.id);
+      }
+
+      const result = await updateUserByIdFn({ data: values });
+
+      if (!result || result.length === 0) {
+        throw new Error("Failed to update user: No result returned");
+      }
+
+      toast.success("User updated successfully");
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      toast.error("Failed to update user");
+    } finally {
       setEditOpen(false);
       setSelectedUser(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to update user:", error);
     }
   };
 
@@ -138,11 +181,14 @@ function RouteComponent() {
 
     try {
       await deleteUserByIdFn({ data: { id: selectedUser.id } });
+      toast.success("User deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      toast.error("Failed to delete user");
+    } finally {
       setDeleteOpen(false);
       setSelectedUser(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to delete user:", error);
     }
   };
 
@@ -151,23 +197,13 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Users</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <UserForm
-                mode="create"
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateUserDialog
+            open={createOpen}
+            shops={shops}
+            onOpenChange={setCreateOpen}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -213,92 +249,50 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={users} />
       </div>
 
-      <Dialog
+      <ViewUserDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedUser(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <UserForm
-            mode="view"
-            initialData={selectedUser as SelectSystemUserType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedUser(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setViewOpen(false);
+          setSelectedUser(null);
+        }}
+        user={selectedUser as SelectUserType}
+      />
 
-      <Dialog
+      <EditUserDialog
         open={editOpen}
+        shops={shops}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedUser(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <UserForm
-            mode="edit"
-            initialData={selectedUser as UpdateSystemUserType}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedUser(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedUser(null);
+        }}
+        user={selectedUser as SelectUserType}
+      />
 
-      <Dialog
+      <DeleteUserDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedUser(null);
         }}
-      >
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete user</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedUser ? ` ${selectedUser.displayName}` : " this user"}?
-              This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedUser(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedUser(null);
+        }}
+        onDeleteConfirm={handleDeleteConfirm}
+        user={selectedUser as SelectUserType}
+      />
     </>
   );
 }
