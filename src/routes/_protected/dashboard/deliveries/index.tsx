@@ -1,29 +1,27 @@
-import { getDisposeColumns } from "@/components/dispose/dataTables/disposeColumns";
-import { DataTable } from "@/components/dispose/dataTables/disposeDataTable";
-import { DisposeForm } from "@/components/dispose/forms/disposeForm";
+import { getDeliveryColumns } from "@/components/delivery/dataTables/deliveryColumns";
+import { DataTable } from "@/components/delivery/dataTables/deliveryDataTable";
+import DeleteDeliveryDialog from "@/components/delivery/dialogs/DeleteDeliveryDialog";
+import EditDeliveryDialog from "@/components/delivery/dialogs/EditDeliveryDialog";
+import ViewDeliveryDialog from "@/components/delivery/dialogs/ViewDeliveryDialog";
+import { DeliveryForm } from "@/components/delivery/forms/deliveryForm";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import type {
-  SelectDisposeType as Dispose,
-  InsertDisposeType,
-  SelectDisposeType,
-  UpdateDisposeType,
+  SelectDeliveryType as Delivery,
+  InsertDeliveryType,
+  SelectDeliveryType,
+  UpdateDeliveryType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import {
-  createDisposeFn,
-  deleteDisposeByIdFn,
-  listDisposeFn,
-  updateDisposeByIdFn,
-} from "@/utils/dispose/dispose.function";
+  createDeliveryFn,
+  deleteDeliveryByIdFn,
+  listDeliveryFn,
+  updateDeliveryByIdFn,
+} from "@/utils/delivery/delivery.function";
+import { listLocationFn } from "@/utils/location/location.function";
+import { listMachineFn } from "@/utils/machine/machine.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
   useNavigate,
@@ -31,15 +29,23 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_protected/dashboard/dispose/")({
+export const Route = createFileRoute("/_protected/dashboard/deliveries/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listDisposeFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [deliveries, locations, machines, shops] = await Promise.all([
+      listDeliveryFn({ data: deps }),
+      listLocationFn({ data: { limit: 100, offset: 0 } }),
+      listMachineFn({ data: { limit: 100, offset: 0 } }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { deliveries, locations, machines, shops };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { deliveries, locations, machines, shops } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -47,12 +53,14 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedDispose, setSelectedDispose] = useState<Dispose | null>(null);
+  const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(
+    null,
+  );
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = deliveries.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -91,56 +99,57 @@ function RouteComponent() {
 
   const columns = useMemo(
     () =>
-      getDisposeColumns({
-        onView: (dispose) => {
-          setSelectedDispose(dispose);
+      getDeliveryColumns({
+        onView: (delivery) => {
+          setSelectedDelivery(delivery);
           setViewOpen(true);
         },
-        onEdit: (dispose) => {
-          setSelectedDispose(dispose);
+        onEdit: (delivery) => {
+          setSelectedDelivery(delivery);
           setEditOpen(true);
         },
-        onDelete: (dispose) => {
-          setSelectedDispose(dispose);
+        onDelete: (delivery) => {
+          setSelectedDelivery(delivery);
           setDeleteOpen(true);
         },
       }),
     [],
   );
 
-  const handleCreateSubmit = async (values: InsertDisposeType) => {
+  const handleCreateSubmit = async (values: InsertDeliveryType) => {
     try {
-      await createDisposeFn({ data: values });
+      await createDeliveryFn({ data: values });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
-      console.error("Failed to create dispose:", error);
+      console.error("Failed to create delivery:", error);
     }
   };
 
-  const handleEditSubmit = async (values: UpdateDisposeType) => {
-    if (!selectedDispose) return;
+  const handleEditSubmit = async (values: UpdateDeliveryType) => {
+    if (!selectedDelivery) return;
 
     try {
-      await updateDisposeByIdFn({ data: values });
+      await updateDeliveryByIdFn({ data: values });
+
       setEditOpen(false);
-      setSelectedDispose(null);
+      setSelectedDelivery(null);
       await router.invalidate();
     } catch (error) {
-      console.error("Failed to update dispose:", error);
+      console.error("Failed to update delivery:", error);
     }
   };
 
   const handleDeleteConfirm = async () => {
-    if (!selectedDispose) return;
+    if (!selectedDelivery) return;
 
     try {
-      await deleteDisposeByIdFn({ data: { id: selectedDispose.id } });
+      await deleteDeliveryByIdFn({ data: { id: selectedDelivery.id } });
       setDeleteOpen(false);
-      setSelectedDispose(null);
+      setSelectedDelivery(null);
       await router.invalidate();
     } catch (error) {
-      console.error("Failed to delete dispose:", error);
+      console.error("Failed to delete delivery:", error);
     }
   };
 
@@ -148,7 +157,7 @@ function RouteComponent() {
     <>
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Dispose</h1>
+          <h1 className="text-2xl font-bold">Deliveries</h1>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
               <Button variant="default">
@@ -159,8 +168,11 @@ function RouteComponent() {
               className="min-w-[50vw]"
               onInteractOutside={(e) => e.preventDefault()}
             >
-              <DisposeForm
+              <DeliveryForm
                 mode="create"
+                shops={shops}
+                locations={locations}
+                machines={machines}
                 onSubmit={handleCreateSubmit}
                 onCancel={() => setCreateOpen(false)}
               />
@@ -176,12 +188,12 @@ function RouteComponent() {
           <div className="flex items-center gap-2">
             <label
               className="text-sm text-muted-foreground"
-              htmlFor="dispose-page-size"
+              htmlFor="delivery-page-size"
             >
               Rows
             </label>
             <select
-              id="dispose-page-size"
+              id="delivery-page-size"
               className="h-9 rounded-md border bg-background px-2 text-sm"
               value={limit}
               onChange={handleLimitChange}
@@ -211,92 +223,52 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={deliveries} />
       </div>
 
-      <Dialog
+      <ViewDeliveryDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
-          if (!open) setSelectedDispose(null);
+          if (!open) setSelectedDelivery(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DisposeForm
-            mode="view"
-            initialData={selectedDispose as SelectDisposeType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedDispose(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setSelectedDelivery(null);
+          setViewOpen(false);
+        }}
+        data={selectedDelivery as SelectDeliveryType}
+      />
 
-      <Dialog
+      <EditDeliveryDialog
         open={editOpen}
+        shops={shops}
+        locations={locations}
+        machines={machines}
         onOpenChange={(open) => {
           setEditOpen(open);
-          if (!open) setSelectedDispose(null);
+          if (!open) setSelectedDelivery(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DisposeForm
-            mode="edit"
-            initialData={selectedDispose as UpdateDisposeType}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedDispose(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setSelectedDelivery(null);
+          setEditOpen(false);
+        }}
+        onSubmit={handleEditSubmit}
+        delivery={selectedDelivery as SelectDeliveryType}
+      />
 
-      <Dialog
+      <DeleteDeliveryDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
-          if (!open) setSelectedDispose(null);
+          if (!open) setSelectedDelivery(null);
         }}
-      >
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete dispose</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedDispose ? ` dispose #${selectedDispose.id}` : " this dispose"}?
-              This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedDispose(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setSelectedDelivery(null);
+          setDeleteOpen(false);
+        }}
+        onDelete={handleDeleteConfirm}
+        delivery={selectedDelivery as SelectDeliveryType}
+      />
     </>
   );
 }

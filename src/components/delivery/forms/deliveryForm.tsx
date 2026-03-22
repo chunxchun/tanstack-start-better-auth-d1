@@ -18,6 +18,13 @@ import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { DeliveryFormProps } from "./deliveryFormType";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Select,
+} from "@/components/ui/select";
 
 export function DeliveryForm({
   mode,
@@ -89,45 +96,55 @@ export function DeliveryForm({
 
       <CardContent className="overflow-auto mt-8 mb-8">
         <FieldGroup>
-          <form.Field name="destinationLocationId">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>
-                  Destination Location ID
-                </FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="number"
-                  value={String(field.state.value)}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) =>
-                    field.handleChange(Number(e.target.value) || 0)
-                  }
-                />
-              </Field>
-            )}
-          </form.Field>
-
-          <form.Field name="machineId">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Machine ID</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="number"
-                  value={String(field.state.value)}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) =>
-                    field.handleChange(Number(e.target.value) || 0)
-                  }
-                />
-              </Field>
-            )}
-          </form.Field>
+          {/* Row: destination location & machine */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <form.Field name="destinationLocationId">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Destination</FieldLabel>
+                    <Select
+                      value={String(field.state.value)}
+                      disabled={isReadOnly}
+                      onValueChange={(e) => field.handleChange(Number(e))}
+                    >
+                      <SelectTrigger onBlur={field.handleBlur}>
+                        <SelectValue placeholder="Select a location" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {locations?.map((location) => (
+                          <SelectItem key={location.id} value={location.name}>
+                            {location.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+            <div className="w-1/2">
+              <form.Field name="machineId">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Machine</FieldLabel>
+                    <Input
+                      required
+                      id={field.name}
+                      name={field.name}
+                      type="number"
+                      value={String(field.state.value)}
+                      disabled={isReadOnly}
+                      onBlur={field.handleBlur}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value) || 0)
+                      }
+                    />
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+          </div>
 
           <form.Field name="courierReference">
             {(field) => (
@@ -148,39 +165,45 @@ export function DeliveryForm({
             )}
           </form.Field>
 
-          <form.Field name="deliverDate">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Delivery Date</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="date"
-                  value={field.state.value}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
-
-          <form.Field name="deliverTime">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Delivery Time</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="time"
-                  value={field.state.value}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+          {/* Row: delivery date & time */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <form.Field name="deliverDate">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Delivery Date</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="date"
+                      value={field.state.value}
+                      disabled={isReadOnly}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+            <div className="w-1/2">
+              <form.Field name="deliverTime">
+                {(field) => (
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Delivery Time</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="time"
+                      value={field.state.value}
+                      disabled={isReadOnly}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                  </Field>
+                )}
+              </form.Field>
+            </div>
+          </div>
 
           <form.Field name="status">
             {(field) => (

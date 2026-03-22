@@ -42,10 +42,10 @@ import { Route as ProtectedDashboardSaleIndexRouteImport } from './routes/_prote
 import { Route as ProtectedDashboardMenuIndexRouteImport } from './routes/_protected/dashboard/menu/index'
 import { Route as ProtectedDashboardMachinesIndexRouteImport } from './routes/_protected/dashboard/machines/index'
 import { Route as ProtectedDashboardLocationsIndexRouteImport } from './routes/_protected/dashboard/locations/index'
-import { Route as ProtectedDashboardInventoryIndexRouteImport } from './routes/_protected/dashboard/inventory/index'
+import { Route as ProtectedDashboardInventoriesIndexRouteImport } from './routes/_protected/dashboard/inventories/index'
 import { Route as ProtectedDashboardFoodItemsIndexRouteImport } from './routes/_protected/dashboard/food-items/index'
-import { Route as ProtectedDashboardDisposeIndexRouteImport } from './routes/_protected/dashboard/dispose/index'
-import { Route as ProtectedDashboardDeliveryIndexRouteImport } from './routes/_protected/dashboard/delivery/index'
+import { Route as ProtectedDashboardDisposesIndexRouteImport } from './routes/_protected/dashboard/disposes/index'
+import { Route as ProtectedDashboardDeliveriesIndexRouteImport } from './routes/_protected/dashboard/deliveries/index'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -217,10 +217,10 @@ const ProtectedDashboardLocationsIndexRoute =
     path: '/locations/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
-const ProtectedDashboardInventoryIndexRoute =
-  ProtectedDashboardInventoryIndexRouteImport.update({
-    id: '/inventory/',
-    path: '/inventory/',
+const ProtectedDashboardInventoriesIndexRoute =
+  ProtectedDashboardInventoriesIndexRouteImport.update({
+    id: '/inventories/',
+    path: '/inventories/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
 const ProtectedDashboardFoodItemsIndexRoute =
@@ -229,16 +229,16 @@ const ProtectedDashboardFoodItemsIndexRoute =
     path: '/food-items/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
-const ProtectedDashboardDisposeIndexRoute =
-  ProtectedDashboardDisposeIndexRouteImport.update({
-    id: '/dispose/',
-    path: '/dispose/',
+const ProtectedDashboardDisposesIndexRoute =
+  ProtectedDashboardDisposesIndexRouteImport.update({
+    id: '/disposes/',
+    path: '/disposes/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
-const ProtectedDashboardDeliveryIndexRoute =
-  ProtectedDashboardDeliveryIndexRouteImport.update({
-    id: '/delivery/',
-    path: '/delivery/',
+const ProtectedDashboardDeliveriesIndexRoute =
+  ProtectedDashboardDeliveriesIndexRouteImport.update({
+    id: '/deliveries/',
+    path: '/deliveries/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
 
@@ -269,10 +269,10 @@ export interface FileRoutesByFullPath {
   '/api/menu/': typeof ApiMenuIndexRoute
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
-  '/dashboard/delivery/': typeof ProtectedDashboardDeliveryIndexRoute
-  '/dashboard/dispose/': typeof ProtectedDashboardDisposeIndexRoute
+  '/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
+  '/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
   '/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
-  '/dashboard/inventory/': typeof ProtectedDashboardInventoryIndexRoute
+  '/dashboard/inventories/': typeof ProtectedDashboardInventoriesIndexRoute
   '/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
   '/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
   '/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
@@ -307,10 +307,10 @@ export interface FileRoutesByTo {
   '/api/menu': typeof ApiMenuIndexRoute
   '/api/sale': typeof ApiSaleIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
-  '/dashboard/delivery': typeof ProtectedDashboardDeliveryIndexRoute
-  '/dashboard/dispose': typeof ProtectedDashboardDisposeIndexRoute
+  '/dashboard/deliveries': typeof ProtectedDashboardDeliveriesIndexRoute
+  '/dashboard/disposes': typeof ProtectedDashboardDisposesIndexRoute
   '/dashboard/food-items': typeof ProtectedDashboardFoodItemsIndexRoute
-  '/dashboard/inventory': typeof ProtectedDashboardInventoryIndexRoute
+  '/dashboard/inventories': typeof ProtectedDashboardInventoriesIndexRoute
   '/dashboard/locations': typeof ProtectedDashboardLocationsIndexRoute
   '/dashboard/machines': typeof ProtectedDashboardMachinesIndexRoute
   '/dashboard/menu': typeof ProtectedDashboardMenuIndexRoute
@@ -347,10 +347,10 @@ export interface FileRoutesById {
   '/api/menu/': typeof ApiMenuIndexRoute
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
-  '/_protected/dashboard/delivery/': typeof ProtectedDashboardDeliveryIndexRoute
-  '/_protected/dashboard/dispose/': typeof ProtectedDashboardDisposeIndexRoute
+  '/_protected/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
+  '/_protected/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
   '/_protected/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
-  '/_protected/dashboard/inventory/': typeof ProtectedDashboardInventoryIndexRoute
+  '/_protected/dashboard/inventories/': typeof ProtectedDashboardInventoriesIndexRoute
   '/_protected/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
   '/_protected/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
   '/_protected/dashboard/menu/': typeof ProtectedDashboardMenuIndexRoute
@@ -387,10 +387,10 @@ export interface FileRouteTypes {
     | '/api/menu/'
     | '/api/sale/'
     | '/api/shop/'
-    | '/dashboard/delivery/'
-    | '/dashboard/dispose/'
+    | '/dashboard/deliveries/'
+    | '/dashboard/disposes/'
     | '/dashboard/food-items/'
-    | '/dashboard/inventory/'
+    | '/dashboard/inventories/'
     | '/dashboard/locations/'
     | '/dashboard/machines/'
     | '/dashboard/menu/'
@@ -425,10 +425,10 @@ export interface FileRouteTypes {
     | '/api/menu'
     | '/api/sale'
     | '/api/shop'
-    | '/dashboard/delivery'
-    | '/dashboard/dispose'
+    | '/dashboard/deliveries'
+    | '/dashboard/disposes'
     | '/dashboard/food-items'
-    | '/dashboard/inventory'
+    | '/dashboard/inventories'
     | '/dashboard/locations'
     | '/dashboard/machines'
     | '/dashboard/menu'
@@ -464,10 +464,10 @@ export interface FileRouteTypes {
     | '/api/menu/'
     | '/api/sale/'
     | '/api/shop/'
-    | '/_protected/dashboard/delivery/'
-    | '/_protected/dashboard/dispose/'
+    | '/_protected/dashboard/deliveries/'
+    | '/_protected/dashboard/disposes/'
     | '/_protected/dashboard/food-items/'
-    | '/_protected/dashboard/inventory/'
+    | '/_protected/dashboard/inventories/'
     | '/_protected/dashboard/locations/'
     | '/_protected/dashboard/machines/'
     | '/_protected/dashboard/menu/'
@@ -737,11 +737,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardLocationsIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
-    '/_protected/dashboard/inventory/': {
-      id: '/_protected/dashboard/inventory/'
-      path: '/inventory'
-      fullPath: '/dashboard/inventory/'
-      preLoaderRoute: typeof ProtectedDashboardInventoryIndexRouteImport
+    '/_protected/dashboard/inventories/': {
+      id: '/_protected/dashboard/inventories/'
+      path: '/inventories'
+      fullPath: '/dashboard/inventories/'
+      preLoaderRoute: typeof ProtectedDashboardInventoriesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
     '/_protected/dashboard/food-items/': {
@@ -751,28 +751,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardFoodItemsIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
-    '/_protected/dashboard/dispose/': {
-      id: '/_protected/dashboard/dispose/'
-      path: '/dispose'
-      fullPath: '/dashboard/dispose/'
-      preLoaderRoute: typeof ProtectedDashboardDisposeIndexRouteImport
+    '/_protected/dashboard/disposes/': {
+      id: '/_protected/dashboard/disposes/'
+      path: '/disposes'
+      fullPath: '/dashboard/disposes/'
+      preLoaderRoute: typeof ProtectedDashboardDisposesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
-    '/_protected/dashboard/delivery/': {
-      id: '/_protected/dashboard/delivery/'
-      path: '/delivery'
-      fullPath: '/dashboard/delivery/'
-      preLoaderRoute: typeof ProtectedDashboardDeliveryIndexRouteImport
+    '/_protected/dashboard/deliveries/': {
+      id: '/_protected/dashboard/deliveries/'
+      path: '/deliveries'
+      fullPath: '/dashboard/deliveries/'
+      preLoaderRoute: typeof ProtectedDashboardDeliveriesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
   }
 }
 
 interface ProtectedDashboardRouteChildren {
-  ProtectedDashboardDeliveryIndexRoute: typeof ProtectedDashboardDeliveryIndexRoute
-  ProtectedDashboardDisposeIndexRoute: typeof ProtectedDashboardDisposeIndexRoute
+  ProtectedDashboardDeliveriesIndexRoute: typeof ProtectedDashboardDeliveriesIndexRoute
+  ProtectedDashboardDisposesIndexRoute: typeof ProtectedDashboardDisposesIndexRoute
   ProtectedDashboardFoodItemsIndexRoute: typeof ProtectedDashboardFoodItemsIndexRoute
-  ProtectedDashboardInventoryIndexRoute: typeof ProtectedDashboardInventoryIndexRoute
+  ProtectedDashboardInventoriesIndexRoute: typeof ProtectedDashboardInventoriesIndexRoute
   ProtectedDashboardLocationsIndexRoute: typeof ProtectedDashboardLocationsIndexRoute
   ProtectedDashboardMachinesIndexRoute: typeof ProtectedDashboardMachinesIndexRoute
   ProtectedDashboardMenuIndexRoute: typeof ProtectedDashboardMenuIndexRoute
@@ -782,10 +782,12 @@ interface ProtectedDashboardRouteChildren {
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
-  ProtectedDashboardDeliveryIndexRoute: ProtectedDashboardDeliveryIndexRoute,
-  ProtectedDashboardDisposeIndexRoute: ProtectedDashboardDisposeIndexRoute,
+  ProtectedDashboardDeliveriesIndexRoute:
+    ProtectedDashboardDeliveriesIndexRoute,
+  ProtectedDashboardDisposesIndexRoute: ProtectedDashboardDisposesIndexRoute,
   ProtectedDashboardFoodItemsIndexRoute: ProtectedDashboardFoodItemsIndexRoute,
-  ProtectedDashboardInventoryIndexRoute: ProtectedDashboardInventoryIndexRoute,
+  ProtectedDashboardInventoriesIndexRoute:
+    ProtectedDashboardInventoriesIndexRoute,
   ProtectedDashboardLocationsIndexRoute: ProtectedDashboardLocationsIndexRoute,
   ProtectedDashboardMachinesIndexRoute: ProtectedDashboardMachinesIndexRoute,
   ProtectedDashboardMenuIndexRoute: ProtectedDashboardMenuIndexRoute,

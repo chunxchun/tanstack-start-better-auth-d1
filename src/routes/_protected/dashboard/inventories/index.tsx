@@ -32,7 +32,7 @@ import { type ChangeEvent, useMemo, useState } from "react";
 
 import { searchSchema } from "@/db/schema/commonSchema";
 
-export const Route = createFileRoute("/_protected/dashboard/inventory/")({
+export const Route = createFileRoute("/_protected/dashboard/inventories/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => listInventoryFn({ data: deps }),

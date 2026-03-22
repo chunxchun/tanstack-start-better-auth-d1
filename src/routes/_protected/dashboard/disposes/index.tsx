@@ -1,6 +1,6 @@
-import { getDeliveryColumns } from "@/components/delivery/dataTables/deliveryColumns";
-import { DataTable } from "@/components/delivery/dataTables/deliveryDataTable";
-import { DeliveryForm } from "@/components/delivery/forms/deliveryForm";
+import { getDisposeColumns } from "@/components/dispose/dataTables/disposeColumns";
+import { DataTable } from "@/components/dispose/dataTables/disposeDataTable";
+import { DisposeForm } from "@/components/dispose/forms/disposeForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,18 +12,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type {
-  InsertDeliveryType,
-  SelectDeliveryType,
-  SelectDeliveryType as Delivery,
-  UpdateDeliveryType,
+  SelectDisposeType as Dispose,
+  InsertDisposeType,
+  SelectDisposeType,
+  UpdateDisposeType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import {
-  createDeliveryFn,
-  deleteDeliveryByIdFn,
-  listDeliveryFn,
-  updateDeliveryByIdFn,
-} from "@/utils/delivery/delivery.function";
+  createDisposeFn,
+  deleteDisposeByIdFn,
+  listDisposeFn,
+  updateDisposeByIdFn,
+} from "@/utils/dispose/dispose.function";
 import {
   createFileRoute,
   useNavigate,
@@ -31,10 +31,10 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_protected/dashboard/delivery/")({
+export const Route = createFileRoute("/_protected/dashboard/disposes/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listDeliveryFn({ data: deps }),
+  loader: async ({ deps }) => listDisposeFn({ data: deps }),
   component: RouteComponent,
 });
 
@@ -47,9 +47,7 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(
-    null,
-  );
+  const [selectedDispose, setSelectedDispose] = useState<Dispose | null>(null);
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
@@ -93,57 +91,56 @@ function RouteComponent() {
 
   const columns = useMemo(
     () =>
-      getDeliveryColumns({
-        onView: (delivery) => {
-          setSelectedDelivery(delivery);
+      getDisposeColumns({
+        onView: (dispose) => {
+          setSelectedDispose(dispose);
           setViewOpen(true);
         },
-        onEdit: (delivery) => {
-          setSelectedDelivery(delivery);
+        onEdit: (dispose) => {
+          setSelectedDispose(dispose);
           setEditOpen(true);
         },
-        onDelete: (delivery) => {
-          setSelectedDelivery(delivery);
+        onDelete: (dispose) => {
+          setSelectedDispose(dispose);
           setDeleteOpen(true);
         },
       }),
     [],
   );
 
-  const handleCreateSubmit = async (values: InsertDeliveryType) => {
+  const handleCreateSubmit = async (values: InsertDisposeType) => {
     try {
-      await createDeliveryFn({ data: values });
+      await createDisposeFn({ data: values });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
-      console.error("Failed to create delivery:", error);
+      console.error("Failed to create dispose:", error);
     }
   };
 
-  const handleEditSubmit = async (values: UpdateDeliveryType) => {
-    if (!selectedDelivery) return;
+  const handleEditSubmit = async (values: UpdateDisposeType) => {
+    if (!selectedDispose) return;
 
     try {
-      await updateDeliveryByIdFn({ data: values });
-
+      await updateDisposeByIdFn({ data: values });
       setEditOpen(false);
-      setSelectedDelivery(null);
+      setSelectedDispose(null);
       await router.invalidate();
     } catch (error) {
-      console.error("Failed to update delivery:", error);
+      console.error("Failed to update dispose:", error);
     }
   };
 
   const handleDeleteConfirm = async () => {
-    if (!selectedDelivery) return;
+    if (!selectedDispose) return;
 
     try {
-      await deleteDeliveryByIdFn({ data: { id: selectedDelivery.id } });
+      await deleteDisposeByIdFn({ data: { id: selectedDispose.id } });
       setDeleteOpen(false);
-      setSelectedDelivery(null);
+      setSelectedDispose(null);
       await router.invalidate();
     } catch (error) {
-      console.error("Failed to delete delivery:", error);
+      console.error("Failed to delete dispose:", error);
     }
   };
 
@@ -151,7 +148,7 @@ function RouteComponent() {
     <>
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Deliveries</h1>
+          <h1 className="text-2xl font-bold">Dispose</h1>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
               <Button variant="default">
@@ -162,7 +159,7 @@ function RouteComponent() {
               className="min-w-[50vw]"
               onInteractOutside={(e) => e.preventDefault()}
             >
-              <DeliveryForm
+              <DisposeForm
                 mode="create"
                 onSubmit={handleCreateSubmit}
                 onCancel={() => setCreateOpen(false)}
@@ -179,12 +176,12 @@ function RouteComponent() {
           <div className="flex items-center gap-2">
             <label
               className="text-sm text-muted-foreground"
-              htmlFor="delivery-page-size"
+              htmlFor="dispose-page-size"
             >
               Rows
             </label>
             <select
-              id="delivery-page-size"
+              id="dispose-page-size"
               className="h-9 rounded-md border bg-background px-2 text-sm"
               value={limit}
               onChange={handleLimitChange}
@@ -221,19 +218,19 @@ function RouteComponent() {
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
-          if (!open) setSelectedDelivery(null);
+          if (!open) setSelectedDispose(null);
         }}
       >
         <DialogContent
           className="min-w-[50vw]"
           onInteractOutside={(e) => e.preventDefault()}
         >
-          <DeliveryForm
+          <DisposeForm
             mode="view"
-            initialData={selectedDelivery as SelectDeliveryType}
+            initialData={selectedDispose as SelectDisposeType}
             onCancel={() => {
               setViewOpen(false);
-              setSelectedDelivery(null);
+              setSelectedDispose(null);
             }}
           />
         </DialogContent>
@@ -243,20 +240,20 @@ function RouteComponent() {
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
-          if (!open) setSelectedDelivery(null);
+          if (!open) setSelectedDispose(null);
         }}
       >
         <DialogContent
           className="min-w-[50vw]"
           onInteractOutside={(e) => e.preventDefault()}
         >
-          <DeliveryForm
+          <DisposeForm
             mode="edit"
-            initialData={selectedDelivery as UpdateDeliveryType}
+            initialData={selectedDispose as UpdateDisposeType}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);
-              setSelectedDelivery(null);
+              setSelectedDispose(null);
             }}
           />
         </DialogContent>
@@ -266,18 +263,16 @@ function RouteComponent() {
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
-          if (!open) setSelectedDelivery(null);
+          if (!open) setSelectedDispose(null);
         }}
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Delete delivery</DialogTitle>
+            <DialogTitle>Delete dispose</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete
-              {selectedDelivery
-                ? ` delivery #${selectedDelivery.id}`
-                : " this delivery"}
-              ? This action cannot be undone.
+              {selectedDispose ? ` dispose #${selectedDispose.id}` : " this dispose"}?
+              This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 
@@ -287,7 +282,7 @@ function RouteComponent() {
               variant="outline"
               onClick={() => {
                 setDeleteOpen(false);
-                setSelectedDelivery(null);
+                setSelectedDispose(null);
               }}
             >
               Cancel
