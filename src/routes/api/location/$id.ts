@@ -1,4 +1,4 @@
-import type { UpdateLocation } from "@/db/schema";
+import type { UpdateLocationType } from "@/db/schema";
 import {
   deleteLocationByIdHandler,
   fetchLocationByIdHandler,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/location/$id")({
               status: 400,
             });
           }
-          const body = (await request.json()) as UpdateLocation;
+          const body = (await request.json()) as UpdateLocationType;
           const result = await updateLocationByIdHandler(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

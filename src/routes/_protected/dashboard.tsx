@@ -6,7 +6,9 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import type { SelectUserType } from "@/db/schema/auth-schema";
+import type { SelectShopType } from "@/db/schema";
+import type { SelectUserType } from "@/db/schema/authSchema";
+import { getVersionedImageUrl } from "@/lib/utils";
 import { listShopFn } from "@/utils/shop/shop.function";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useState } from "react";
@@ -22,7 +24,7 @@ export const Route = createFileRoute("/_protected/dashboard")({
 function RouteComponent() {
   const { shops } = Route.useLoaderData();
   const { user } = Route.useRouteContext();
-  const [activeShop, setActiveShop] = useState(shops[0]);
+  const [activeShop, setActiveShop] = useState<SelectShopType>(shops[0]);
 
   return (
     <TooltipProvider>
@@ -44,7 +46,7 @@ function RouteComponent() {
               {activeShop ? (
                 activeShop.bannerUrl ? (
                   <img
-                    src={activeShop.bannerUrl}
+                    src={getVersionedImageUrl(activeShop.bannerUrl, activeShop.updatedAt)}
                     alt={activeShop.name}
                     className="w-2/3 max-h-24  object-cover rounded-lg"
                   />

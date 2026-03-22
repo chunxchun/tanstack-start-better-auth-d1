@@ -1,4 +1,4 @@
-import type { InsertDispose } from "@/db/schema";
+import type { InsertDisposeType } from "@/db/schema";
 import {
   createDisposeHandler,
   listDisposeHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/dispose/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertDispose;
+          const body = (await request.json()) as InsertDisposeType;
           const result = await createDisposeHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

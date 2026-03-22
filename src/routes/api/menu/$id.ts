@@ -1,4 +1,4 @@
-import type { UpdateMenu } from "@/db/schema";
+import type { UpdateMenuType } from "@/db/schema";
 import {
   deleteMenuByIdHandler,
   fetchMenuByIdHandler,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/menu/$id")({
               status: 400,
             });
           }
-          const body = (await request.json()) as UpdateMenu;
+          const body = (await request.json()) as UpdateMenuType;
           const result = await updateMenuHandlerById(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

@@ -1,8 +1,8 @@
 import {
   type ColumnDef,
   flexRender,
-  getCoreRowModel,  getPaginationRowModel,
-
+  getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -26,8 +26,8 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),    getPaginationRowModel: getPaginationRowModel(),
-
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
   return (
     <div className="overflow-hidden rounded-md border">

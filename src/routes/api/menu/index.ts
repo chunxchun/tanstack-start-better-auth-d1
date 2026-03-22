@@ -1,4 +1,4 @@
-import type { InsertMenu } from "@/db/schema";
+import type { InsertMenuType } from "@/db/schema";
 import {
   createMenuHandler,
   listMenuHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/menu/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertMenu;
+          const body = (await request.json()) as InsertMenuType;
           const result = await createMenuHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

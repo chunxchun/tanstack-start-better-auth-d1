@@ -1,4 +1,4 @@
-import type { UpdateMachine } from "@/db/schema";
+import type { UpdateMachineType } from "@/db/schema";
 import {
   deleteMachineByIdHandler,
   fetchMachineByIdHandler,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/machine/$id")({
               status: 400,
             });
           }
-          const body = (await request.json()) as UpdateMachine;
+          const body = (await request.json()) as UpdateMachineType;
           const result = await updateMachineByIdHandler(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

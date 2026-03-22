@@ -1,4 +1,4 @@
-import type { InsertLocation } from "@/db/schema";
+import type { InsertLocationType } from "@/db/schema";
 import {
   createLocationHandler,
   listLocationHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/location/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertLocation;
+          const body = (await request.json()) as InsertLocationType;
           const result = await createLocationHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

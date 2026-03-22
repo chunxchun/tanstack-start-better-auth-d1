@@ -7,6 +7,7 @@ import {
 } from "drizzle-orm/zod";
 import * as z from "zod";
 import { countryValues } from "./commonSchema";
+import { shopsTable } from "./shopTable";
 
 export const locationStatusValues = ["active", "inactive"] as const;
 export const locationStatusEnum = z.enum(locationStatusValues);
@@ -14,6 +15,12 @@ export type LocationStatus = (typeof locationStatusValues)[number];
 
 export const locationsTable = sqliteTable("locations", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  shopId: integer("shop_id")
+    .notNull()
+    .references(() => shopsTable.id, {
+      onDelete: "restrict",
+      onUpdate: "restrict",
+    }),
   name: text("name", { length: 100 }).notNull(),
   description: text("description", { length: 200 }),
   status: text("status", { enum: locationStatusValues })

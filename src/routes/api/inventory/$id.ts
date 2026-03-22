@@ -1,4 +1,4 @@
-import type { UpdateInventory } from "@/db/schema";
+import type { UpdateInventoryType } from "@/db/schema";
 import {
   deleteInventoryByIdHandler,
   fetchInventoryByIdHandler,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/inventory/$id")({
               status: 400,
             });
           }
-          const body = (await request.json()) as UpdateInventory;
+          const body = (await request.json()) as UpdateInventoryType;
           const result = await updateInventoryByIdHandler(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

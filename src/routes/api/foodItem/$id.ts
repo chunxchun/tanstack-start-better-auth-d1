@@ -1,4 +1,4 @@
-import type { UpdateFoodItem } from "@/db/schema";
+import type { UpdateFoodItemType } from "@/db/schema";
 import {
   deleteFoodItemByIdHandler,
   fetchFoodItemByIdHandler,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/foodItem/$id")({
               status: 400,
             });
           }
-          const body = (await request.json()) as UpdateFoodItem;
+          const body = (await request.json()) as UpdateFoodItemType;
           const result = await updateFoodItemByIdHandler(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

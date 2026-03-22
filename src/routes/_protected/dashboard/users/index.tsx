@@ -56,7 +56,7 @@ function RouteComponent() {
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
-      search: (prev) => ({
+      search: (prev: any) => ({
         ...prev,
         limit: next.limit,
         offset: next.offset,
@@ -176,7 +176,10 @@ function RouteComponent() {
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground" htmlFor="user-page-size">
+            <label
+              className="text-sm text-muted-foreground"
+              htmlFor="user-page-size"
+            >
               Rows
             </label>
             <select

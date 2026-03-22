@@ -16,7 +16,12 @@ import type {
   InsertFoodItemType,
   UpdateFoodItemType,
 } from "@/db/schema/foodItemTable";
+import {
+  getImageValidationError,
+  uploadImage,
+} from "@/lib/imageUpload";
 import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
 import type { FoodItemFormProps } from "./foodItemFormType";
 
 export function FoodItemForm({
@@ -25,6 +30,9 @@ export function FoodItemForm({
   onSubmit,
   onCancel,
 }: FoodItemFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   const form = useForm({
     defaultValues: initialData || {
       shopId: null,
@@ -117,15 +125,46 @@ export function FoodItemForm({
         <form.Field name="imageUrl">
           {(field) => (
             <Field>
-              <FieldLabel htmlFor={field.name}>Image URL</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Image</FieldLabel>
               <Input
                 id={field.name}
                 name={field.name}
-                value={field.state.value ?? ""}
+                type="file"
+                accept="image/*"
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value || null)}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+
+                  if (!file) {
+                    return;
+                  }
+
+                  const validationError = getImageValidationError(file);
+                  if (validationError) {
+                    setUploadError(validationError);
+                    return;
+                  }
+
+                  try {
+                    setUploadError(null);
+                    const data = await uploadImage(file);
+                    field.handleChange(data.url || null);
+                  } catch {
+                    setUploadError("Failed to upload image. Please try again.");
+                  }
+                }}
               />
+              {uploadError ? (
+                <FieldDescription className="text-destructive">
+                  {uploadError}
+                </FieldDescription>
+              ) : null}
+              {field.state.value ? (
+                <FieldDescription>
+                  Uploaded URL: {field.state.value}
+                </FieldDescription>
+              ) : null}
             </Field>
           )}
         </form.Field>
@@ -146,12 +185,12 @@ export function FoodItemForm({
                 Optional short item description.
               </FieldDescription>
             </Field>
-          )}
+          )} 
         </form.Field>
 
         <form.Field name="category">
           {(field) => (
-            <Field>
+            <Field className="md:w-1/2">
               <FieldLabel htmlFor={field.name}>Category</FieldLabel>
               <select
                 id={field.name}
@@ -190,52 +229,54 @@ export function FoodItemForm({
           )}
         </form.Field>
 
-        <form.Field name="price">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Price</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                step="0.01"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        <div className="flex w-full flex-col gap-5 md:flex-row md:gap-4">
+          <form.Field name="price">
+            {(field) => (
+              <Field className="md:w-1/2">
+                <FieldLabel htmlFor={field.name}>Price</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  type="number"
+                  step="0.01"
+                  value={String(field.state.value)}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) =>
+                    field.handleChange(Number(e.target.value) || 0)
+                  }
+                />
+              </Field>
+            )}
+          </form.Field>
 
-        <form.Field name="currency">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Currency</FieldLabel>
-              <select
-                id={field.name}
-                name={field.name}
-                className="h-9 rounded-md border bg-background px-2 text-sm"
-                value={field.state.value ?? "AUD"}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(
-                    e.target.value as "HKD" | "AUD" | "USD" | "EUR" | "JPY",
-                  )
-                }
-              >
-                <option value="HKD">HKD</option>
-                <option value="AUD">AUD</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="JPY">JPY</option>
-              </select>
-            </Field>
-          )}
-        </form.Field>
+          <form.Field name="currency">
+            {(field) => (
+              <Field className="md:w-1/2">
+                <FieldLabel htmlFor={field.name}>Currency</FieldLabel>
+                <select
+                  id={field.name}
+                  name={field.name}
+                  className="h-9 rounded-md border bg-background px-2 text-sm"
+                  value={field.state.value ?? "AUD"}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) =>
+                    field.handleChange(
+                      e.target.value as "HKD" | "AUD" | "USD" | "EUR" | "JPY",
+                    )
+                  }
+                >
+                  <option value="HKD">HKD</option>
+                  <option value="AUD">AUD</option>
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="JPY">JPY</option>
+                </select>
+              </Field>
+            )}
+          </form.Field>
+        </div>
       </FieldGroup>
 
       <DialogFooter>

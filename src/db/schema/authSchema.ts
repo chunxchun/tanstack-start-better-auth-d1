@@ -6,6 +6,11 @@ import {
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
+import { shopsTable } from "./shopTable";
+
+export const userRoleValues = ["admin", "manager", "staff"] as const;
+export const userRoleEnum = z.enum(userRoleValues);
+export type UserRoleType = (typeof userRoleValues)[number];
 
 export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
@@ -15,12 +20,18 @@ export const user = sqliteTable("user", {
     .default(false)
     .notNull(),
   image: text("image"),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+  displayName: text("display_name", { length: 100 }).notNull(),
+  role: text("role", { enum: userRoleValues }).notNull().default("staff"),
+  shopId: integer("shop_id").references(() => shopsTable.id, {
+    onDelete: "restrict",
+    onUpdate: "restrict",
+  }),
+  createdAt: integer("created_at")
+    .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`)
     .notNull(),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
-    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
-    .$onUpdate(() => /* @__PURE__ */ new Date())
+  updatedAt: integer("updated_at")
+    .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`)
+    .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`)
     .notNull(),
 });
 

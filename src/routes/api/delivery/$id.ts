@@ -1,4 +1,4 @@
-import type { UpdateDelivery } from "@/db/schema";
+import type { UpdateDeliveryType } from "@/db/schema";
 import {
   deleteDeliveryByIdHandler,
   fetchDeliveryByIdHandler,
@@ -60,7 +60,7 @@ export const Route = createFileRoute("/api/delivery/$id")({
               },
             );
           }
-          const body = (await request.json()) as UpdateDelivery;
+          const body = (await request.json()) as UpdateDeliveryType;
           const result = await updateDeliveryByIdHandler(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

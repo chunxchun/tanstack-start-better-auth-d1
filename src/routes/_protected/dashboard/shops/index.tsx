@@ -1,16 +1,10 @@
-import { getShopColumns } from "@/components/dataTables/shop/shopColumns";
-import { DataTable } from "@/components/dataTables/shop/shopDataTable";
-import { ShopForm } from "@/components/forms/shop/shopForm";
+import CreateShopDialog from "@/components/shop/dialogs/CreateShopDialog";
+import { getShopColumns } from "@/components/shop/dataTables/shopColumns";
+import { DataTable } from "@/components/shop/dataTables/shopDataTable";
+import DeleteShopDialog from "@/components/shop/dialogs/DeleteShopDialog";
+import EditShopDialog from "@/components/shop/dialogs/EditShopDialog";
+import ViewShopDialog from "@/components/shop/dialogs/ViewShopDialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type {
   InsertShopType,
   SelectShopType,
@@ -18,28 +12,22 @@ import type {
   UpdateShopType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
-<<<<<<< HEAD:src/routes/_protected/dashboard/shop/index.tsx
-=======
-import { uploadImage } from "@/lib/imageUpload";
->>>>>>> d540f35 (refactor):src/routes/_protected/dashboard/shops/index.tsx
 import {
   createShopFn,
   deleteShopByIdFn,
   listShopFn,
   updateShopByIdFn,
 } from "@/utils/shop/shop.function";
+import { getBannerUrl, getLogoUrl } from "@/utils/shop/shop.helper";
 import {
   createFileRoute,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
+import { toast } from "sonner";
 
-<<<<<<< HEAD:src/routes/_protected/dashboard/shop/index.tsx
-export const Route = createFileRoute("/_protected/dashboard/shop/")({
-=======
 export const Route = createFileRoute("/_protected/dashboard/shops/")({
->>>>>>> d540f35 (refactor):src/routes/_protected/dashboard/shops/index.tsx
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => listShopFn({ data: deps }),
@@ -64,7 +52,7 @@ function RouteComponent() {
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
-      search: (prev) => ({
+      search: (prev: any) => ({
         ...prev,
         limit: next.limit,
         offset: next.offset,
@@ -102,6 +90,7 @@ function RouteComponent() {
   const columns = useMemo(
     () =>
       getShopColumns({
+        rowNumberOffset: offset,
         onView: (shop) => {
           setSelectedShop(shop);
           setViewOpen(true);
@@ -115,18 +104,15 @@ function RouteComponent() {
           setDeleteOpen(true);
         },
       }),
-    [],
+    [offset],
   );
 
-<<<<<<< HEAD:src/routes/_protected/dashboard/shop/index.tsx
-  const handleCreateSubmit = async (values: InsertShopType) => {
-=======
+
   const handleCreateSubmit = async (
     values: InsertShopType,
-    banner?: File,
-    logo?: File,
+    banner: File | null = null,
+    logo: File | null = null,
   ) => {
->>>>>>> d540f35 (refactor):src/routes/_protected/dashboard/shops/index.tsx
     try {
       const result = await createShopFn({ data: values });
       if (!result || result.length === 0) {
@@ -135,52 +121,62 @@ function RouteComponent() {
 
       const shopId = result[0].id;
 
+      let bannerUrl: string | null = null;
+      let logoUrl: string | null = null;
+
       if (banner) {
-        const bannerExt = banner.name.split(".").pop();
-        const bannerKey = `shops/${shopId}/banner.${bannerExt}`;
-        const result = (await uploadImage(banner, bannerKey)) as {
-          url: string;
-        } | null;
-        console.log("Banner upload result:", result);
-        // You would then need to update the shop record with the banner URL
-        if (!result) {
-          throw new Error("Failed to upload banner image");
-        }
-        const bannerUrl = result.url as string;
-        await updateShopByIdFn({ data: { id: shopId, bannerUrl: bannerUrl } });
+        bannerUrl = await getBannerUrl(banner, shopId);
       }
 
       if (logo) {
-        const logoExt = logo.name.split(".").pop();
-        const logoKey = `shops/${shopId}/logo.${logoExt}`;
-        const result = (await uploadImage(logo, logoKey)) as {
-          url: string;
-        } | null;
-        console.log("Logo upload result:", result);
-        if (!result) {
-          throw new Error("Failed to upload logo image");
-        }
-        const logoUrl = result.url as string;
-        await updateShopByIdFn({ data: { id: shopId, logoUrl: logoUrl } });
+        logoUrl = await getLogoUrl(logo, shopId);
       }
 
-      setCreateOpen(false);
-      await router.invalidate();
+      await updateShopByIdFn({
+        data: {
+          id: shopId,
+          bannerUrl: bannerUrl ?? null,
+          logoUrl: logoUrl ?? null,
+        },
+      });
+
+      toast.success("Shop created successfully");
     } catch (error) {
       console.error("Failed to create shop:", error);
+      toast.error("Failed to create shop");
+    } finally {
+      setCreateOpen(false);
+      await router.invalidate();
     }
   };
 
-  const handleEditSubmit = async (values: UpdateShopType) => {
+  const handleEditSubmit = async (
+    values: UpdateShopType,
+    banner: File | null = null,
+    logo: File | null = null,
+  ) => {
     if (!selectedShop) return;
 
     try {
-      await updateShopByIdFn({ data: values });
+      if (banner) {
+        values.bannerUrl = await getBannerUrl(banner, values.id as number);
+      }
+
+      if (logo) {
+        values.logoUrl = await getLogoUrl(logo, values.id as number);
+      }
+
+      console.log("Updating shop with values:", values);
+      const result = await updateShopByIdFn({ data: values });
+      console.log(result);
+      toast.success("Shop updated successfully");
+    } catch (error) {
+      console.error("Failed to update shop:", error);
+      toast.error("Failed to update shop");
+    } finally {
       setEditOpen(false);
       setSelectedShop(null);
       await router.invalidate();
-    } catch (error) {
-      console.error("Failed to update shop:", error);
     }
   };
 
@@ -189,11 +185,14 @@ function RouteComponent() {
 
     try {
       await deleteShopByIdFn({ data: { id: selectedShop.id } });
-      setDeleteOpen(false);
-      setSelectedShop(null);
-      await router.invalidate();
+      toast.success("Shop deleted successfully");
     } catch (error) {
       console.error("Failed to delete shop:", error);
+      toast.error("Failed to delete shop");
+    } finally {
+      setDeleteOpen(false); 
+      setSelectedShop(null);
+      await router.invalidate();
     }
   };
 
@@ -202,24 +201,14 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Shops</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <ShopForm
-                mode="create"
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateShopDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
+
         <div className="mb-4 flex items-center justify-between gap-3">
           <div className="text-sm text-muted-foreground">
             Page {currentPage}
@@ -266,91 +255,46 @@ function RouteComponent() {
         <DataTable columns={columns} data={data} />
       </div>
 
-      <Dialog
+      <ViewShopDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedShop(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <ShopForm
-            mode="view"
-            initialData={selectedShop as SelectShopType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedShop(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setViewOpen(false);
+          setSelectedShop(null);
+        }}
+        shop={selectedShop as SelectShopType}
+      />
 
-      <Dialog
+      <EditShopDialog
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedShop(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <ShopForm
-            mode="edit"
-            initialData={selectedShop as UpdateShopType}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedShop(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedShop(null);
+        }}
+        shop={selectedShop as SelectShopType}
+      />
 
-      <Dialog
+      <DeleteShopDialog
         open={deleteOpen}
-        onOpenChange={(open) => {
+        onOpenChange={(open: boolean) => {
           setDeleteOpen(open);
           if (!open) setSelectedShop(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DialogHeader>
-            <DialogTitle>Delete shop</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedShop ? ` ${selectedShop.name}` : " this shop"}? This
-              action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedShop(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedShop(null);
+        }}
+        onDeleteConfirm={handleDeleteConfirm}
+        shop={selectedShop as SelectShopType}
+      />
     </>
   );
 }

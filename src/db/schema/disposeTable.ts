@@ -8,6 +8,7 @@ import {
 import * as z from "zod";
 import { foodItemsTable } from "./foodItemTable";
 import { machinesTable } from "./machineTable";
+import { shopsTable } from "./shopTable";
 
 export const disposeReasonValues = [
   "expired",
@@ -20,6 +21,12 @@ export type DisposeReason = (typeof disposeReasonValues)[number];
 
 export const disposesTable = sqliteTable("disposes", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  shopId: integer("shop_id")
+    .notNull()
+    .references(() => shopsTable.id, {
+      onDelete: "restrict",
+      onUpdate: "restrict",
+    }),
   machineId: integer("machine_id")
     .notNull()
     .references(() => machinesTable.id, {

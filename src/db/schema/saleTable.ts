@@ -9,6 +9,7 @@ import * as z from "zod";
 import { foodItemsTable } from "./foodItemTable";
 import { machinesTable } from "./machineTable";
 import { currencyValues } from "./commonSchema";
+import { shopsTable } from "./shopTable";
 
 export const paymentMethodValues = [
   "cash",
@@ -21,7 +22,13 @@ export type PaymentMethod = (typeof paymentMethodValues)[number];
 
 export const salesTable = sqliteTable("sales", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  machineId: integer("machine_id")
+    shopId: integer("shop_id")
+      .notNull()
+      .references(() => shopsTable.id, {
+        onDelete: "restrict",
+        onUpdate: "restrict",
+      }),
+    machineId: integer("machine_id")
     .notNull()
     .references(() => machinesTable.id, {
       onDelete: "restrict",

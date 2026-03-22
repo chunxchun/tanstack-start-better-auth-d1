@@ -23,8 +23,14 @@ export const shopsTable = sqliteTable("shops", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`), // Store as ISO-8601 timestamp
 });
 
-export const insertShopSchema = createInsertSchema(shopsTable);
-export const updateShopSchema = createUpdateSchema(shopsTable);
+export const insertShopSchema = createInsertSchema(shopsTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateShopSchema = createUpdateSchema(shopsTable).omit({
+  createdAt: true,
+  updatedAt: true,
+});
 export const selectShopSchema = createSelectSchema(shopsTable);
 
 export type InsertShopType = z.infer<typeof insertShopSchema>;

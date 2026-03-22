@@ -1,7 +1,9 @@
+import type { R2UploadResponseType } from "@/utils/sharedSchema";
+
 /**
  * Upload an image file to R2 and return the public URL
  */
-export async function uploadImage(file: File, key?: string) {
+export async function uploadImage(file: File, key?: string): Promise<R2UploadResponseType> {
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -20,7 +22,7 @@ export async function uploadImage(file: File, key?: string) {
 
     const data = await response.json();
     console.log("Image uploaded successfully:", data);
-    return data;
+    return data as R2UploadResponseType;
 
   } catch (error) {
     console.error("Image upload error:", error);

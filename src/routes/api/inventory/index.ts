@@ -1,4 +1,4 @@
-import type { InsertInventory } from "@/db/schema";
+import type { InsertInventoryType } from "@/db/schema";
 import {
   createInventoryHandler,
   listInventoryHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/inventory/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertInventory;
+          const body = (await request.json()) as InsertInventoryType;
           const result = await createInventoryHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

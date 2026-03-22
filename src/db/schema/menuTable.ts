@@ -6,9 +6,16 @@ import {
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
+import { shopsTable } from "./shopTable";
 
 export const menusTable = sqliteTable("menus", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  shopId: integer("shop_id")
+    .notNull()
+    .references(() => shopsTable.id, {
+      onDelete: "restrict",
+      onUpdate: "restrict",
+    }),
   name: text("name", { length: 100 }).notNull(),
   description: text("description", { length: 200 }),
   coverPhotoUrl: text("cover_photo_url"),

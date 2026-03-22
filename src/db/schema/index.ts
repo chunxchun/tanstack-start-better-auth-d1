@@ -1,4 +1,4 @@
-export * from "./auth-schema";
+export * from "./authSchema";
 
 export * from "./deliverItemTable";
 export * from "./deliveryTable";

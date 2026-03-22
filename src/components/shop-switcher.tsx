@@ -16,6 +16,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import type { SelectShopType } from "@/db/schema";
+import { getVersionedImageUrl } from "@/lib/utils";
 import { ChevronsUpDownIcon, PlusIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -46,7 +47,7 @@ export function ShopSwitcher({
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 {activeShop.logoUrl ? (
                   <img
-                    src={activeShop.logoUrl}
+                    src={getVersionedImageUrl(activeShop.logoUrl, activeShop.updatedAt)}
                     alt={activeShop.name}
                     className="w-full h-full object-cover rounded-lg"
                   />
@@ -78,7 +79,7 @@ export function ShopSwitcher({
                 <div className="flex size-6 items-center justify-center rounded-md border">
                   {shop.logoUrl ? (
                     <img
-                      src={shop.logoUrl}
+                      src={getVersionedImageUrl(shop.logoUrl, shop.updatedAt)}
                       alt={shop.name}
                       className="w-full h-full object-cover rounded-lg"
                     />

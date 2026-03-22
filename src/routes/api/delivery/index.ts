@@ -1,4 +1,4 @@
-import type { InsertDelivery } from "@/db/schema";
+import type { InsertDeliveryType } from "@/db/schema";
 import {
   createDeliveryHandler,
   listDeliveryHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/delivery/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertDelivery;
+          const body = (await request.json()) as InsertDeliveryType;
           const result = await createDeliveryHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

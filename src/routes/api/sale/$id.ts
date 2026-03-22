@@ -1,4 +1,4 @@
-import type { UpdateSale } from "@/db/schema";
+import type { UpdateSaleType } from "@/db/schema";
 import {
   deleteSaleByIdHandler,
   fetchSaleByIdHandler,
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/sale/$id")({
               status: 400,
             });
           }
-          const body = (await request.json()) as UpdateSale;
+          const body = (await request.json()) as UpdateSaleType;
           const result = await updateSaleHandlerById(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

@@ -31,7 +31,7 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_protected/dashboard/food-item/")({
+export const Route = createFileRoute("/_protected/dashboard/food-items/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => listFoodItemFn({ data: deps }),
@@ -58,7 +58,7 @@ function RouteComponent() {
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
-      search: (prev) => ({
+      search: (prev: any) => ({
         ...prev,
         limit: next.limit,
         offset: next.offset,

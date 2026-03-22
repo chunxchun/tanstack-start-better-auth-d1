@@ -1,4 +1,4 @@
-import type { InsertSale } from "@/db/schema";
+import type { InsertSaleType } from "@/db/schema";
 import {
   createSaleHandler,
   listSaleHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/sale/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertSale;
+          const body = (await request.json()) as InsertSaleType;
           const result = await createSaleHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

@@ -8,3 +8,9 @@ export const paginationSchema = z.object({
 export const idSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
+
+export const R2UploadResponseSchema = z.object({
+  url: z.string().url(),
+});
+
+export type R2UploadResponseType = z.infer<typeof R2UploadResponseSchema>;

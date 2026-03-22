@@ -9,6 +9,7 @@ import {
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
+import { shopsTable } from "./shopTable";
 
 export const deliveryStatusValues = [
   "pending",
@@ -21,6 +22,12 @@ export type DeliveryStatus = (typeof deliveryStatusValues)[number];
 
 export const deliveriesTable = sqliteTable("deliveries", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  shopId: integer("shop_id")
+    .notNull()
+    .references(() => shopsTable.id, {
+      onDelete: "restrict",
+      onUpdate: "restrict",
+    }),
   destinationLocationId: integer("destination_location_id")
     .notNull()
     .references(() => locationsTable.id, {

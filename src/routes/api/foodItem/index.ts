@@ -1,4 +1,4 @@
-import type { InsertFoodItem } from "@/db/schema";
+import type { InsertFoodItemType } from "@/db/schema";
 import {
   createFoodItemHandler,
   listFoodItemHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/foodItem/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertFoodItem;
+          const body = (await request.json()) as InsertFoodItemType;
           const result = await createFoodItemHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

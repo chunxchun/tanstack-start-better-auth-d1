@@ -1,4 +1,5 @@
 import type { SelectShopType as Shop } from "@/db/schema";
+import { getVersionedImageUrl } from "@/lib/utils";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
@@ -13,54 +14,59 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type ShopColumnsOptions = {
+  rowNumberOffset?: number;
   onView: (shop: Shop) => void;
   onEdit: (shop: Shop) => void;
   onDelete: (shop: Shop) => void;
 };
 
 export const getShopColumns = ({
+  rowNumberOffset = 0,
   onView,
   onEdit,
   onDelete,
 }: ShopColumnsOptions): ColumnDef<Shop>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "rowNumber",
+    header: "#",
+    cell: ({ row }) => {
+      return <span className="font-mono">{rowNumberOffset + row.index + 1}</span>;
+    },
   },
   {
     accessorKey: "name",
     header: "Name",
   },
-  {
-    accessorKey: "description",
-    header: "Description",
-  },
+  // {
+  //   accessorKey: "description",
+  //   header: "Description",
+  // },
   {
     accessorKey: "bannerUrl",
     header: "Banner",
-    cell: ({ getValue }) => {
+    cell: ({ getValue, row }) => {
       const bannerUrl = getValue() as string | null;
       return bannerUrl ? (
         <img
-          src={bannerUrl}
+          src={getVersionedImageUrl(bannerUrl, row.original.updatedAt)}
           alt="Shop Banner"
           style={{ width: 100, height: 50, objectFit: "cover" }}
         />
-      ) : null;
+      ) : <span>-</span>;
     },
   },
   {
     accessorKey: "logoUrl",
     header: "Logo",
-    cell: ({ getValue }) => {
+    cell: ({ getValue, row }) => {
       const logoUrl = getValue() as string | null;
       return logoUrl ? (
         <img
-          src={logoUrl}
+          src={getVersionedImageUrl(logoUrl, row.original.updatedAt)}
           alt="Shop Logo"
           style={{ width: 50, height: 50, objectFit: "cover" }}
         />
-      ) : null;
+      ) : <span>-</span>;
     },
   },
   {

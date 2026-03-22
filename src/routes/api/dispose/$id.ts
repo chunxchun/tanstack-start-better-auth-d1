@@ -1,4 +1,4 @@
-import type { UpdateDispose } from "@/db/schema";
+import type { UpdateDisposeType } from "@/db/schema";
 import {
   deleteDisposeByIdHandler,
   fetchDisposeByIdHandler,
@@ -60,7 +60,7 @@ export const Route = createFileRoute("/api/dispose/$id")({
               },
             );
           }
-          const body = (await request.json()) as UpdateDispose;
+          const body = (await request.json()) as UpdateDisposeType;
           const result = await updateDisposeByIdHandler(id, body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

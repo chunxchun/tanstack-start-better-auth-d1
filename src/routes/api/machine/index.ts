@@ -1,4 +1,4 @@
-import type { InsertMachine } from "@/db/schema";
+import type { InsertMachineType } from "@/db/schema";
 import {
   createMachineHandler,
   listMachineHandler,
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/machine/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertMachine;
+          const body = (await request.json()) as InsertMachineType;
           const result = await createMachineHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {

@@ -1,4 +1,4 @@
-import type { InsertShop } from "@/db/schema/shop";
+import type { InsertShopType } from "@/db/schema/shopTable";
 import {
   createShopHandler,
   listShopHandler
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/shop/")({
       },
       POST: async ({ request }) => {
         try {
-          const body = (await request.json()) as InsertShop;
+          const body = (await request.json()) as InsertShopType;
           const result = await createShopHandler(body);
           return new Response(JSON.stringify(result), { status: 201 });
         } catch (error) {
