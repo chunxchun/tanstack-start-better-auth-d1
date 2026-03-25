@@ -8,20 +8,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { SelectUserType } from "@/db/schema/authSchema";
+import type { DeleteDialogProps } from "@/db/schema/commonSchema";
+
+type DeleteUserDialogProps = DeleteDialogProps<SelectUserType>;
 
 export default function DeleteUserDialog({
   open,
   onOpenChange,
   onCancel,
   onDeleteConfirm,
-  user,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCancel: () => void;
-  onDeleteConfirm: () => void;
-  user: SelectUserType;
-}) {
+  data: user,
+}: DeleteUserDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent

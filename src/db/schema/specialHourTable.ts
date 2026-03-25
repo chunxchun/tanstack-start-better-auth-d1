@@ -7,14 +7,15 @@ import {
 } from "drizzle-orm/zod";
 import * as z from "zod";
 
-export const operatingHours = sqliteTable("operation_hours", {
+export const specialHours = sqliteTable("special_hours", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("name", { length: 100 }),
   description: text("description", { length: 200 }),
-  dayOfWeek: integer("day_of_week").notNull(), // 0 for Sunday, 6 for Saturday
+  specificDate: text("specific_date").notNull(), // Format: YYYY-MM-DD
   isClosed: integer("is_closed", { mode: "boolean" }).notNull().default(false),
   openingTime: text("opening_time").notNull(),
   closingTime: text("closing_time").notNull(),
+  reason: text("reason", { length: 200 }),
   createdAt: integer("created_at")
     .notNull()
     .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
@@ -24,14 +25,16 @@ export const operatingHours = sqliteTable("operation_hours", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertOperatingHourSchema = createInsertSchema(
-  operatingHours,
-).omit({ createdAt: true, updatedAt: true });
-export const updateOperatingHourSchema = createUpdateSchema(
-  operatingHours,
-).omit({ createdAt: true, updatedAt: true });
-export const selectOperatingHourSchema = createSelectSchema(operatingHours);
+export const insertSpecialHourSchema = createInsertSchema(specialHours).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const updateSpecialHourSchema = createUpdateSchema(specialHours).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+export const selectSpecialHourSchema = createSelectSchema(specialHours);
 
-export type InsertOperatingHour = z.infer<typeof insertOperatingHourSchema>;
-export type UpdateOperatingHour = z.infer<typeof updateOperatingHourSchema>;
-export type SelectOperatingHour = z.infer<typeof selectOperatingHourSchema>;
+export type InsertSpecialHour = z.infer<typeof insertSpecialHourSchema>;
+export type UpdateSpecialHour = z.infer<typeof updateSpecialHourSchema>;
+export type SelectSpecialHour = z.infer<typeof selectSpecialHourSchema>;

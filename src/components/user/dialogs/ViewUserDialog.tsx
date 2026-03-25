@@ -6,18 +6,16 @@ import {
 } from "@/components/ui/dialog";
 import { UserForm } from "@/components/user/forms/userForm";
 import type { SelectUserType } from "@/db/schema/authSchema";
+import type { ViewDialogProps } from "@/db/schema/commonSchema";
+
+type ViewUserDialogProps = ViewDialogProps<SelectUserType>;
 
 export default function ViewUserDialog({
   open,
   onOpenChange,
   onCancel,
-  user,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCancel: () => void;
-  user: SelectUserType;
-}) {
+  data: user,
+}: ViewUserDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent

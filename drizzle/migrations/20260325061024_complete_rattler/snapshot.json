@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "2faf5906-256a-49ab-8856-5c6bbfebd351",
+  "id": "10b43f7a-a53d-4cff-8e6d-6f0a82d012a4",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -68,6 +68,22 @@
     },
     {
       "name": "shops",
+      "entityType": "tables"
+    },
+    {
+      "name": "operation_hours",
+      "entityType": "tables"
+    },
+    {
+      "name": "machine_operating_schedule",
+      "entityType": "tables"
+    },
+    {
+      "name": "special_hours",
+      "entityType": "tables"
+    },
+    {
+      "name": "machine_special_schedule",
       "entityType": "tables"
     },
     {
@@ -364,7 +380,7 @@
       "type": "integer",
       "notNull": true,
       "autoincrement": false,
-      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "default": "(cast(unixepoch('subsecond') * 1000 as integer))",
       "generated": null,
       "name": "created_at",
       "entityType": "columns",
@@ -374,7 +390,7 @@
       "type": "integer",
       "notNull": true,
       "autoincrement": false,
-      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "default": null,
       "generated": null,
       "name": "updated_at",
       "entityType": "columns",
@@ -1061,6 +1077,16 @@
       "table": "machines"
     },
     {
+      "type": "text(200)",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "machines"
+    },
+    {
       "type": "text(100)",
       "notNull": true,
       "autoincrement": false,
@@ -1111,42 +1137,12 @@
       "table": "machines"
     },
     {
-      "type": "text(200)",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "description",
-      "entityType": "columns",
-      "table": "machines"
-    },
-    {
       "type": "text",
       "notNull": true,
       "autoincrement": false,
       "default": null,
       "generated": null,
       "name": "installation_date",
-      "entityType": "columns",
-      "table": "machines"
-    },
-    {
-      "type": "text",
-      "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "start_working_hour",
-      "entityType": "columns",
-      "table": "machines"
-    },
-    {
-      "type": "text",
-      "notNull": true,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "close_working_hour",
       "entityType": "columns",
       "table": "machines"
     },
@@ -1561,6 +1557,296 @@
       "table": "shops"
     },
     {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "text(100)",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "text(200)",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "day_of_week",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_closed",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "opening_time",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "closing_time",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "operation_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "machine_id",
+      "entityType": "columns",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "operating_hour_id",
+      "entityType": "columns",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "text(100)",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "text(200)",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "specific_date",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_closed",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "opening_time",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "closing_time",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "text(200)",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reason",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "special_hours"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "machine_special_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "machine_id",
+      "entityType": "columns",
+      "table": "machine_special_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "special_hour_id",
+      "entityType": "columns",
+      "table": "machine_special_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "machine_special_schedule"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "machine_special_schedule"
+    },
+    {
       "columns": [
         "user_id"
       ],
@@ -1952,6 +2238,66 @@
     },
     {
       "columns": [
+        "machine_id"
+      ],
+      "tableTo": "machines",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "RESTRICT",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_machine_operating_schedule_machine_id_machines_id_fk",
+      "entityType": "fks",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "columns": [
+        "operating_hour_id"
+      ],
+      "tableTo": "operation_hours",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "RESTRICT",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_machine_operating_schedule_operating_hour_id_operation_hours_id_fk",
+      "entityType": "fks",
+      "table": "machine_operating_schedule"
+    },
+    {
+      "columns": [
+        "machine_id"
+      ],
+      "tableTo": "machines",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "RESTRICT",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_machine_special_schedule_machine_id_machines_id_fk",
+      "entityType": "fks",
+      "table": "machine_special_schedule"
+    },
+    {
+      "columns": [
+        "special_hour_id"
+      ],
+      "tableTo": "special_hours",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "RESTRICT",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_machine_special_schedule_special_hour_id_special_hours_id_fk",
+      "entityType": "fks",
+      "table": "machine_special_schedule"
+    },
+    {
+      "columns": [
         "id"
       ],
       "nameExplicit": false,
@@ -2092,6 +2438,42 @@
       "nameExplicit": false,
       "name": "shops_pk",
       "table": "shops",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "operation_hours_pk",
+      "table": "operation_hours",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "machine_operating_schedule_pk",
+      "table": "machine_operating_schedule",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "special_hours_pk",
+      "table": "special_hours",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "machine_special_schedule_pk",
+      "table": "machine_special_schedule",
       "entityType": "pks"
     },
     {

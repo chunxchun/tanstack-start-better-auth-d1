@@ -22,7 +22,7 @@ export const createDisposeFn = createServerFn({ method: "POST" })
 
 export const fetchDisposeByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchDisposeByIdHandler(data.id));
+  .handler(async ({ data }) => fetchDisposeByIdHandler(Number(data.id)));
 
 export const updateDisposeByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateDisposeSchema)
@@ -32,4 +32,4 @@ export const updateDisposeByIdFn = createServerFn({ method: "POST" })
 
 export const deleteDisposeByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteDisposeByIdHandler(data.id));
+  .handler(async ({ data }) => deleteDisposeByIdHandler(Number(data.id)));

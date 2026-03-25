@@ -4,17 +4,20 @@ DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `verification`;
 DROP TABLE IF EXISTS `deliver_items`;
 DROP TABLE IF EXISTS `deliveries`;
-DROP TABLE IF EXISTS `disposes`;
+DROP TABLE IF EXISTS `disposes`;		
 DROP TABLE IF EXISTS `food_items`;
 DROP TABLE IF EXISTS `inventories`;
 DROP TABLE IF EXISTS `locations`;
 DROP TABLE IF EXISTS `machines`;
-DROP TABLE IF EXISTS `menus_food_items`;	
+DROP TABLE IF EXISTS `menus_food_items`;
 DROP TABLE IF EXISTS `menus_machines`;
 DROP TABLE IF EXISTS `menus`;
 DROP TABLE IF EXISTS `sales`;
-DROP TABLE IF EXISTS `shops`;	
-
+DROP TABLE IF EXISTS `shops`;
+DROP TABLE IF EXISTS `operation_hours`;
+DROP TABLE IF EXISTS `machine_operating_schedule`;
+DROP TABLE IF EXISTS `special_hours`;
+DROP TABLE IF EXISTS `machine_special_schedule`;	
 
 CREATE TABLE `account` (
 	`id` text PRIMARY KEY,
@@ -51,14 +54,13 @@ CREATE TABLE `user` (
 	`email` text NOT NULL UNIQUE,
 	`email_verified` integer DEFAULT false NOT NULL,
 	`image` text,
-	`display_name` text(100),
+	`display_name` text(100) NOT NULL,
 	`role` text DEFAULT 'staff' NOT NULL,
 	`shop_id` integer,
 	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
-	`updated_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,
+	`updated_at` integer NOT NULL,
 	CONSTRAINT `fk_user_shop_id_shops_id_fk` FOREIGN KEY (`shop_id`) REFERENCES `shops`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
-
 --> statement-breakpoint
 CREATE TABLE `verification` (
 	`id` text PRIMARY KEY,
@@ -164,15 +166,13 @@ CREATE TABLE `machines` (
 	`location_id` integer,
 	`shop_id` integer,
 	`name` text(100) NOT NULL,
+	`description` text(200),
 	`serial_number` text(100) NOT NULL UNIQUE,
 	`status` text DEFAULT 'active',
 	`version` text NOT NULL,
 	`mode` text NOT NULL,
 	`day_end_stock_auto_reset` integer DEFAULT false,
-	`description` text(200),
 	`installation_date` text NOT NULL,
-	`start_working_hour` text NOT NULL,
-	`close_working_hour` text NOT NULL,
 	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
 	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
 	CONSTRAINT `fk_machines_location_id_locations_id_fk` FOREIGN KEY (`location_id`) REFERENCES `locations`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
@@ -241,6 +241,51 @@ CREATE TABLE `shops` (
 	`video_url` text,
 	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
 	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `operation_hours` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`name` text(100),
+	`description` text(200),
+	`day_of_week` integer NOT NULL,
+	`is_closed` integer DEFAULT false NOT NULL,
+	`opening_time` text NOT NULL,
+	`closing_time` text NOT NULL,
+	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `machine_operating_schedule` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`machine_id` integer NOT NULL,
+	`operating_hour_id` integer NOT NULL,
+	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	CONSTRAINT `fk_machine_operating_schedule_machine_id_machines_id_fk` FOREIGN KEY (`machine_id`) REFERENCES `machines`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	CONSTRAINT `fk_machine_operating_schedule_operating_hour_id_operation_hours_id_fk` FOREIGN KEY (`operating_hour_id`) REFERENCES `operation_hours`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+--> statement-breakpoint
+CREATE TABLE `special_hours` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`name` text(100),
+	`description` text(200),
+	`specific_date` text NOT NULL,
+	`is_closed` integer DEFAULT false NOT NULL,
+	`opening_time` text NOT NULL,
+	`closing_time` text NOT NULL,
+	`reason` text(200),
+	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `machine_special_schedule` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`machine_id` integer NOT NULL,
+	`special_hour_id` integer NOT NULL,
+	`created_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	`updated_at` integer DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+	CONSTRAINT `fk_machine_special_schedule_machine_id_machines_id_fk` FOREIGN KEY (`machine_id`) REFERENCES `machines`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	CONSTRAINT `fk_machine_special_schedule_special_hour_id_special_hours_id_fk` FOREIGN KEY (`special_hour_id`) REFERENCES `special_hours`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 --> statement-breakpoint
 CREATE INDEX `account_userId_idx` ON `account` (`user_id`);--> statement-breakpoint

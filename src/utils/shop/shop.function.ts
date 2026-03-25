@@ -19,12 +19,12 @@ export const createShopFn = createServerFn({ method: "POST" })
 
 export const fetchShopByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchShopByIdHandler(data.id));
+  .handler(async ({ data }) => fetchShopByIdHandler(Number(data.id)));
 
 export const updateShopByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateShopSchema)
-  .handler(async ({ data }) => updateShopHandlerById(data.id as number, data));
+  .handler(async ({ data }) => updateShopHandlerById(Number(data.id), data));
 
 export const deleteShopByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteShopByIdHandler(data.id));
+  .handler(async ({ data }) => deleteShopByIdHandler(Number(data.id)))  ;

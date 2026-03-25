@@ -1,24 +1,28 @@
-import { Button } from "@/components/ui/button";
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { InsertDisposeType, UpdateDisposeType } from "@/db/schema";
+import {
+  disposeReasonValues,
+  type InsertDisposeType,
+  type UpdateDisposeType,
+} from "@/db/schema";
 import { useForm } from "@tanstack/react-form";
 import type { DisposeFormProps } from "./disposeFormType";
 
 export function DisposeForm({
   mode,
   initialData,
+  shops,
+  foodItems,
+  machines,
   onSubmit,
   onCancel,
 }: DisposeFormProps) {
   const form = useForm({
     defaultValues: initialData || {
+      shopId: null,
       machineId: null,
       foodItemId: null,
       disposeDate: new Date().toISOString().slice(0, 10),
@@ -53,60 +57,66 @@ export function DisposeForm({
         form.handleSubmit();
       }}
     >
-      <DialogHeader>
-        <DialogTitle>
-          {mode === "view"
-            ? "Dispose Details"
-            : isCreate
-              ? "Create Dispose"
-              : "Edit Dispose"}
-        </DialogTitle>
-        <DialogDescription>
-          {isReadOnly
-            ? "View dispose record details."
-            : "Fill out the form below and click save when you're done."}
-        </DialogDescription>
-      </DialogHeader>
-
+      <FormHeader
+        mode={mode}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+        module="Dispose"
+      />
       <FieldGroup>
-        <form.Field name="machineId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Machine ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* Row 1: shop & machine */}
+        <div className="flex gap-4">
+          <div className="w-1/2">
+            <FormSelect
+              form={form}
+              name="shopId"
+              label="Shop"
+              isReadOnly={isReadOnly}
+              list={shops || []}
+              valueKey={(item) => item.id}
+              labelKey={(item) => item.name}
+            />
+          </div>
+          <div className="w-1/2">
+            <FormSelect
+              form={form}
+              name="machineId"
+              label="Machine"
+              isReadOnly={isReadOnly}
+              list={machines || []}
+              valueKey={(item) => item.id}
+              labelKey={(item) => item.name}
+            />
+          </div>
+        </div>
 
-        <form.Field name="foodItemId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Food Item ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* Row 2: food item & dispose reason */}
+        <div className="flex gap-4 mt-4">
+          <div className="w-1/2">
+            <FormSelect
+              form={form}
+              name="foodItemId"
+              label="Food Item"
+              isReadOnly={isReadOnly}
+              list={foodItems || []}
+              valueKey={(item) => item.id}
+              labelKey={(item) => item.name}
+            />
+          </div>
+          <div className="w-1/2">
+            <FormSelect
+              form={form}
+              name="disposeReason"
+              label="Dispose Reason"
+              isReadOnly={isReadOnly}
+              list={[...disposeReasonValues]}
+              valueKey={(item) => item}
+              labelKey={(item) => item}
+            />
+          </div>
+        </div>
 
+        {/* dispose date */}
         <form.Field name="disposeDate">
           {(field) => (
             <Field>
@@ -124,6 +134,7 @@ export function DisposeForm({
           )}
         </form.Field>
 
+        {/* dispose time */}
         <form.Field name="disposeTime">
           {(field) => (
             <Field>
@@ -141,6 +152,7 @@ export function DisposeForm({
           )}
         </form.Field>
 
+        {/* quantity */}
         <form.Field name="quantity">
           {(field) => (
             <Field>
@@ -160,45 +172,22 @@ export function DisposeForm({
           )}
         </form.Field>
 
-        <form.Field name="disposeReason">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Dispose Reason</FieldLabel>
-              <select
-                id={field.name}
-                name={field.name}
-                className="h-9 rounded-md border bg-background px-2 text-sm"
-                value={field.state.value ?? "other"}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(
-                    e.target.value as
-                      | "expired"
-                      | "damaged"
-                      | "refunded"
-                      | "other",
-                  )
-                }
-              >
-                <option value="expired">expired</option>
-                <option value="damaged">damaged</option>
-                <option value="refunded">refunded</option>
-                <option value="other">other</option>
-              </select>
-            </Field>
-          )}
-        </form.Field>
+        {/* dispose reason */}
+        <FormSelect
+          form={form}
+          name="disposeReason"
+          label="Dispose Reason"
+          isReadOnly={isReadOnly}
+          list={[...disposeReasonValues]}
+          valueKey={(item) => item}
+          labelKey={(item) => item}
+        />
       </FieldGroup>
-
-      <DialogFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        {!isReadOnly ? (
-          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
-        ) : null}
-      </DialogFooter>
+      <FormFooter
+        onCancel={onCancel}
+        isReadOnly={isReadOnly}
+        isCreate={isCreate}
+      />
     </form>
   );
 }

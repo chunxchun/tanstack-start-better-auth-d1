@@ -22,14 +22,14 @@ export const createFoodItemFn = createServerFn({ method: "POST" })
 
 export const fetchFoodItemByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchFoodItemByIdHandler(data.id));
+  .handler(async ({ data }) => fetchFoodItemByIdHandler(Number(data.id)));
 
 export const updateFoodItemByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateFoodItemSchema)
   .handler(async ({ data }) =>
-    updateFoodItemByIdHandler(data.id as number, data),
+    updateFoodItemByIdHandler(Number(data.id), data),
   );
 
 export const deleteFoodItemByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteFoodItemByIdHandler(data.id));
+  .handler(async ({ data }) => deleteFoodItemByIdHandler(Number(data.id)));

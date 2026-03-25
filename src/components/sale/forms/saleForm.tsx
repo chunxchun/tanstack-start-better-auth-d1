@@ -7,13 +7,28 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { InsertSaleType, UpdateSaleType } from "@/db/schema";
+import {
+  paymentMethodValues,
+  type InsertSaleType,
+  type UpdateSaleType,
+} from "@/db/schema";
 import { useForm } from "@tanstack/react-form";
 import type { SaleFormProps } from "./saleFormType";
+import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
+import { Form } from "radix-ui";
+import FormDate from "@/components/form-date";
+import FormTime from "@/components/form-time";
+import FormNumber from "@/components/form-number";
+import { currencyValues } from "@/db/schema/commonSchema";
+import FormDecimal from "@/components/form-decimal";
 
 export function SaleForm({
   mode,
   initialData,
+  shops,
+  machines,
+  foodItems,
   onSubmit,
   onCancel,
 }: SaleFormProps) {
@@ -21,6 +36,7 @@ export function SaleForm({
     defaultValues: initialData || {
       machineId: null,
       foodItemId: null,
+      shopId: null,
       saleDate: new Date().toISOString().slice(0, 10), // default to today's date
       saleTime: "12:00",
       quantity: 1,
@@ -58,205 +74,109 @@ export function SaleForm({
         form.handleSubmit();
       }}
     >
-      <DialogHeader>
-        <DialogTitle>
-          {mode === "view"
-            ? "Sale Details"
-            : isCreate
-              ? "Create Sale"
-              : "Edit Sale"}
-        </DialogTitle>
-        <DialogDescription>
-          {isReadOnly
-            ? "View sale details."
-            : "Fill out the form below and click save when you're done."}
-        </DialogDescription>
-      </DialogHeader>
+      <FormHeader
+        module="Sale"
+        mode={mode}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
 
       <FieldGroup>
-        <form.Field name="machineId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Machine ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* machine */}
+        <FormSelect
+          form={form}
+          name="machineId"
+          label="Machine"
+          list={machines || []}
+          valueKey={(item) => item.id}
+          labelKey={(item) => item.name}
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="foodItemId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Food Item ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* food item */}
+        <FormSelect
+          form={form}
+          name="foodItemId"
+          label="Food Item"
+          list={foodItems || []}
+          valueKey={(item) => item.id}
+          labelKey={(item) => item.name}
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="saleDate">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Sale Date</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="date"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* shop */}
+        <FormSelect
+          form={form}
+          name="shopId"
+          label="Shop"
+          list={shops || []}
+          valueKey={(item) => item.id}
+          labelKey={(item) => item.name}
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="saleTime">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Sale Time</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="time"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* sale date */}
+        <FormDate
+          form={form}
+          name="saleDate"
+          label="Sale Date"
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="quantity">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Quantity</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* sale time */}
+        <FormTime
+          form={form}
+          name="saleTime"
+          label="Sale Time"
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="currency">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Currency</FieldLabel>
-              <select
-                id={field.name}
-                name={field.name}
-                className="h-9 rounded-md border bg-background px-2 text-sm"
-                value={field.state.value ?? "AUD"}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(
-                    e.target.value as "HKD" | "AUD" | "USD" | "EUR" | "JPY",
-                  )
-                }
-              >
-                <option value="HKD">HKD</option>
-                <option value="AUD">AUD</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="JPY">JPY</option>
-              </select>
-            </Field>
-          )}
-        </form.Field>
+        {/* quantity */}
+        <FormNumber
+          form={form}
+          name="quantity"
+          label="Quantity"
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="unitPrice">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Unit Price</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                step="0.01"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* currency */}
+        <FormSelect
+          form={form}
+          name="currency"
+          label="Currency"
+          list={currencyValues}
+          valueKey={(item) => item}
+          labelKey={(item) => item}
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="totalPrice">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Total Price</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                step="0.01"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+        {/* unit price */}
+        <FormDecimal
+          form={form}
+          name="unitPrice"
+          label="Unit Price"
+          isReadOnly={isReadOnly}
+        />
 
-        <form.Field name="paymentMethod">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Payment Method</FieldLabel>
-              <select
-                id={field.name}
-                name={field.name}
-                className="h-9 rounded-md border bg-background px-2 text-sm"
-                value={field.state.value ?? "cash"}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(
-                    e.target.value as "cash" | "card" | "coupon" | "qr-code",
-                  )
-                }
-              >
-                <option value="cash">cash</option>
-                <option value="card">card</option>
-                <option value="coupon">coupon</option>
-                <option value="qr-code">qr-code</option>
-              </select>
-            </Field>
-          )}
-        </form.Field>
+        {/* total price */}
+        <FormDecimal
+          form={form}
+          name="totalPrice"
+          label="Total Price"
+          isReadOnly={isReadOnly}
+        />
+
+        {/* payment method */}
+        <FormSelect
+          form={form}
+          name="paymentMethod"
+          label="Payment Method"
+          list={[...paymentMethodValues]}
+          valueKey={(item) => item}
+          labelKey={(item) => item}
+          isReadOnly={isReadOnly}
+        />
+
       </FieldGroup>
 
       <DialogFooter>

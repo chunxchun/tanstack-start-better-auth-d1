@@ -19,12 +19,12 @@ export const createMenuFn = createServerFn({ method: "POST" })
 
 export const fetchMenuByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchMenuByIdHandler(data.id));
+  .handler(async ({ data }) => fetchMenuByIdHandler(Number(data.id)));
 
 export const updateMenuByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateMenuSchema)
-  .handler(async ({ data }) => updateMenuHandlerById(data.id as number, data));
+  .handler(async ({ data }) => updateMenuHandlerById(Number(data.id), data));
 
 export const deleteMenuByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteMenuByIdHandler(data.id));
+  .handler(async ({ data }) => deleteMenuByIdHandler(Number(data.id)));

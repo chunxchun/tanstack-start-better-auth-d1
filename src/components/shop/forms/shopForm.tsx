@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormText from "@/components/form-text";
 import {
   Field,
   FieldDescription,
@@ -13,10 +8,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type {
-  InsertShopType,
-  UpdateShopType,
-} from "@/db/schema";
+import type { InsertShopType, UpdateShopType } from "@/db/schema";
 import { getVersionedImageUrl } from "@/lib/utils";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
@@ -86,61 +78,33 @@ export function ShopForm({
         form.handleSubmit();
       }}
     >
-      <CardHeader>
-        <CardTitle>
-          {mode === "view"
-            ? "Shop Details"
-            : isCreate
-              ? "Create Shop"
-              : "Edit Shop"}
-        </CardTitle>
-        <CardDescription>
-          {isReadOnly
-            ? "View shop details."
-            : "Fill out the form below and click save when you're done."}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="overflow-auto mt-8 mb-8">
+      <FormHeader
+        module="Shop"
+        mode={mode}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
+
+      <div className="overflow-auto mt-8 mb-8">
         <FieldGroup>
-          <form.Field name="name">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+          {/* name */}
+          <FormText
+            form={form}
+            name="name"
+            label="Name"
+            isReadOnly={isReadOnly}
+          />
 
-          <form.Field name="description">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value ?? ""}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => {
-                    const nextValue = e.target.value.trim();
-                    field.handleChange(nextValue.length ? e.target.value : null);
-                  }}
-                />
-                <FieldDescription>
-                  Optional short description for this shop.
-                </FieldDescription>
-              </Field>
-            )}
-          </form.Field>
+          {/* description */}
+          <FormText
+            form={form}
+            name="description"
+            label="Description"
+            isReadOnly={isReadOnly}
+            description="Optional short description for this shop."
+          />
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <form.Field name="logoUrl">
               {(field) => (
                 <Field>
@@ -171,7 +135,9 @@ export function ShopForm({
                         onBlur={field.handleBlur}
                         type="file"
                         onChange={(e) => {
-                          const file = e.target.files ? e.target.files[0] : null;
+                          const file = e.target.files
+                            ? e.target.files[0]
+                            : null;
                           if (!file) {
                             field.handleChange(null);
                             setLogoFile(null);
@@ -220,7 +186,9 @@ export function ShopForm({
                         onBlur={field.handleBlur}
                         type="file"
                         onChange={(e) => {
-                          const file = e.target.files ? e.target.files[0] : null;
+                          const file = e.target.files
+                            ? e.target.files[0]
+                            : null;
                           if (!file) {
                             field.handleChange(null);
                             setBannerFile(null);
@@ -240,17 +208,13 @@ export function ShopForm({
             </form.Field>
           </div>
         </FieldGroup>
-      </CardContent>
-      <CardFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        {!isReadOnly ? (
-          <Button type="submit" disabled={isLoading}>
-            {isCreate ? "Create" : "Save"}
-          </Button>
-        ) : null}
-      </CardFooter>
+      </div>
+
+      <FormFooter
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+        onCancel={onCancel}
+      />
     </form>
   );
 }

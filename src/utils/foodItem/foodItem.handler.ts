@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import {
   foodItemsTable,
-  type InsertFoodItem,
-  type UpdateFoodItem,
+  type InsertFoodItemType,
+  type UpdateFoodItemType,
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -37,7 +37,7 @@ export const fetchFoodItemByIdHandler = async (id: number) => {
   }
 };
 
-export const createFoodItemHandler = async (foodItem: InsertFoodItem) => {
+export const createFoodItemHandler = async (foodItem: InsertFoodItemType) => {
   try {
     const result = await db.insert(foodItemsTable).values(foodItem).returning();
     return result;
@@ -49,7 +49,7 @@ export const createFoodItemHandler = async (foodItem: InsertFoodItem) => {
 
 export const updateFoodItemByIdHandler = async (
   id: number,
-  foodItem: UpdateFoodItem,
+  foodItem: UpdateFoodItemType,
 ) => {
   try {
     const result = await db

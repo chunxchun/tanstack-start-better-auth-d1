@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { menusTable, type InsertMenu, type UpdateMenu } from "@/db/schema";
+import { menusTable, type InsertMenuType, type UpdateMenuType } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listMenuHandler = async (
@@ -29,7 +29,7 @@ export const fetchMenuByIdHandler = async (id: number) => {
   }
 };
 
-export const createMenuHandler = async (menu: InsertMenu) => {
+export const createMenuHandler = async (menu: InsertMenuType) => {
   try {
     const result = await db.insert(menusTable).values(menu).returning();
     return result;
@@ -41,7 +41,7 @@ export const createMenuHandler = async (menu: InsertMenu) => {
 
 export const updateMenuHandlerById = async (
   id: number,
-  menu: UpdateMenu,
+  menu: UpdateMenuType,
 ) => {
   try {
     const result = await db

@@ -30,7 +30,7 @@ type SaleFormViewProps = SaleFormBaseProps & {
 };
 
 type SaleFormEditProps = SaleFormBaseProps & {
-  initialData: UpdateSaleType;
+  initialData: SelectSaleType;
   mode: "edit";
   shops: SelectShopType[];
   machines: SelectMachineType[];

@@ -122,7 +122,12 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertMachineType) => {
     try {
-      const result = await createMachineFn({ data: values });
+      const formattedValues = {
+        ...values,
+        locationId: values.locationId ? Number(values.locationId) : null,
+        shopId: values.shopId ? Number(values.shopId) : null,
+      };
+      const result = await createMachineFn({ data: formattedValues });
       if (!result || result.length === 0) {
         throw new Error("Failed to create machine: No result returned");
       }

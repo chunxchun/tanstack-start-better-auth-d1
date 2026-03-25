@@ -1,5 +1,48 @@
-// TODO: Implement DeleteFoodItemDialog following the location/dialogs pattern.
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import type { DeleteDialogProps } from "@/db/schema/commonSchema";
+import type { SelectFoodItemType } from "@/db/schema/foodItemTable";
 
-export default function DeleteFoodItemDialog() {
-  return null;
+type DeleteFoodItemDialogProps = DeleteDialogProps<SelectFoodItemType>;
+
+export default function DeleteFoodItemDialog({
+  open,
+  onOpenChange,
+  onCancel,
+  onDeleteConfirm,
+  data: foodItem,
+}: DeleteFoodItemDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className="min-w-[50vw]"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle>Delete Food Item</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete the food item{" "}
+            {foodItem ? ` ${foodItem.name}` : " this food item"}? This action
+            cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="button" variant="destructive" onClick={onDeleteConfirm}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }

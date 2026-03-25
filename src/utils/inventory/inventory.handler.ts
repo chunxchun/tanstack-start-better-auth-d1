@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import {
   inventoriesTable,
-  type InsertInventory,
-  type UpdateInventory,
+  type InsertInventoryType,
+  type UpdateInventoryType,
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -37,7 +37,7 @@ export const fetchInventoryByIdHandler = async (id: number) => {
   }
 };
 
-export const createInventoryHandler = async (inventory: InsertInventory) => {
+export const createInventoryHandler = async (inventory: InsertInventoryType) => {
   try {
     const result = await db
       .insert(inventoriesTable)
@@ -52,7 +52,7 @@ export const createInventoryHandler = async (inventory: InsertInventory) => {
 
 export const updateInventoryByIdHandler = async (
   id: number,
-  inventory: UpdateInventory,
+  inventory: UpdateInventoryType,
 ) => {
   try {
     const result = await db

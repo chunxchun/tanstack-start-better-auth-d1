@@ -1,8 +1,8 @@
 import { db } from "@/db";
 import {
-    disposesTable,
-    type InsertDispose,
-    type UpdateDispose,
+  disposesTable,
+  type InsertDisposeType,
+  type UpdateDisposeType,
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -37,7 +37,7 @@ export const fetchDisposeByIdHandler = async (id: number) => {
   }
 };
 
-export const createDisposeHandler = async (dispose: InsertDispose) => {
+export const createDisposeHandler = async (dispose: InsertDisposeType) => {
   try {
     const result = await db.insert(disposesTable).values(dispose).returning();
     return result;
@@ -49,7 +49,7 @@ export const createDisposeHandler = async (dispose: InsertDispose) => {
 
 export const updateDisposeByIdHandler = async (
   id: number,
-  dispose: UpdateDispose,
+  dispose: UpdateDisposeType,
 ) => {
   try {
     const result = await db

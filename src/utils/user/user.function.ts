@@ -1,7 +1,3 @@
-// import {
-//   insertSystemUserSchema,
-//   updateSystemUserSchema,
-// } from "@/db/schema/systemUserTable";
 import { insertUserSchema, updateUserSchema } from "@/db/schema/authSchema";
 import { createServerFn } from "@tanstack/react-start";
 import { paginationSchema, stringIdSchema } from "../sharedSchema";

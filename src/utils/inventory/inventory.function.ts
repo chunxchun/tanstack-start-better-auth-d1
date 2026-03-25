@@ -22,14 +22,14 @@ export const createInventoryFn = createServerFn({ method: "POST" })
 
 export const fetchInventoryByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchInventoryByIdHandler(data.id));
+  .handler(async ({ data }) => fetchInventoryByIdHandler(Number(data.id)));
 
 export const updateInventoryByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateInventorySchema)
   .handler(async ({ data }) =>
-    updateInventoryByIdHandler(data.id as number, data),
+    updateInventoryByIdHandler(Number(data.id), data),
   );
 
 export const deleteInventoryByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteInventoryByIdHandler(data.id));
+  .handler(async ({ data }) => deleteInventoryByIdHandler(Number(data.id)));

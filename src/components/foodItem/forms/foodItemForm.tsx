@@ -16,10 +16,7 @@ import type {
   InsertFoodItemType,
   UpdateFoodItemType,
 } from "@/db/schema/foodItemTable";
-import {
-  getImageValidationError,
-  uploadImage,
-} from "@/lib/imageUpload";
+import { getImageValidationError, uploadImage } from "@/lib/imageUpload";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import type { FoodItemFormProps } from "./foodItemFormType";
@@ -27,6 +24,7 @@ import type { FoodItemFormProps } from "./foodItemFormType";
 export function FoodItemForm({
   mode,
   initialData,
+  shops,
   onSubmit,
   onCancel,
 }: FoodItemFormProps) {
@@ -87,6 +85,7 @@ export function FoodItemForm({
       </DialogHeader>
 
       <FieldGroup>
+        {/* shop */}
         <form.Field name="shopId">
           {(field) => (
             <Field>
@@ -106,6 +105,7 @@ export function FoodItemForm({
           )}
         </form.Field>
 
+        {/* name */}
         <form.Field name="name">
           {(field) => (
             <Field>
@@ -122,6 +122,7 @@ export function FoodItemForm({
           )}
         </form.Field>
 
+        {/* image */}
         <form.Field name="imageUrl">
           {(field) => (
             <Field>
@@ -169,6 +170,7 @@ export function FoodItemForm({
           )}
         </form.Field>
 
+        {/* description */}
         <form.Field name="description">
           {(field) => (
             <Field>
@@ -185,9 +187,10 @@ export function FoodItemForm({
                 Optional short item description.
               </FieldDescription>
             </Field>
-          )} 
+          )}
         </form.Field>
 
+        {/* category */}
         <form.Field name="category">
           {(field) => (
             <Field className="md:w-1/2">
@@ -213,6 +216,7 @@ export function FoodItemForm({
           )}
         </form.Field>
 
+        {/* sku */}
         <form.Field name="skuCode">
           {(field) => (
             <Field>
@@ -230,6 +234,7 @@ export function FoodItemForm({
         </form.Field>
 
         <div className="flex w-full flex-col gap-5 md:flex-row md:gap-4">
+          {/* price */}
           <form.Field name="price">
             {(field) => (
               <Field className="md:w-1/2">
@@ -250,6 +255,7 @@ export function FoodItemForm({
             )}
           </form.Field>
 
+          {/* currency */}
           <form.Field name="currency">
             {(field) => (
               <Field className="md:w-1/2">

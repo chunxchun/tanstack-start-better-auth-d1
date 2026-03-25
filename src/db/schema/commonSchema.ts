@@ -90,3 +90,11 @@ export type ViewDialogProps<T> = {
   onCancel: () => void;
   data: T;
 };
+
+export type DeleteDialogProps<T> = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCancel: () => void;
+  onDeleteConfirm: () => void;
+  data: T;
+}

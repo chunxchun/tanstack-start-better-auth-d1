@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { deliveriesTable, type InsertDelivery, type UpdateDelivery } from "@/db/schema";
+import { deliveriesTable, type InsertDeliveryType, type UpdateDeliveryType } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listDeliveryHandler = async (
@@ -33,7 +33,7 @@ export const fetchDeliveryByIdHandler = async (id: number) => {
   }
 };
 
-export const createDeliveryHandler = async (delivery: InsertDelivery) => {
+export const createDeliveryHandler = async (delivery: InsertDeliveryType) => {
   try {
     const result = await db.insert(deliveriesTable).values(delivery).returning();
     return result;
@@ -45,7 +45,7 @@ export const createDeliveryHandler = async (delivery: InsertDelivery) => {
 
 export const updateDeliveryByIdHandler = async (
   id: number,
-  delivery: UpdateDelivery,
+  delivery: UpdateDeliveryType,
 ) => {
   try {
     const result = await db

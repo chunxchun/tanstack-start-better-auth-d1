@@ -36,6 +36,7 @@ export const machinesTable = sqliteTable("machines", {
     onUpdate: "restrict",
   }),
   name: text("name", { length: 100 }).notNull(),
+  description: text("description", { length: 200 }),
   serialNumber: text("serial_number", { length: 100 }).notNull().unique(),
   status: text("status", { enum: machineStatusValues }).default("active"),
   version: text("version", { enum: machineVersionValues }).notNull(),
@@ -43,10 +44,7 @@ export const machinesTable = sqliteTable("machines", {
   dayEndStockAutoReset: integer("day_end_stock_auto_reset", {
     mode: "boolean",
   }).default(false),
-  description: text("description", { length: 200 }),
   installationDate: text("installation_date").notNull(), // ISO 8601 format (YYYY-MM-DD)
-  startWorkingHour: text("start_working_hour").notNull(), // HH:MM format (e.g., "09:00")
-  closeWorkingHour: text("close_working_hour").notNull(), // HH:MM format (e.g., "17:00")
   createdAt: integer("created_at")
     .notNull()
     .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),

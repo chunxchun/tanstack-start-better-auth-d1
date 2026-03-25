@@ -1,5 +1,9 @@
 import { db } from "@/db";
-import { salesTable, type InsertSale, type UpdateSale } from "@/db/schema";
+import {
+  salesTable,
+  type InsertSaleType,
+  type UpdateSaleType,
+} from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listSaleHandler = async (
@@ -7,7 +11,11 @@ export const listSaleHandler = async (
   offset: number = 1,
 ) => {
   try {
-    const result = await db.select().from(salesTable).limit(limit).offset(offset);
+    const result = await db
+      .select()
+      .from(salesTable)
+      .limit(limit)
+      .offset(offset);
     return result;
   } catch (error) {
     console.error("Error listing sales:", error);
@@ -29,7 +37,7 @@ export const fetchSaleByIdHandler = async (id: number) => {
   }
 };
 
-export const createSaleHandler = async (sale: InsertSale) => {
+export const createSaleHandler = async (sale: InsertSaleType) => {
   try {
     const result = await db.insert(salesTable).values(sale).returning();
     return result;
@@ -41,7 +49,7 @@ export const createSaleHandler = async (sale: InsertSale) => {
 
 export const updateSaleHandlerById = async (
   id: number,
-  sale: UpdateSale,
+  sale: UpdateSaleType,
 ) => {
   try {
     const result = await db

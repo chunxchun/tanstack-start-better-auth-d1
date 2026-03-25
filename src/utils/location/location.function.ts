@@ -22,14 +22,14 @@ export const createLocationFn = createServerFn({ method: "POST" })
 
 export const fetchLocationByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchLocationByIdHandler(data.id as number));
+  .handler(async ({ data }) => fetchLocationByIdHandler(Number(data.id)));
 
 export const updateLocationByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateLocationSchema)
   .handler(async ({ data }) => {
-    return updateLocationByIdHandler(data.id as number, data);
+    return updateLocationByIdHandler(Number(data.id), data);
   });
 
 export const deleteLocationByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteLocationByIdHandler(data.id as number));
+  .handler(async ({ data }) => deleteLocationByIdHandler(Number(data.id)));

@@ -29,6 +29,12 @@ import {
   SelectValue,
   Select,
 } from "@/components/ui/select";
+import FormSelect from "@/components/form-select";
+import FormFooter from "@/components/form-footer";
+import FormTime from "@/components/form-time";
+import FormDate from "@/components/form-date";
+import { FormInput } from "lucide-react";
+import FormText from "@/components/form-text";
 
 export function DeliveryForm({
   mode,
@@ -157,107 +163,59 @@ export function DeliveryForm({
           </div>
 
           {/* courier reference */}
-          <form.Field name="courierReference">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Courier Reference</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value ?? ""}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value || null)}
-                />
-                <FieldDescription>
-                  Optional reference provided by courier.
-                </FieldDescription>
-              </Field>
-            )}
-          </form.Field>
+          <FormText
+            form={form}
+            name="courierReference"
+            label="Courier Reference"
+            isReadOnly={isReadOnly}
+            description="Optional reference provided by courier."
+          />
 
           {/* Row: delivery date & time */}
           <div className="flex gap-4">
             <div className="w-1/2">
               {/* delivery date */}
-              <form.Field name="deliverDate">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Delivery Date</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="date"
-                      value={field.state.value}
-                      disabled={isReadOnly}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </Field>
-                )}
-              </form.Field>
+              <FormDate
+                form={form}
+                name="deliverDate"
+                label="Delivery Date"
+                isReadOnly={isReadOnly}
+                description="Date of the delivery"
+              />
             </div>
             {/* delivery time */}
             <div className="w-1/2">
-              <form.Field name="deliverTime">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Delivery Time</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      type="time"
-                      value={field.state.value}
-                      disabled={isReadOnly}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                  </Field>
-                )}
-              </form.Field>
+              <FormTime
+                form={form}
+                name="deliverTime"
+                label="Delivery Time"
+                isReadOnly={isReadOnly}
+                description={`Expected delivery time`}
+              />
             </div>
           </div>
 
           {/* status */}
           <div className="w-1/2">
-            <form.Field name="status">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                  <Select
-                    value={field.state.value}
-                    disabled={isReadOnly}
-                    onValueChange={(e) => field.handleChange(e)}
-                  >
-                    <SelectTrigger onBlur={field.handleBlur}>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {deliveryStatusValues.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FieldDescription>
-                    Status of the delivery. Defaults to "scheduled".
-                  </FieldDescription>
-                </Field>
-              )}
-            </form.Field>
+            <FormSelect
+              form={form}
+              name="status"
+              label="Status"
+              isReadOnly={isReadOnly}
+              list={[...deliveryStatusValues]}
+              valueKey={(item) => item}
+              labelKey={(item) => item}
+              description={`Status of the delivery. Defaults to "scheduled".`}
+            />
           </div>
         </FieldGroup>
       </CardContent>
 
-      <CardFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        {!isReadOnly ? (
-          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
-        ) : null}
-      </CardFooter>
+      <FormFooter
+        onCancel={onCancel}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
     </form>
   );
 }

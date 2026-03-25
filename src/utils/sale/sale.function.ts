@@ -19,12 +19,12 @@ export const createSaleFn = createServerFn({ method: "POST" })
 
 export const fetchSaleByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchSaleByIdHandler(data.id));
+  .handler(async ({ data }) => fetchSaleByIdHandler(Number(data.id)));
 
 export const updateSaleByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateSaleSchema)
-  .handler(async ({ data }) => updateSaleHandlerById(data.id as number, data));
+  .handler(async ({ data }) => updateSaleHandlerById(Number(data.id), data));
 
 export const deleteSaleByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteSaleByIdHandler(data.id));
+  .handler(async ({ data }) => deleteSaleByIdHandler(Number(data.id)));

@@ -22,7 +22,7 @@ export const createDeliveryFn = createServerFn({ method: "POST" })
 
 export const fetchDeliveryByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchDeliveryByIdHandler(data.id));
+  .handler(async ({ data }) => fetchDeliveryByIdHandler(Number(data.id)));
 
 export const updateDeliveryByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateDeliverySchema)
@@ -32,4 +32,4 @@ export const updateDeliveryByIdFn = createServerFn({ method: "POST" })
 
 export const deleteDeliveryByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteDeliveryByIdHandler(data.id));
+  .handler(async ({ data }) => deleteDeliveryByIdHandler(Number(data.id)));
