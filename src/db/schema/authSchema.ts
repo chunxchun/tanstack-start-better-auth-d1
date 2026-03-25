@@ -20,7 +20,7 @@ export const user = sqliteTable("user", {
     .default(false)
     .notNull(),
   image: text("image"),
-  displayName: text("display_name", { length: 100 }).notNull(),
+  displayName: text("display_name", { length: 100 }),
   role: text("role", { enum: userRoleValues }).notNull().default("staff"),
   shopId: integer("shop_id").references(() => shopsTable.id, {
     onDelete: "restrict",

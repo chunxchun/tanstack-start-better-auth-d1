@@ -31,6 +31,7 @@ export function SignupForm({
       email: "",
       password: "",
       confirmPassword: "",
+      displayName: "",
     },
     onSubmit: async ({ value }) => {
       try {
@@ -45,6 +46,7 @@ export function SignupForm({
           name: value.name,
           email: value.email,
           password: value.password,
+          displayName: value.displayName,
           callbackURL: "/dashboard",
           role: "admin",
         });
@@ -117,6 +119,44 @@ export function SignupForm({
             </Field>
           )}
         </form.Field>
+        <form.Field
+          name="displayName"
+          validators={{
+            onChange: ({ value }) => {
+              if (!value.trim()) return "Display name is required";
+              if (value.trim().length < 2)
+                return "Display name must be at least 2 characters";
+              return undefined;
+            },
+          }}
+        >
+          {(field) => (
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
+              <FieldLabel htmlFor={field.name}>Display Name</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="text"
+                placeholder="John Doe"
+                required
+                className="bg-background"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              <FieldError>
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
+              </FieldError>
+            </Field>
+          )}
+        </form.Field>
+
         <form.Field
           name="email"
           validators={{

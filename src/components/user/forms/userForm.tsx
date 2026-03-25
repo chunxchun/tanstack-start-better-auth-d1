@@ -1,26 +1,9 @@
-import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FieldGroup } from "@/components/ui/field";
 
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
+import FormText from "@/components/form-text";
 import {
   userRoleValues,
   type InsertUserType,
@@ -54,12 +37,12 @@ export function UserForm({
       setIsLoading(true);
       try {
         if (mode === "edit") {
-          await onSubmit(value as UpdateUserType);
+          await onSubmit(value as UpdateUserType, imageFile ?? undefined);
           toast.success("User updated successfully");
         }
 
         if (mode === "create") {
-          await onSubmit(value as InsertUserType);
+          await onSubmit(value as InsertUserType, imageFile ?? undefined);
           toast.success("User created successfully");
         }
       } catch (error) {
@@ -82,119 +65,68 @@ export function UserForm({
         form.handleSubmit();
       }}
     >
-      <CardHeader>
-        <CardTitle>
-          {isReadOnly
-            ? "User Details"
-            : isCreate
-              ? "Create User"
-              : "Edit User"}
-        </CardTitle>
-        <CardDescription>
-          {isReadOnly
-            ? "View user details."
-            : "Fill out the form below and click save when you're done."}
-        </CardDescription>
-      </CardHeader>
+      <FormHeader
+        module="User"
+        mode={mode}
+        isReadOnly={isReadOnly}
+        isCreate={isCreate}
+      />
 
-      <CardContent className="overflow-auto mt-8 mb-8">
-        <FieldGroup>
+      <FieldGroup className="overflow-auto mt-8 mb-8">
+        <div className="flex gap-4">
           {/* shop */}
-          <form.Field name="shopId">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Shop</FieldLabel>
-                <Select
-                  value={String(field.state.value)}
-                  disabled={isReadOnly}
-                  onValueChange={(val) => field.handleChange(Number(val))}
-                >
-                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select a shop" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {/* <SelectItem value="">None</SelectItem> */}
-                    {shops ? shops.map((shop) => (
-                      <SelectItem key={shop.id} value={String(shop.id)}>
-                        {shop.name}
-                      </SelectItem>
-                    )) : null}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            isReadOnly={isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+          />
 
-          <form.Field name="name">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+          {/* role */}
+          <FormSelect
+            form={form}
+            name="role"
+            label="Role"
+            list={[...userRoleValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+            isReadOnly={isReadOnly}
+            required
+          />
+        </div>
+        {/* name */}
+        <FormText
+          form={form}
+          name="name"
+          label="Name"
+          isReadOnly={isReadOnly}
+          required
+        />
 
-          <form.Field name="displayName">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Display Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+        {/* display name */}
+        <FormText
+          form={form}
+          name="displayName"
+          label="Display Name"
+          isReadOnly={isReadOnly}
+          description={`Optional display name`}
+        />
 
-          <form.Field name="role">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Role</FieldLabel>
-                <Select
-                  value={field.state.value ?? "staff"}
-                  disabled={isReadOnly}
-                  onValueChange={(val) =>
-                    field.handleChange(val as UserRoleType)
-                  }
-                >
-                  <SelectTrigger id={field.name} onBlur={field.handleBlur}>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {userRoleValues.map((role) => (
-                      <SelectItem key={role} value={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
-        </FieldGroup>
-      </CardContent>
 
-      <CardFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        {!isReadOnly ? (
-          <Button type="submit" disabled={isLoading}>
-            {isCreate ? "Create" : "Save"}
-          </Button>
-        ) : null}
-      </CardFooter>
+        {/* password */}
+
+        {/* image  */}
+      </FieldGroup>
+
+      <FormFooter
+        onCancel={onCancel}
+        isReadOnly={isReadOnly}
+        isCreate={isCreate}
+        isLoading={isLoading}
+      />
     </form>
   );
 }

@@ -30,6 +30,7 @@ type FormSelectProps<T, TForm> = {
   valueKey: (item: T) => string | number;
   labelKey: (item: T) => string;
   description?: string | null;
+  required?: boolean;
 };
 
 export default function FormSelect<T, TForm>({
@@ -41,12 +42,15 @@ export default function FormSelect<T, TForm>({
   valueKey,
   labelKey,
   description = null,
+  required = false,
 }: FormSelectProps<T, TForm>) {
   return (
     <form.Field name={name}>
       {(field: any) => (
         <Field>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name}>
+            {label} {required && <span className="text-destructive">*</span>}
+          </FieldLabel>
           <Select
             value={String(field.state.value)}
             disabled={isReadOnly}

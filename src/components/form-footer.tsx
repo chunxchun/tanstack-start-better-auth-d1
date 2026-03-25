@@ -5,10 +5,12 @@ export default function FormFooter({
   onCancel,
   isReadOnly,
   isCreate,
+  isLoading = false
 }: {
   onCancel: () => void;
   isReadOnly: boolean;
   isCreate: boolean;
+  isLoading?: boolean;
 }) {
   return (
     <DialogFooter>
@@ -16,7 +18,7 @@ export default function FormFooter({
         Close
       </Button>
       {!isReadOnly ? (
-        <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
+        <Button type="submit" disabled={isLoading}>{isCreate ? "Create" : "Save"}</Button>
       ) : null}
     </DialogFooter>
   );

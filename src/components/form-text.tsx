@@ -21,6 +21,7 @@ type FormTextProps<TForm> = {
   label: string;
   isReadOnly: boolean;
   description?: string | null;
+  required?: boolean;
 };
 
 export default function FormText<TForm>({
@@ -29,12 +30,15 @@ export default function FormText<TForm>({
   label,
   isReadOnly,
   description = null,
+  required = false,
 }: FormTextProps<TForm>) {
   return (
     <form.Field name={name}>
       {(field: any) => (
         <Field>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name}>
+            {label} {required && <span className="text-destructive">*</span>}
+          </FieldLabel>
           <Input
             name={field.name}
             value={field.state.value}

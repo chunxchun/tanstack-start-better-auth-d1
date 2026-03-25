@@ -93,6 +93,7 @@ export function ShopForm({
             name="name"
             label="Name"
             isReadOnly={isReadOnly}
+            required
           />
 
           {/* description */}

@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `verification`;
 DROP TABLE IF EXISTS `deliver_items`;
 DROP TABLE IF EXISTS `deliveries`;
-DROP TABLE IF EXISTS `disposes`;		
+DROP TABLE IF EXISTS `disposes`;
 DROP TABLE IF EXISTS `food_items`;
 DROP TABLE IF EXISTS `inventories`;
 DROP TABLE IF EXISTS `locations`;
@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS `shops`;
 DROP TABLE IF EXISTS `operation_hours`;
 DROP TABLE IF EXISTS `machine_operating_schedule`;
 DROP TABLE IF EXISTS `special_hours`;
-DROP TABLE IF EXISTS `machine_special_schedule`;	
+DROP TABLE IF EXISTS `machine_special_schedule`;
 
 CREATE TABLE `account` (
 	`id` text PRIMARY KEY,
@@ -54,7 +54,7 @@ CREATE TABLE `user` (
 	`email` text NOT NULL UNIQUE,
 	`email_verified` integer DEFAULT false NOT NULL,
 	`image` text,
-	`display_name` text(100) NOT NULL,
+	`display_name` text(100),
 	`role` text DEFAULT 'staff' NOT NULL,
 	`shop_id` integer,
 	`created_at` integer DEFAULT (cast(unixepoch('subsecond') * 1000 as integer)) NOT NULL,

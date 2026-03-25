@@ -19,6 +19,12 @@ const trustedOrigins = [
 export const auth = betterAuth({
   user: {
     additionalFields: {
+      displayName: {
+        type: "string",
+        required: false,
+        input: true,
+        defaultValue: "",
+      },
       role: {
         type: ["admin", "manager", "staff"],
         required: true,
