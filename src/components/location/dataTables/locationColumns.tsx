@@ -13,19 +13,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type LocationColumnsOptions = {
+  rowNumberOffset?: number;
   onView: (location: Location) => void;
   onEdit: (location: Location) => void;
   onDelete: (location: Location) => void;
 };
 
 export const getLocationColumns = ({
+  rowNumberOffset = 0,
   onView,
   onEdit,
   onDelete,
 }: LocationColumnsOptions): ColumnDef<Location>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "rowNumber",
+    header: "#",
+    cell: ({ row }) => {
+      return (
+        <span className="font-mono">{rowNumberOffset + row.index + 1}</span>
+      );
+    },
   },
   {
     accessorKey: "name",

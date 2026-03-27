@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import FormDecimal from "@/components/form-decimal";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
+import FormText from "@/components/form-text";
 import {
   Field,
   FieldDescription,
@@ -12,9 +10,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type {
-  InsertFoodItemType,
-  UpdateFoodItemType,
+import { currencyValues } from "@/db/schema/commonSchema";
+import {
+  foodCategoryValues,
+  type InsertFoodItemType,
+  type UpdateFoodItemType,
 } from "@/db/schema/foodItemTable";
 import { getImageValidationError, uploadImage } from "@/lib/imageUpload";
 import { useForm } from "@tanstack/react-form";
@@ -69,230 +69,146 @@ export function FoodItemForm({
         form.handleSubmit();
       }}
     >
-      <DialogHeader>
-        <DialogTitle>
-          {mode === "view"
-            ? "Food Item Details"
-            : isCreate
-              ? "Create Food Item"
-              : "Edit Food Item"}
-        </DialogTitle>
-        <DialogDescription>
-          {isReadOnly
-            ? "View food item details."
-            : "Fill out the form below and click save when you're done."}
-        </DialogDescription>
-      </DialogHeader>
+      <FormHeader
+        module="Food Item"
+        mode={mode}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
 
-      <FieldGroup>
-        {/* shop */}
-        <form.Field name="shopId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Shop ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
-
+      <FieldGroup className="overflow-auto mt-8 mb-8">
         {/* name */}
-        <form.Field name="name">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+        <FormText
+          form={form}
+          name="name"
+          label="Name"
+          isReadOnly={isReadOnly}
+          required
+        />
 
-        {/* image */}
-        <form.Field name="imageUrl">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Image</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="file"
-                accept="image/*"
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* shop */}
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            isReadOnly={isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the shop for this delivery."
+            required
+          />
 
-                  if (!file) {
-                    return;
-                  }
-
-                  const validationError = getImageValidationError(file);
-                  if (validationError) {
-                    setUploadError(validationError);
-                    return;
-                  }
-
-                  try {
-                    setUploadError(null);
-                    const data = await uploadImage(file);
-                    field.handleChange(data.url || null);
-                  } catch {
-                    setUploadError("Failed to upload image. Please try again.");
-                  }
-                }}
-              />
-              {uploadError ? (
-                <FieldDescription className="text-destructive">
-                  {uploadError}
-                </FieldDescription>
-              ) : null}
-              {field.state.value ? (
-                <FieldDescription>
-                  Uploaded URL: {field.state.value}
-                </FieldDescription>
-              ) : null}
-            </Field>
-          )}
-        </form.Field>
-
-        {/* description */}
-        <form.Field name="description">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value ?? ""}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value || null)}
-              />
-              <FieldDescription>
-                Optional short item description.
-              </FieldDescription>
-            </Field>
-          )}
-        </form.Field>
-
-        {/* category */}
-        <form.Field name="category">
-          {(field) => (
-            <Field className="md:w-1/2">
-              <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-              <select
-                id={field.name}
-                name={field.name}
-                className="h-9 rounded-md border bg-background px-2 text-sm"
-                value={field.state.value ?? "bento"}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(
-                    e.target.value as "bento" | "snack" | "drink",
-                  )
-                }
-              >
-                <option value="bento">bento</option>
-                <option value="snack">snack</option>
-                <option value="drink">drink</option>
-              </select>
-            </Field>
-          )}
-        </form.Field>
-
-        {/* sku */}
-        <form.Field name="skuCode">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>SKU Code</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
-
-        <div className="flex w-full flex-col gap-5 md:flex-row md:gap-4">
-          {/* price */}
-          <form.Field name="price">
+          {/* image */}
+          <form.Field name="imageUrl">
             {(field) => (
-              <Field className="md:w-1/2">
-                <FieldLabel htmlFor={field.name}>Price</FieldLabel>
+              <Field>
+                <FieldLabel htmlFor={field.name}>Image</FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
-                  type="number"
-                  step="0.01"
-                  value={String(field.state.value)}
+                  type="file"
+                  accept="image/*"
                   disabled={isReadOnly}
                   onBlur={field.handleBlur}
-                  onChange={(e) =>
-                    field.handleChange(Number(e.target.value) || 0)
-                  }
-                />
-              </Field>
-            )}
-          </form.Field>
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
 
-          {/* currency */}
-          <form.Field name="currency">
-            {(field) => (
-              <Field className="md:w-1/2">
-                <FieldLabel htmlFor={field.name}>Currency</FieldLabel>
-                <select
-                  id={field.name}
-                  name={field.name}
-                  className="h-9 rounded-md border bg-background px-2 text-sm"
-                  value={field.state.value ?? "AUD"}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) =>
-                    field.handleChange(
-                      e.target.value as "HKD" | "AUD" | "USD" | "EUR" | "JPY",
-                    )
-                  }
-                >
-                  <option value="HKD">HKD</option>
-                  <option value="AUD">AUD</option>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="JPY">JPY</option>
-                </select>
+                    if (!file) {
+                      return;
+                    }
+
+                    const validationError = getImageValidationError(file);
+                    if (validationError) {
+                      setUploadError(validationError);
+                      return;
+                    }
+
+                    try {
+                      setUploadError(null);
+                      const data = await uploadImage(file);
+                      field.handleChange(data.url || null);
+                    } catch {
+                      setUploadError(
+                        "Failed to upload image. Please try again.",
+                      );
+                    }
+                  }}
+                />
+                {uploadError ? (
+                  <FieldDescription className="text-destructive">
+                    {uploadError}
+                  </FieldDescription>
+                ) : null}
+                {field.state.value ? (
+                  <FieldDescription>
+                    Uploaded URL: {field.state.value}
+                  </FieldDescription>
+                ) : null}
               </Field>
             )}
           </form.Field>
         </div>
+
+        {/* description */}
+        <FormText
+          form={form}
+          name="description"
+          label="Description"
+          isReadOnly={isReadOnly}
+        />
+
+        {/* category */}
+        <FormSelect
+          form={form}
+          name="category"
+          label="Category"
+          list={[...foodCategoryValues]}
+          valueKey={(item) => item}
+          labelKey={(item) => item}
+          isReadOnly={isReadOnly}
+          required
+        />
+
+        {/* sku */}
+        <FormText
+          form={form}
+          name="skuCode"
+          label="SKU Code"
+          isReadOnly={isReadOnly}
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* price */}
+          <FormDecimal
+            form={form}
+            name="price"
+            label="Price"
+            isReadOnly={isReadOnly}
+            required
+          />
+
+          {/* currency */}
+          <FormSelect
+            form={form}
+            name="currency"
+            label="Currency"
+            isReadOnly={isReadOnly}
+            list={[...currencyValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+            required
+          />
+        </div>
       </FieldGroup>
 
-      <DialogFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        {!isReadOnly ? (
-          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
-        ) : null}
-      </DialogFooter>
+      <FormFooter
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+        onCancel={onCancel}
+        isLoading={isLoading}
+      />
     </form>
   );
 }

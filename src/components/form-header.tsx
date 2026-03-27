@@ -16,7 +16,7 @@ export default function FormHeader({
   isReadOnly: boolean;
 }) {
   return (
-    <DialogHeader>
+    <DialogHeader className="mt-4 px-4">
       <DialogTitle>
         {mode === "view"
           ? `${module} Details`

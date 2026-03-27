@@ -1,4 +1,4 @@
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -26,7 +26,7 @@ type FormSelectProps<T, TForm> = {
   name: keyof TForm & string;
   label: string;
   isReadOnly: boolean;
-  list: T[];
+  list?: T[];
   valueKey: (item: T) => string | number;
   labelKey: (item: T) => string;
   description?: string | null;
@@ -38,12 +38,13 @@ export default function FormSelect<T, TForm>({
   name,
   label,
   isReadOnly,
-  list,
+  list = [],
   valueKey,
   labelKey,
   description = null,
   required = false,
 }: FormSelectProps<T, TForm>) {
+
   return (
     <form.Field name={name}>
       {(field: any) => (
@@ -51,14 +52,18 @@ export default function FormSelect<T, TForm>({
           <FieldLabel htmlFor={field.name}>
             {label} {required && <span className="text-destructive">*</span>}
           </FieldLabel>
+
           <Select
             value={String(field.state.value)}
             disabled={isReadOnly}
             onValueChange={(e) => field.handleChange(e)}
           >
-            <SelectTrigger onBlur={field.handleBlur}>
+            <SelectTrigger onBlur={field.handleBlur} disabled={list.length === 0}>
               <SelectValue placeholder={`Select a ${label.toLowerCase()}`} />
             </SelectTrigger>
+            {list.length === 0 && (
+              <FieldError>{`No ${label.toLowerCase()} available, go create one`}</FieldError>
+            )}
             <SelectContent>
               {list?.map((item: T) => (
                 <SelectItem key={valueKey(item)} value={String(valueKey(item))}>
@@ -67,7 +72,9 @@ export default function FormSelect<T, TForm>({
               ))}
             </SelectContent>
           </Select>
-          {description && <FieldDescription>{description}</FieldDescription>}
+          {list.length > 0 &&description ? (
+            <FieldDescription>{description}</FieldDescription>
+          ) : null}
         </Field>
       )}
     </form.Field>

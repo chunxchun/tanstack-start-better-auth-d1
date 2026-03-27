@@ -1,6 +1,7 @@
 import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ReactFormExtendedApi } from "@tanstack/react-form";
+import type { required } from "node_modules/zod/v4/core/util.d.cts";
 
 type FormDateProps<TForm> = {
   form: ReactFormExtendedApi<
@@ -21,6 +22,7 @@ type FormDateProps<TForm> = {
   label: string;
   description?: string | null;
   isReadOnly: boolean;
+  required?: boolean;
 };
 
 export default function FormTime<TForm>({
@@ -29,12 +31,16 @@ export default function FormTime<TForm>({
   label,
   description = null,
   isReadOnly,
+  required = false,
 }: FormDateProps<TForm>) {
   return (
     <form.Field name={name}>
       {(field) => (
         <Field>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name}>
+            {label}
+            {required && <span className="text-red-500">*</span>}
+          </FieldLabel>
           <Input
             type="time"
             name={field.name}

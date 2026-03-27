@@ -1,30 +1,18 @@
-import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
-import { toast } from "sonner";
-import type { LocationFormProps } from "./locationFormType";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormText from "@/components/form-text";
+import { FieldGroup } from "@/components/ui/field";
+import { countryValues } from "@/db/schema/commonSchema";
 import {
   locationStatusValues,
   type InsertLocationType,
   type UpdateLocationType,
 } from "@/db/schema/locationTable";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { countryValues } from "@/db/schema/commonSchema";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { LocationFormProps } from "./locationFormType";
+import FormSelect from "@/components/form-select";
 
 export function LocationForm({
   mode,
@@ -50,8 +38,8 @@ export function LocationForm({
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
-      setIsLoading(true);
       try {
+        setIsLoading(true);
         if (mode === "edit") {
           await onSubmit(value as UpdateLocationType);
           toast.success("Location updated successfully");
@@ -81,217 +69,119 @@ export function LocationForm({
         form.handleSubmit();
       }}
     >
-      <CardHeader>
-        <CardTitle>
-          {isReadOnly
-            ? "Location Details"
-            : isCreate
-              ? "Create Location"
-              : "Edit Location"}
-        </CardTitle>
-        <CardDescription>
-          Fill out the form below and click save when you're done.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="overflow-auto mt-8 mb-8">
-        <FieldGroup>
-          {/* name */}
-          <form.Field name="name">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                <Input
-                  disabled={isReadOnly}
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+      <FormHeader
+        mode={mode}
+        module="Location"
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
 
-          {/* address line 1 */}
-          <form.Field name="addressLine1">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Address Line 1</FieldLabel>
-                <Input
-                  disabled={isReadOnly}
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+      <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
+        {/* name */}
+        <FormText
+          form={form}
+          name="name"
+          label="Name"
+          isReadOnly={isReadOnly}
+          required
+        />
 
-          {/* address line 2 */}
-          <form.Field name="addressLine2">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Address Line 2</FieldLabel>
-                <Input
-                  id={field.name}
-                  disabled={isReadOnly}
-                  name={field.name}
-                  value={field.state.value || undefined}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+        <FormText
+          form={form}
+          name="description"
+          label="Description"
+          isReadOnly={isReadOnly}
+        />
 
+        {/* address line 1 */}
+        <FormText
+          form={form}
+          name="addressLine1"
+          label="Address Line 1"
+          required
+          isReadOnly={isReadOnly}
+        />
+
+        {/* address line 2 */}
+        <FormText
+          form={form}
+          name="addressLine2"
+          label="Address Line 2"
+          isReadOnly={isReadOnly}
+        />
+
+        <div className="form-half-width">
           {/* address city */}
-          <form.Field name="addressCity">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>City</FieldLabel>
-                <Input
-                  disabled={isReadOnly}
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+          <FormText
+            form={form}
+            name="addressCity"
+            label="City"
+            required
+            isReadOnly={isReadOnly}
+          />
 
           {/* address state */}
-          <form.Field name="addressState">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>State</FieldLabel>
-                <Input
-                  disabled={isReadOnly}
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value || undefined}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
+          <FormText
+            form={form}
+            name="addressState"
+            label="State"
+            isReadOnly={isReadOnly}
+          />
 
           {/* address postal code */}
-          <form.Field name="addressPostalCode">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Postal Code</FieldLabel>
-                <Input
-                  disabled={isReadOnly}
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value || undefined}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </Field>
-            )}
-          </form.Field>
-
-          {/* shop */}
-          <form.Field name="shopId">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Shop</FieldLabel>
-                <Select
-                  value={String(field.state.value) ?? undefined}
-                  onValueChange={(val) => field.handleChange(Number(val))}
-                >
-                  <SelectTrigger
-                    id={field.name}
-                    onBlur={field.handleBlur}
-                    disabled={isReadOnly}
-                  >
-                    <SelectValue placeholder="Select a shop" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {shops
-                      ? shops.map((shop) => (
-                          <SelectItem key={shop.id} value={String(shop.id)}>
-                            {shop.name}
-                          </SelectItem>
-                        ))
-                      : null}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
-
-          {/* status */}
-          <form.Field name="status">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                <Select
-                  value={field.state.value}
-                  onValueChange={(val) => field.handleChange(val)}
-                >
-                  <SelectTrigger
-                    id={field.name}
-                    onBlur={field.handleBlur}
-                    disabled={isReadOnly}
-                  >
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locationStatusValues.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
+          <FormText
+            form={form}
+            name="addressPostalCode"
+            label="Postal Code"
+            isReadOnly={isReadOnly}
+          />
 
           {/* address country */}
-          <form.Field name="addressCountry">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Country</FieldLabel>
-                <Select
-                  value={field.state.value}
-                  onValueChange={(val) => field.handleChange(val)}
-                >
-                  <SelectTrigger
-                    id={field.name}
-                    onBlur={field.handleBlur}
-                    disabled={isReadOnly}
-                  >
-                    <SelectValue placeholder="Select country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {countryValues.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            )}
-          </form.Field>
-        </FieldGroup>
-      </CardContent>
-      <CardFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        <Button type="submit" disabled={isLoading}>
-          {mode === "create" ? "Create" : "Save"}
-        </Button>
-      </CardFooter>
+          <FormSelect
+            form={form}
+            name="addressCountry"
+            label="Country"
+            isReadOnly={isReadOnly}
+            list={[...countryValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+            description="Select the country for this location."
+            required
+          />
+
+          {/* shop */}
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            isReadOnly={isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the shop associated with this location."
+            required
+          />
+
+          {/* status */}
+          <FormSelect
+            form={form}
+            name="status"
+            label="Status"
+            isReadOnly={isReadOnly}
+            list={[...locationStatusValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+            description="Select the location status."
+          />
+        </div>
+      </FieldGroup>
+
+      <FormFooter
+        onCancel={onCancel}
+        isLoading={isLoading}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
     </form>
   );
 }

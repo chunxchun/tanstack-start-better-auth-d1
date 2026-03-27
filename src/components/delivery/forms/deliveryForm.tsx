@@ -1,18 +1,10 @@
-import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import FormDate from "@/components/form-date";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
+import FormText from "@/components/form-text";
+import FormTime from "@/components/form-time";
+import { FieldGroup } from "@/components/ui/field";
 import {
   deliveryStatusValues,
   type InsertDeliveryType,
@@ -22,19 +14,6 @@ import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { DeliveryFormProps } from "./deliveryFormType";
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Select,
-} from "@/components/ui/select";
-import FormSelect from "@/components/form-select";
-import FormFooter from "@/components/form-footer";
-import FormTime from "@/components/form-time";
-import FormDate from "@/components/form-date";
-import { FormInput } from "lucide-react";
-import FormText from "@/components/form-text";
 
 export function DeliveryForm({
   mode,
@@ -51,6 +30,7 @@ export function DeliveryForm({
     defaultValues: initialData || {
       destinationLocationId: null,
       machineId: null,
+      shopId: null,
       courierReference: "",
       deliverDate: "",
       deliverTime: "",
@@ -89,132 +69,105 @@ export function DeliveryForm({
         form.handleSubmit();
       }}
     >
-      <CardHeader>
-        <CardTitle>
-          {isReadOnly
-            ? "Delivery Details"
-            : isCreate
-              ? "Create Delivery"
-              : "Edit Delivery"}
-        </CardTitle>
-        <CardDescription>
-          {isReadOnly
-            ? "View delivery details."
-            : "Fill out the form below and click save when you're done."}
-        </CardDescription>
-      </CardHeader>
+      <FormHeader
+        module="Delivery"
+        mode={mode}
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
 
-      <CardContent className="overflow-auto mt-8 mb-8">
-        <FieldGroup>
-          {/* Row: destination location & machine */}
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              {/* destination  */}
-              <form.Field name="destinationLocationId">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Destination</FieldLabel>
-                    <Select
-                      value={String(field.state.value)}
-                      disabled={isReadOnly}
-                      onValueChange={(e) => field.handleChange(Number(e))}
-                    >
-                      <SelectTrigger onBlur={field.handleBlur}>
-                        <SelectValue placeholder="Select a location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {locations?.map((location) => (
-                          <SelectItem key={location.id} value={location.name}>
-                            {location.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              </form.Field>
-            </div>
-            <div className="w-1/2">
-              {/* machine */}
-              <form.Field name="machineId">
-                {(field) => (
-                  <Field>
-                    <FieldLabel htmlFor={field.name}>Machine</FieldLabel>
-                    <Select
-                      value={String(field.state.value)}
-                      disabled={isReadOnly}
-                      onValueChange={(e) => field.handleChange(Number(e))}
-                    >
-                      <SelectTrigger onBlur={field.handleBlur}>
-                        <SelectValue placeholder="Select a machine" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {machines?.map((machine) => (
-                          <SelectItem key={machine.id} value={machine.name}>
-                            {machine.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              </form.Field>
-            </div>
-          </div>
-
-          {/* courier reference */}
-          <FormText
+      <FieldGroup className="overflow-auto mt-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* destination  */}
+          <FormSelect
             form={form}
-            name="courierReference"
-            label="Courier Reference"
+            name="destinationLocationId"
+            label="Destination"
             isReadOnly={isReadOnly}
-            description="Optional reference provided by courier."
+            list={locations || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the delivery destination."
+            required
           />
 
-          {/* Row: delivery date & time */}
-          <div className="flex gap-4">
-            <div className="w-1/2">
-              {/* delivery date */}
-              <FormDate
-                form={form}
-                name="deliverDate"
-                label="Delivery Date"
-                isReadOnly={isReadOnly}
-                description="Date of the delivery"
-              />
-            </div>
-            {/* delivery time */}
-            <div className="w-1/2">
-              <FormTime
-                form={form}
-                name="deliverTime"
-                label="Delivery Time"
-                isReadOnly={isReadOnly}
-                description={`Expected delivery time`}
-              />
-            </div>
-          </div>
+          {/* machine */}
+          <FormSelect
+            form={form}
+            name="machineId"
+            label="Machine"
+            isReadOnly={isReadOnly}
+            list={machines || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the machine for delivery."
+            required
+          />
+
+          {/* shop */}
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            isReadOnly={isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the shop for this delivery."
+            required
+          />
 
           {/* status */}
-          <div className="w-1/2">
-            <FormSelect
-              form={form}
-              name="status"
-              label="Status"
-              isReadOnly={isReadOnly}
-              list={[...deliveryStatusValues]}
-              valueKey={(item) => item}
-              labelKey={(item) => item}
-              description={`Status of the delivery. Defaults to "scheduled".`}
-            />
-          </div>
-        </FieldGroup>
-      </CardContent>
+          <FormSelect
+            form={form}
+            name="status"
+            label="Status"
+            isReadOnly={isReadOnly}
+            list={[...deliveryStatusValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+            description={`Status of the delivery. Defaults to "scheduled".`}
+            required
+          />
+        </div>
+
+        {/* courier reference */}
+        <FormText
+          form={form}
+          name="courierReference"
+          label="Courier Reference"
+          isReadOnly={isReadOnly}
+          description="Optional reference provided by courier."
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* delivery date */}
+          <FormDate
+            form={form}
+            name="deliverDate"
+            label="Delivery Date"
+            isReadOnly={isReadOnly}
+            description="Date of the delivery"
+            required
+          />
+
+          {/* delivery time */}
+          <FormTime
+            form={form}
+            name="deliverTime"
+            label="Delivery Time"
+            isReadOnly={isReadOnly}
+            description={`Expected delivery time`}
+            required
+          />
+        </div>
+      </FieldGroup>
 
       <FormFooter
         onCancel={onCancel}
         isCreate={isCreate}
         isReadOnly={isReadOnly}
+        isLoading={isLoading}
       />
     </form>
   );

@@ -25,7 +25,7 @@ type FormSelectProps<T, TForm> = {
   description?: string | null;
   required?: boolean;
   file?: File | null;
-  onChange?: React.Dispatch<SetStateAction<File | null>>;
+  onChange: React.Dispatch<SetStateAction<File | null>>;
 };
 
 export default function FormSelect<T, TForm>({
@@ -38,13 +38,12 @@ export default function FormSelect<T, TForm>({
   file,
   onChange,
 }: FormSelectProps<T, TForm>) {
-
   const src = getVersionedImageUrl(
     form.getFieldValue(name) as string,
     form.getFieldValue("updatedAt") as string,
   );
 
-  form
+  form;
   return (
     <form.Field name={name}>
       {(field) => (
@@ -63,18 +62,15 @@ export default function FormSelect<T, TForm>({
           ) : (
             <>
               <Input
+                type="file"
                 name={field.name}
                 disabled={isReadOnly}
                 onBlur={field.handleBlur}
-                type="file"
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
                   if (!file) {
-                    // field.handleChange(null);
                     onChange(null);
-                    return;
                   }
-                  field.handleChange(file.name);
                   onChange(file);
                 }}
               />

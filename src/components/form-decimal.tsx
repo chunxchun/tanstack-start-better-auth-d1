@@ -21,6 +21,7 @@ type FormTextProps<TForm> = {
   label: string;
   isReadOnly: boolean;
   description?: string | null;
+  required?: boolean;
 };
 
 export default function FormDecimal<TForm>({
@@ -29,12 +30,15 @@ export default function FormDecimal<TForm>({
   label,
   isReadOnly,
   description = null,
+  required = false,
 }: FormTextProps<TForm>) {
   return (
     <form.Field name={name}>
       {(field: any) => (
         <Field>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name}>
+            {label} {required && <span className="text-red-500">*</span>}
+          </FieldLabel>
           <Input
             type="number"
             step="0.01"

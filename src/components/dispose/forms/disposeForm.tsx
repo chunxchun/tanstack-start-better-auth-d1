@@ -1,14 +1,17 @@
+import FormDate from "@/components/form-date";
 import FormFooter from "@/components/form-footer";
 import FormHeader from "@/components/form-header";
+import FormNumber from "@/components/form-number";
 import FormSelect from "@/components/form-select";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import FormTime from "@/components/form-time";
+import { FieldGroup } from "@/components/ui/field";
 import {
   disposeReasonValues,
   type InsertDisposeType,
   type UpdateDisposeType,
 } from "@/db/schema";
 import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
 import type { DisposeFormProps } from "./disposeFormType";
 
 export function DisposeForm({
@@ -20,6 +23,7 @@ export function DisposeForm({
   onSubmit,
   onCancel,
 }: DisposeFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     defaultValues: initialData || {
       shopId: null,
@@ -33,6 +37,8 @@ export function DisposeForm({
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
       try {
+        setIsLoading(true);
+
         if (mode === "edit") {
           await onSubmit(value as UpdateDisposeType);
         }
@@ -42,6 +48,8 @@ export function DisposeForm({
         }
       } catch (error) {
         console.error("Error submitting dispose form:", error);
+      } finally {
+        setIsLoading(false);
       }
     },
   });
@@ -63,130 +71,95 @@ export function DisposeForm({
         isReadOnly={isReadOnly}
         module="Dispose"
       />
-      <FieldGroup>
-        {/* Row 1: shop & machine */}
-        <div className="flex gap-4">
-          <div className="w-1/2">
-            <FormSelect
-              form={form}
-              name="shopId"
-              label="Shop"
-              isReadOnly={isReadOnly}
-              list={shops || []}
-              valueKey={(item) => item.id}
-              labelKey={(item) => item.name}
-            />
-          </div>
-          <div className="w-1/2">
-            <FormSelect
-              form={form}
-              name="machineId"
-              label="Machine"
-              isReadOnly={isReadOnly}
-              list={machines || []}
-              valueKey={(item) => item.id}
-              labelKey={(item) => item.name}
-            />
-          </div>
+
+      <FieldGroup className="overflow-auto mt-8 mb-8">
+        <div className="grid grid-cols-2 gap-4 max-w-full lg:grid-cols-2 md:grid-cols-1">
+          {/* shop */}
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            isReadOnly={isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+          />
+
+          {/* machine */}
+          <FormSelect
+            form={form}
+            name="machineId"
+            label="Machine"
+            isReadOnly={isReadOnly}
+            list={machines || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+          />
+
+          {/* food item */}
+          <FormSelect
+            form={form}
+            name="foodItemId"
+            label="Food Item"
+            isReadOnly={isReadOnly}
+            list={foodItems || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+          />
+
+          {/* dispose reason */}
+          <FormSelect
+            form={form}
+            name="disposeReason"
+            label="Dispose Reason"
+            isReadOnly={isReadOnly}
+            list={[...disposeReasonValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+          />
+
+          {/* dispose date */}
+          <FormDate
+            form={form}
+            name="disposeDate"
+            label="Dispose Date"
+            isReadOnly={isReadOnly}
+          />
+
+          {/* dispose time */}
+          <FormTime
+            form={form}
+            name="disposeTime"
+            label="Dispose Time"
+            isReadOnly={isReadOnly}
+          />
+
+          {/* quantity */}
+          <FormNumber
+            form={form}
+            name="quantity"
+            label="Quantity"
+            isReadOnly={isReadOnly}
+          />
+
+          {/* dispose reason */}
+          <FormSelect
+            form={form}
+            name="disposeReason"
+            label="Dispose Reason"
+            isReadOnly={isReadOnly}
+            list={[...disposeReasonValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+          />
         </div>
-
-        {/* Row 2: food item & dispose reason */}
-        <div className="flex gap-4 mt-4">
-          <div className="w-1/2">
-            <FormSelect
-              form={form}
-              name="foodItemId"
-              label="Food Item"
-              isReadOnly={isReadOnly}
-              list={foodItems || []}
-              valueKey={(item) => item.id}
-              labelKey={(item) => item.name}
-            />
-          </div>
-          <div className="w-1/2">
-            <FormSelect
-              form={form}
-              name="disposeReason"
-              label="Dispose Reason"
-              isReadOnly={isReadOnly}
-              list={[...disposeReasonValues]}
-              valueKey={(item) => item}
-              labelKey={(item) => item}
-            />
-          </div>
-        </div>
-
-        {/* dispose date */}
-        <form.Field name="disposeDate">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Dispose Date</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="date"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
-
-        {/* dispose time */}
-        <form.Field name="disposeTime">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Dispose Time</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="time"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
-
-        {/* quantity */}
-        <form.Field name="quantity">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Quantity</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
-
-        {/* dispose reason */}
-        <FormSelect
-          form={form}
-          name="disposeReason"
-          label="Dispose Reason"
-          isReadOnly={isReadOnly}
-          list={[...disposeReasonValues]}
-          valueKey={(item) => item}
-          labelKey={(item) => item}
-        />
       </FieldGroup>
+
       <FormFooter
         onCancel={onCancel}
         isReadOnly={isReadOnly}
         isCreate={isCreate}
+        isLoading={isLoading}
       />
     </form>
   );

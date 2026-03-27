@@ -85,136 +85,131 @@ export function ShopForm({
         isReadOnly={isReadOnly}
       />
 
-      <div className="overflow-auto mt-8 mb-8">
-        <FieldGroup>
-          {/* name */}
-          <FormText
-            form={form}
-            name="name"
-            label="Name"
-            isReadOnly={isReadOnly}
-            required
-          />
+      <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
+        {/* name */}
+        <FormText
+          form={form}
+          name="name"
+          label="Name"
+          isReadOnly={isReadOnly}
+          required
+        />
 
-          {/* description */}
-          <FormText
-            form={form}
-            name="description"
-            label="Description"
-            isReadOnly={isReadOnly}
-            description="Optional short description for this shop."
-          />
+        {/* description */}
+        <FormText
+          form={form}
+          name="description"
+          label="Description"
+          isReadOnly={isReadOnly}
+          description="Optional short description for this shop."
+        />
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <form.Field name="logoUrl">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
-                  {isReadOnly ? (
-                    (() => {
-                      const logoSrc = getVersionedImageUrl(
-                        field.state.value,
-                        initialData?.updatedAt,
-                      );
-                      return logoSrc ? (
-                        <img
-                          src={logoSrc}
-                          alt="shop logo"
-                          className="max-h-32 object-contain"
-                        />
-                      ) : (
-                        <FieldDescription>No logo uploaded.</FieldDescription>
-                      );
-                    })()
-                  ) : (
-                    <>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        // value={field.state.value ?? ""}
-                        disabled={isReadOnly}
-                        onBlur={field.handleBlur}
-                        type="file"
-                        onChange={(e) => {
-                          const file = e.target.files
-                            ? e.target.files[0]
-                            : null;
-                          if (!file) {
-                            field.handleChange(null);
-                            setLogoFile(null);
-                            return;
-                          }
-                          field.handleChange(file.name);
-                          setLogoFile(file);
-                        }}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <form.Field name="logoUrl">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
+                {isReadOnly ? (
+                  (() => {
+                    const logoSrc = getVersionedImageUrl(
+                      field.state.value,
+                      initialData?.updatedAt,
+                    );
+                    return logoSrc ? (
+                      <img
+                        src={logoSrc}
+                        alt="shop logo"
+                        className="max-h-32 object-contain"
                       />
-                      <FieldDescription>
-                        Optional public image URL for this shop logo.
-                      </FieldDescription>
-                    </>
-                  )}
-                </Field>
-              )}
-            </form.Field>
+                    ) : (
+                      <FieldDescription>No logo uploaded.</FieldDescription>
+                    );
+                  })()
+                ) : (
+                  <>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      // value={field.state.value ?? ""}
+                      disabled={isReadOnly}
+                      onBlur={field.handleBlur}
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        if (!file) {
+                          field.handleChange(null);
+                          setLogoFile(null);
+                          return;
+                        }
+                        field.handleChange(file.name);
+                        setLogoFile(file);
+                      }}
+                    />
+                    <FieldDescription>
+                      Optional public image URL for this shop logo.
+                    </FieldDescription>
+                  </>
+                )}
+              </Field>
+            )}
+          </form.Field>
 
-            <form.Field name="bannerUrl">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Banner</FieldLabel>
-                  {isReadOnly ? (
-                    (() => {
-                      const bannerSrc = getVersionedImageUrl(
-                        field.state.value,
-                        initialData?.updatedAt,
-                      );
-                      return bannerSrc ? (
-                        <img
-                          src={bannerSrc}
-                          alt="shop banner"
-                          className="max-h-32 object-contain"
-                        />
-                      ) : (
-                        <FieldDescription>No banner uploaded.</FieldDescription>
-                      );
-                    })()
-                  ) : (
-                    <>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        // value={field.state.value ?? ""}
-                        disabled={isReadOnly}
-                        onBlur={field.handleBlur}
-                        type="file"
-                        onChange={(e) => {
-                          const file = e.target.files
-                            ? e.target.files[0]
-                            : null;
-                          if (!file) {
-                            field.handleChange(null);
-                            setBannerFile(null);
-                            return;
-                          }
-                          field.handleChange(file.name);
-                          setBannerFile(file);
-                        }}
+          <form.Field name="bannerUrl">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Banner</FieldLabel>
+                {isReadOnly ? (
+                  (() => {
+                    const bannerSrc = getVersionedImageUrl(
+                      field.state.value,
+                      initialData?.updatedAt,
+                    );
+                    return bannerSrc ? (
+                      <img
+                        src={bannerSrc}
+                        alt="shop banner"
+                        className="max-h-32 object-contain"
                       />
-                      <FieldDescription>
-                        Optional public image URL for this shop banner.
-                      </FieldDescription>
-                    </>
-                  )}
-                </Field>
-              )}
-            </form.Field>
-          </div>
-        </FieldGroup>
-      </div>
+                    ) : (
+                      <FieldDescription>No banner uploaded.</FieldDescription>
+                    );
+                  })()
+                ) : (
+                  <>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      // value={field.state.value ?? ""}
+                      disabled={isReadOnly}
+                      onBlur={field.handleBlur}
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        if (!file) {
+                          field.handleChange(null);
+                          setBannerFile(null);
+                          return;
+                        }
+                        field.handleChange(file.name);
+                        setBannerFile(file);
+                      }}
+                    />
+                    <FieldDescription>
+                      Optional public image URL for this shop banner.
+                    </FieldDescription>
+                  </>
+                )}
+              </Field>
+            )}
+          </form.Field>
+        </div>
+      </FieldGroup>
 
       <FormFooter
         isCreate={isCreate}
         isReadOnly={isReadOnly}
         onCancel={onCancel}
+        isLoading={isLoading}
       />
     </form>
   );

@@ -1,24 +1,27 @@
-import { Button } from "@/components/ui/button";
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import FormDate from "@/components/form-date";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormNumber from "@/components/form-number";
+import FormSelect from "@/components/form-select";
+import { FieldGroup } from "@/components/ui/field";
 import type { InsertInventoryType, UpdateInventoryType } from "@/db/schema";
 import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
 import type { InventoryFormProps } from "./inventoryFormType";
 
 export function InventoryForm({
   mode,
   initialData,
+  shops,
+  machines,
+  foodItems,
   onSubmit,
   onCancel,
 }: InventoryFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     defaultValues: initialData || {
+      shopId: null,
       machineId: null,
       foodItemId: null,
       quantity: 1,
@@ -26,7 +29,9 @@ export function InventoryForm({
     },
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
+
       try {
+        setIsLoading(true);
         if (mode === "edit") {
           const data = value as UpdateInventoryType;
           await onSubmit(data);
@@ -38,6 +43,8 @@ export function InventoryForm({
         }
       } catch (error) {
         console.error("Error submitting inventory form:", error);
+      } finally {
+        setIsLoading(false);
       }
     },
   });
@@ -53,105 +60,72 @@ export function InventoryForm({
         form.handleSubmit();
       }}
     >
-      <DialogHeader>
-        <DialogTitle>
-          {mode === "view"
-            ? "Inventory Details"
-            : isCreate
-              ? "Create Inventory"
-              : "Edit Inventory"}
-        </DialogTitle>
-        <DialogDescription>
-          {isReadOnly
-            ? "View inventory details."
-            : "Fill out the form below and click save when you're done."}
-        </DialogDescription>
-      </DialogHeader>
+      <FormHeader
+        mode={mode}
+        module="Inventory"
+        isCreate={isCreate}
+        isReadOnly={isReadOnly}
+      />
 
-      <FieldGroup>
-        <form.Field name="machineId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Machine ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+      <FieldGroup className="overflow-auto mt-8 mb-8">
+        <div className="form-half-width">
+          {/* shop */}
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            isReadOnly={isReadOnly}
+          />
 
-        <form.Field name="foodItemId">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Food Item ID</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+          {/* machine */}
+          <FormSelect
+            form={form}
+            name="machineId"
+            label="Machine ID"
+            list={machines || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            isReadOnly={isReadOnly}
+          />
 
-        <form.Field name="quantity">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Quantity</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="number"
-                value={String(field.state.value)}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(Number(e.target.value) || 0)
-                }
-              />
-            </Field>
-          )}
-        </form.Field>
+          {/* food item */}
+          <FormSelect
+            form={form}
+            name="foodItemId"
+            label="Food Item ID"
+            list={foodItems || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            isReadOnly={isReadOnly}
+          />
 
-        <form.Field name="date">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Date</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                type="date"
-                value={field.state.value}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </Field>
-          )}
-        </form.Field>
+          {/* quantity */}
+          <FormNumber
+            form={form}
+            name="quantity"
+            label="Quantity"
+            isReadOnly={isReadOnly}
+          />
+
+          {/* date */}
+          <FormDate
+            form={form}
+            name="date"
+            label="Date"
+            isReadOnly={isReadOnly}
+          />
+        </div>
       </FieldGroup>
 
-      <DialogFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Close
-        </Button>
-        {!isReadOnly ? (
-          <Button type="submit">{isCreate ? "Create" : "Save"}</Button>
-        ) : null}
-      </DialogFooter>
+      <FormFooter
+        isReadOnly={isReadOnly}
+        isCreate={isCreate}
+        onCancel={onCancel}
+        isLoading={isLoading}
+      />
     </form>
   );
 }

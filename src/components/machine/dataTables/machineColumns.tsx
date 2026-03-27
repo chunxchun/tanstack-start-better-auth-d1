@@ -13,19 +13,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type MachineColumnsOptions = {
+  rowNumberOffset?: number;
   onView: (machine: Machine) => void;
   onEdit: (machine: Machine) => void;
   onDelete: (machine: Machine) => void;
 };
 
 export const getMachineColumns = ({
+  rowNumberOffset = 0,
   onView,
   onEdit,
   onDelete,
 }: MachineColumnsOptions): ColumnDef<Machine>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "rowNumber",
+    header: "#",
+    cell: ({ row }) => {
+      return (
+        <span className="font-mono">{rowNumberOffset + row.index + 1}</span>
+      );
+    },
   },
   {
     accessorKey: "name",
