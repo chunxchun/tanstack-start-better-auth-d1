@@ -14,6 +14,8 @@ import type {
   SelectMenuType,
   SelectMenuType as Menu,
   UpdateMenuType,
+  insertMenuWithFoodItemsType,
+  updateMenuWithFoodItemsType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import {
@@ -37,7 +39,7 @@ export const Route = createFileRoute("/_protected/dashboard/menu/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => {
-    const [menus, shops, foodItems] = await  Promise.all([
+    const [menus, shops, foodItems] = await Promise.all([
       listMenuFn({ data: deps }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
       listFoodItemFn({ data: { limit: 100, offset: 0 } }),
@@ -119,10 +121,23 @@ function RouteComponent() {
     [],
   );
 
-  const handleCreateSubmit = async (values: InsertMenuType) => {
+  const handleCreateSubmit = async (values: insertMenuWithFoodItemsType) => {
     try {
-      const parsedValues = { ...values, shopId: Number(values.shopId) };
-      await createMenuFn({ data: parsedValues });
+      const { foodItemIds, ...menuWithoutFoodItems } = values;
+      const parsedValues = {
+        ...menuWithoutFoodItems,
+        shopId: Number(menuWithoutFoodItems.shopId),
+      };
+
+      
+      const menu = await createMenuFn({ data: parsedValues });
+      if (!menu) {
+        throw new Error("Menu creation failed");
+      }
+
+      const menuId = Number(menu[0].id);
+      
+      // [TODO] create menuFoodItem links
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -130,11 +145,14 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: UpdateMenuType) => {
+  const handleEditSubmit = async (values: updateMenuWithFoodItemsType) => {
     if (!selectedMenu) return;
 
     try {
-      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      const parsedValues = {
+        ...values,
+        foodItemIds: values.foodItemIds.map(Number),
+      };
       await updateMenuByIdFn({ data: parsedValues });
 
       setEditOpen(false);

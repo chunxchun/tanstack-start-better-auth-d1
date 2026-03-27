@@ -1,9 +1,11 @@
 import type {
   InsertMenuType,
+  insertMenuWithFoodItemsType,
   SelectFoodItemType,
   SelectMenuType,
   SelectShopType,
   UpdateMenuType,
+  updateMenuWithFoodItemsType,
 } from "@/db/schema";
 
 type MenuFormBaseProps = {
@@ -15,7 +17,7 @@ type MenuFormCreateProps = MenuFormBaseProps & {
   mode: "create";
   shops: SelectShopType[];
   foodItems: SelectFoodItemType[];
-  onSubmit: (values: InsertMenuType, coverPhoto?: File) => Promise<void>;
+  onSubmit: (values: insertMenuWithFoodItemsType, coverPhoto?: File) => Promise<void>;
 };
 
 type MenuFormViewProps = MenuFormBaseProps & {
@@ -31,7 +33,7 @@ type MenuFormEditProps = MenuFormBaseProps & {
   mode: "edit";
   shops: SelectShopType[];
   foodItems: SelectFoodItemType[];
-  onSubmit: (values: UpdateMenuType, coverPhoto?: File) => Promise<void>;
+  onSubmit: (values: updateMenuWithFoodItemsType, coverPhoto?: File) => Promise<void>;
 };
 
 export type MenuFormProps =

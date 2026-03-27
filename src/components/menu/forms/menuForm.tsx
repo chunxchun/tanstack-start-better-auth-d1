@@ -9,7 +9,12 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { InsertMenuType, UpdateMenuType } from "@/db/schema/menuTable";
+import type {
+  InsertMenuType,
+  insertMenuWithFoodItemsType,
+  UpdateMenuType,
+  updateMenuWithFoodItemsType,
+} from "@/db/schema/menuTable";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import type { MenuFormProps } from "./menuFormType";
@@ -40,7 +45,7 @@ export function MenuForm({
       description: null,
       coverPhotoUrl: null,
       shopId: null,
-      foodItemIds: [],
+      // foodItemIds: [],
       date: new Date().toISOString().slice(0, 10),
     },
     onSubmit: async ({ value }) => {
@@ -48,13 +53,21 @@ export function MenuForm({
       try {
         setIsLoading(true);
         if (mode === "edit") {
-          const data = value as UpdateMenuType;
-          await onSubmit(data);
+          const dataWithFoodItems = {
+            ...value,
+            foodItemIds: selectedFoodItems.map(Number),
+          } as updateMenuWithFoodItemsType;
+          await onSubmit(dataWithFoodItems);
         }
 
         if (mode === "create") {
-          const data = value as InsertMenuType;
-          await onSubmit(data);
+          const dataWithFoodItems = {
+            ...value,
+            foodItemIds: selectedFoodItems.map(Number),
+          } as insertMenuWithFoodItemsType;
+
+          console.log("Submitting menu form with data:", dataWithFoodItems);
+          // await onSubmit(dataWithFoodItems);
         }
       } catch (error) {
         console.error("Error submitting menu form:", error);

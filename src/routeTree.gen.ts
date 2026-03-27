@@ -17,6 +17,7 @@ import { Route as ProtectedSettingRouteImport } from './routes/_protected/settin
 import { Route as ProtectedDashboardRouteImport } from './routes/_protected/dashboard'
 import { Route as ApiShopIndexRouteImport } from './routes/api/shop/index'
 import { Route as ApiSaleIndexRouteImport } from './routes/api/sale/index'
+import { Route as ApiMenuFoodItemIndexRouteImport } from './routes/api/menuFoodItem/index'
 import { Route as ApiMenuIndexRouteImport } from './routes/api/menu/index'
 import { Route as ApiMachineIndexRouteImport } from './routes/api/machine/index'
 import { Route as ApiLocationIndexRouteImport } from './routes/api/location/index'
@@ -84,6 +85,11 @@ const ApiShopIndexRoute = ApiShopIndexRouteImport.update({
 const ApiSaleIndexRoute = ApiSaleIndexRouteImport.update({
   id: '/api/sale/',
   path: '/api/sale/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMenuFoodItemIndexRoute = ApiMenuFoodItemIndexRouteImport.update({
+  id: '/api/menuFoodItem/',
+  path: '/api/menuFoodItem/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMenuIndexRoute = ApiMenuIndexRouteImport.update({
@@ -267,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/api/location/': typeof ApiLocationIndexRoute
   '/api/machine/': typeof ApiMachineIndexRoute
   '/api/menu/': typeof ApiMenuIndexRoute
+  '/api/menuFoodItem/': typeof ApiMenuFoodItemIndexRoute
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
@@ -305,6 +312,7 @@ export interface FileRoutesByTo {
   '/api/location': typeof ApiLocationIndexRoute
   '/api/machine': typeof ApiMachineIndexRoute
   '/api/menu': typeof ApiMenuIndexRoute
+  '/api/menuFoodItem': typeof ApiMenuFoodItemIndexRoute
   '/api/sale': typeof ApiSaleIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
   '/dashboard/deliveries': typeof ProtectedDashboardDeliveriesIndexRoute
@@ -345,6 +353,7 @@ export interface FileRoutesById {
   '/api/location/': typeof ApiLocationIndexRoute
   '/api/machine/': typeof ApiMachineIndexRoute
   '/api/menu/': typeof ApiMenuIndexRoute
+  '/api/menuFoodItem/': typeof ApiMenuFoodItemIndexRoute
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/_protected/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
@@ -385,6 +394,7 @@ export interface FileRouteTypes {
     | '/api/location/'
     | '/api/machine/'
     | '/api/menu/'
+    | '/api/menuFoodItem/'
     | '/api/sale/'
     | '/api/shop/'
     | '/dashboard/deliveries/'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
     | '/api/location'
     | '/api/machine'
     | '/api/menu'
+    | '/api/menuFoodItem'
     | '/api/sale'
     | '/api/shop'
     | '/dashboard/deliveries'
@@ -462,6 +473,7 @@ export interface FileRouteTypes {
     | '/api/location/'
     | '/api/machine/'
     | '/api/menu/'
+    | '/api/menuFoodItem/'
     | '/api/sale/'
     | '/api/shop/'
     | '/_protected/dashboard/deliveries/'
@@ -500,6 +512,7 @@ export interface RootRouteChildren {
   ApiLocationIndexRoute: typeof ApiLocationIndexRoute
   ApiMachineIndexRoute: typeof ApiMachineIndexRoute
   ApiMenuIndexRoute: typeof ApiMenuIndexRoute
+  ApiMenuFoodItemIndexRoute: typeof ApiMenuFoodItemIndexRoute
   ApiSaleIndexRoute: typeof ApiSaleIndexRoute
   ApiShopIndexRoute: typeof ApiShopIndexRoute
 }
@@ -560,6 +573,13 @@ declare module '@tanstack/react-router' {
       path: '/api/sale'
       fullPath: '/api/sale/'
       preLoaderRoute: typeof ApiSaleIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/menuFoodItem/': {
+      id: '/api/menuFoodItem/'
+      path: '/api/menuFoodItem'
+      fullPath: '/api/menuFoodItem/'
+      preLoaderRoute: typeof ApiMenuFoodItemIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/menu/': {
@@ -837,6 +857,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiLocationIndexRoute: ApiLocationIndexRoute,
   ApiMachineIndexRoute: ApiMachineIndexRoute,
   ApiMenuIndexRoute: ApiMenuIndexRoute,
+  ApiMenuFoodItemIndexRoute: ApiMenuFoodItemIndexRoute,
   ApiSaleIndexRoute: ApiSaleIndexRoute,
   ApiShopIndexRoute: ApiShopIndexRoute,
 }
