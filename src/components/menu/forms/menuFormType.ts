@@ -1,5 +1,6 @@
 import type {
   InsertMenuType,
+  SelectFoodItemType,
   SelectMenuType,
   SelectShopType,
   UpdateMenuType,
@@ -13,6 +14,7 @@ type MenuFormCreateProps = MenuFormBaseProps & {
   initialData?: never;
   mode: "create";
   shops: SelectShopType[];
+  foodItems: SelectFoodItemType[];
   onSubmit: (values: InsertMenuType, coverPhoto?: File) => Promise<void>;
 };
 
@@ -20,6 +22,7 @@ type MenuFormViewProps = MenuFormBaseProps & {
   initialData: SelectMenuType;
   mode: "view";
   shops?: undefined;
+  foodItems?: undefined;
   onSubmit?: never;
 };
 
@@ -27,6 +30,7 @@ type MenuFormEditProps = MenuFormBaseProps & {
   initialData: UpdateMenuType;
   mode: "edit";
   shops: SelectShopType[];
+  foodItems: SelectFoodItemType[];
   onSubmit: (values: UpdateMenuType, coverPhoto?: File) => Promise<void>;
 };
 

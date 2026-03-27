@@ -113,7 +113,8 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertLocationType) => {
     try {
-      const result = await createLocationFn({ data: values });
+      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      const result = await createLocationFn({ data: parsedValues });
       if (!result || result.length === 0) {
         throw new Error("Failed to create location: No result returned");
       }
@@ -132,7 +133,8 @@ function RouteComponent() {
     if (!selectedLocation) return;
 
     try {
-      const result = await updateLocationByIdFn({ data: values });
+      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      const result = await updateLocationByIdFn({ data: parsedValues });
 
       if (!result || result.length === 0) {
         throw new Error("Failed to update location: No result returned");

@@ -24,6 +24,9 @@ import {
   listDisposeFn,
   updateDisposeByIdFn,
 } from "@/utils/dispose/dispose.function";
+import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
+import { listMachineFn } from "@/utils/machine/machine.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
   useNavigate,
@@ -34,12 +37,20 @@ import { type ChangeEvent, useMemo, useState } from "react";
 export const Route = createFileRoute("/_protected/dashboard/disposes/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listDisposeFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [disposes, shops, foodItems, machines] = await Promise.all([
+      listDisposeFn({ data: deps }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+      listFoodItemFn({ data: { limit: 100, offset: 0 } }),
+      listMachineFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { disposes, shops, foodItems, machines };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { disposes, shops, foodItems, machines } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -52,7 +63,7 @@ function RouteComponent() {
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = disposes.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -161,6 +172,9 @@ function RouteComponent() {
             >
               <DisposeForm
                 mode="create"
+                shops={shops}
+                foodItems={foodItems}
+                machines={machines}
                 onSubmit={handleCreateSubmit}
                 onCancel={() => setCreateOpen(false)}
               />
@@ -211,7 +225,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={disposes} />
       </div>
 
       <Dialog
@@ -250,6 +264,9 @@ function RouteComponent() {
           <DisposeForm
             mode="edit"
             initialData={selectedDispose as UpdateDisposeType}
+            shops={shops}
+            foodItems={foodItems}
+            machines={machines}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);

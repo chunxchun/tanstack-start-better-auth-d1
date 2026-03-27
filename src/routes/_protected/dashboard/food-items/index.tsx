@@ -24,6 +24,7 @@ import {
   listFoodItemFn,
   updateFoodItemByIdFn,
 } from "@/utils/foodItem/foodItem.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
   useNavigate,
@@ -34,12 +35,18 @@ import { type ChangeEvent, useMemo, useState } from "react";
 export const Route = createFileRoute("/_protected/dashboard/food-items/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listFoodItemFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [foodItems, shops] = await Promise.all([
+      listFoodItemFn({ data: deps }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { foodItems, shops };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { foodItems, shops } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -54,7 +61,7 @@ function RouteComponent() {
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = foodItems.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -112,7 +119,8 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertFoodItemType) => {
     try {
-      await createFoodItemFn({ data: values });
+      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      await createFoodItemFn({ data: parsedValues });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -124,7 +132,8 @@ function RouteComponent() {
     if (!selectedFoodItem) return;
 
     try {
-      await updateFoodItemByIdFn({ data: values });
+      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      await updateFoodItemByIdFn({ data: parsedValues });
       setEditOpen(false);
       setSelectedFoodItem(null);
       await router.invalidate();
@@ -163,6 +172,7 @@ function RouteComponent() {
             >
               <FoodItemForm
                 mode="create"
+                shops={shops}
                 onSubmit={handleCreateSubmit}
                 onCancel={() => setCreateOpen(false)}
               />
@@ -213,7 +223,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={foodItems} />
       </div>
 
       <Dialog
@@ -252,6 +262,7 @@ function RouteComponent() {
           <FoodItemForm
             mode="edit"
             initialData={selectedFoodItem as UpdateFoodItemType}
+            shops={shops}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);

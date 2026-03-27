@@ -30,16 +30,25 @@ import {
 import { type ChangeEvent, useMemo, useState } from "react";
 import { DataTable } from "@/components/menu/dataTables/menuDataTable";
 import { getMenuColumns } from "@/components/menu/dataTables/menuColumns";
+import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 
 export const Route = createFileRoute("/_protected/dashboard/menu/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listMenuFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [menus, shops, foodItems] = await  Promise.all([
+      listMenuFn({ data: deps }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+      listFoodItemFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { menus, shops, foodItems };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { menus, shops, foodItems } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -52,7 +61,7 @@ function RouteComponent() {
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = menus.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -112,7 +121,8 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertMenuType) => {
     try {
-      await createMenuFn({ data: values });
+      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      await createMenuFn({ data: parsedValues });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -124,7 +134,8 @@ function RouteComponent() {
     if (!selectedMenu) return;
 
     try {
-      await updateMenuByIdFn({ data: values });
+      const parsedValues = { ...values, shopId: Number(values.shopId) };
+      await updateMenuByIdFn({ data: parsedValues });
 
       setEditOpen(false);
       setSelectedMenu(null);
@@ -164,6 +175,8 @@ function RouteComponent() {
             >
               <MenuForm
                 mode="create"
+                shops={shops}
+                foodItems={foodItems}
                 onSubmit={handleCreateSubmit}
                 onCancel={() => setCreateOpen(false)}
               />
@@ -214,7 +227,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={menus} />
       </div>
 
       <Dialog
@@ -253,6 +266,8 @@ function RouteComponent() {
           <MenuForm
             mode="edit"
             initialData={selectedMenu as UpdateMenuType}
+            shops={shops}
+            foodItems={foodItems}
             onSubmit={handleEditSubmit}
             onCancel={() => {
               setEditOpen(false);
@@ -274,8 +289,8 @@ function RouteComponent() {
             <DialogTitle>Delete menu</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete
-              {selectedMenu ? ` ${selectedMenu.name}` : " this menu"}?
-              This action cannot be undone.
+              {selectedMenu ? ` ${selectedMenu.name}` : " this menu"}? This
+              action cannot be undone.
             </DialogDescription>
           </DialogHeader>
 

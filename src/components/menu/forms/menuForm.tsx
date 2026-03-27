@@ -13,19 +13,34 @@ import type { InsertMenuType, UpdateMenuType } from "@/db/schema/menuTable";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import type { MenuFormProps } from "./menuFormType";
+import FormSelect from "@/components/form-select";
+import {
+  MultiSelect,
+  MultiSelectContent,
+  MultiSelectGroup,
+  MultiSelectItem,
+  MultiSelectTrigger,
+  MultiSelectValue,
+} from "@/components/ui/multi-select";
 
 export function MenuForm({
   mode,
   initialData,
+  shops,
+  foodItems,
   onSubmit,
   onCancel,
 }: MenuFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFoodItems, setSelectedFoodItems] = useState<string[]>([]);
+
   const form = useForm({
     defaultValues: initialData || {
       name: null,
       description: null,
       coverPhotoUrl: null,
+      shopId: null,
+      foodItemIds: [],
       date: new Date().toISOString().slice(0, 10),
     },
     onSubmit: async ({ value }) => {
@@ -84,35 +99,72 @@ export function MenuForm({
           label="Description"
           isReadOnly={isReadOnly}
         />
+        <div className="form-half-width">
+          {/* shop */}
+          <FormSelect
+            form={form}
+            name="shopId"
+            label="Shop"
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            isReadOnly={isReadOnly}
+            required
+          />
 
-        {/* cover photo url */}
-        <form.Field name="coverPhotoUrl">
-          {(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Cover Photo</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value ?? ""}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value || null)}
-              />
-              <FieldDescription>
-                Optional public URL for menu cover photo.
-              </FieldDescription>
-            </Field>
-          )}
-        </form.Field>
+          {/* cover photo url */}
+          <form.Field name="coverPhotoUrl">
+            {(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Cover Photo</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value ?? ""}
+                  disabled={isReadOnly}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value || null)}
+                />
+                <FieldDescription>
+                  Optional public URL for menu cover photo.
+                </FieldDescription>
+              </Field>
+            )}
+          </form.Field>
 
-        {/* date */}
-        <FormDate
-          form={form}
-          name="date"
-          label="Date"
-          isReadOnly={isReadOnly}
-          required
-        />
+          {/* food items */}
+          <Field>
+            <FieldLabel htmlFor="foodItemIds">Food Items</FieldLabel>
+
+            <MultiSelect
+              values={selectedFoodItems}
+              // disabled={isReadOnly}
+              onValuesChange={setSelectedFoodItems}
+            >
+              <MultiSelectTrigger>
+                <MultiSelectValue placeholder="Select frameworks..." />
+              </MultiSelectTrigger>
+              <MultiSelectContent>
+                <MultiSelectGroup>
+                  {foodItems?.map((item) => (
+                    <MultiSelectItem key={item.id} value={String(item.id)}>
+                      {item.name}
+                    </MultiSelectItem>
+                  ))}
+                </MultiSelectGroup>
+              </MultiSelectContent>
+            </MultiSelect>
+          </Field>
+
+          {/* date */}
+          <FormDate
+            form={form}
+            name="date"
+            label="Date"
+            isReadOnly={isReadOnly}
+            required
+          />
+        </div>
       </FieldGroup>
 
       <FormFooter

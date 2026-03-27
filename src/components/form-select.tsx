@@ -61,7 +61,7 @@ export default function FormSelect<T, TForm>({
             <SelectTrigger onBlur={field.handleBlur} disabled={list.length === 0}>
               <SelectValue placeholder={`Select a ${label.toLowerCase()}`} />
             </SelectTrigger>
-            {list.length === 0 && (
+            {!isReadOnly && list.length === 0 && (
               <FieldError>{`No ${label.toLowerCase()} available, go create one`}</FieldError>
             )}
             <SelectContent>
@@ -72,7 +72,7 @@ export default function FormSelect<T, TForm>({
               ))}
             </SelectContent>
           </Select>
-          {list.length > 0 &&description ? (
+          {!isReadOnly && list.length > 0 && description ? (
             <FieldDescription>{description}</FieldDescription>
           ) : null}
         </Field>
