@@ -6,7 +6,7 @@ import {
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
-import { specialHours } from "./specialHourTable";
+import { specialHoursTable } from "./specialHourTable";
 import { machinesTable } from "./machineTable";
 
 export const machineSpecialScheduleTable = sqliteTable(
@@ -21,7 +21,7 @@ export const machineSpecialScheduleTable = sqliteTable(
       }),
     specialHourId: integer("special_hour_id")
       .notNull()
-      .references(() => specialHours.id, {
+      .references(() => specialHoursTable.id, {
         onDelete: "restrict",
         onUpdate: "restrict",
       }),
@@ -45,12 +45,12 @@ export const selectMachineSpecialScheduleSchema = createSelectSchema(
   machineSpecialScheduleTable,
 );
 
-export type InsertMachineSpecialSchedule = z.infer<
+export type InsertMachineSpecialScheduleType = z.infer<
   typeof insertMachineSpecialScheduleSchema
 >;
-export type UpdateMachineSpecialSchedule = z.infer<
+export type UpdateMachineSpecialScheduleType = z.infer<
   typeof updateMachineSpecialScheduleSchema
 >;
-export type SelectMachineSpecialSchedule = z.infer<
+export type SelectMachineSpecialScheduleType = z.infer<
   typeof selectMachineSpecialScheduleSchema
 >;

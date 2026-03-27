@@ -4,7 +4,7 @@ import {
   fetchMenuFoodItemByIdHandler,
   fetchMenuFoodItemByMenuIdHandler,
   listMenuFoodItemHandler,
-  updateMenuFoodItemHandlerById,
+  updateMenuFoodItemByIdHandler,
 } from "./menuFoodItem.handler";
 import { idSchema, paginationSchema } from "../sharedSchema";
 import { createServerFn } from "@tanstack/react-start";
@@ -36,7 +36,7 @@ export const fetchMenuFoodItemByMenuIdFn = createServerFn({ method: "GET" })
 export const updateMenuFoodItemByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateMenuFoodItemSchema)
   .handler(async ({ data }) =>
-    updateMenuFoodItemHandlerById(Number(data.id), data),
+    updateMenuFoodItemByIdHandler(Number(data.id), data),
   );
 
 export const deleteMenuFoodItemByIdFn = createServerFn({ method: "GET" })

@@ -1,14 +1,13 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable } from "drizzle-orm/sqlite-core";
 import {
   createInsertSchema,
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-orm/zod";
 import * as z from "zod";
-import { specialHours } from "./specialHourTable";
 import { machinesTable } from "./machineTable";
-import { operatingHours } from "./operationHourTable";
+import { operatingHoursTable } from "./operationHourTable";
 
 export const machineOperatingScheduleTable = sqliteTable(
   "machine_operating_schedule",
@@ -22,7 +21,7 @@ export const machineOperatingScheduleTable = sqliteTable(
       }),
     operatingHourId: integer("operating_hour_id")
       .notNull()
-      .references(() => operatingHours.id, {
+      .references(() => operatingHoursTable.id, {
         onDelete: "restrict",
         onUpdate: "restrict",
       }),
@@ -46,12 +45,12 @@ export const selectMachineOperatingScheduleSchema = createSelectSchema(
   machineOperatingScheduleTable,
 );
 
-export type InsertMachineOperatingSchedule = z.infer<
+export type InsertMachineOperatingScheduleType = z.infer<
   typeof insertMachineOperatingScheduleSchema
 >;
-export type UpdateMachineOperatingSchedule = z.infer<
+export type UpdateMachineOperatingScheduleType = z.infer<
   typeof updateMachineOperatingScheduleSchema
 >;
-export type SelectMachineOperatingSchedule = z.infer<
+export type SelectMachineOperatingScheduleType = z.infer<
   typeof selectMachineOperatingScheduleSchema
 >;

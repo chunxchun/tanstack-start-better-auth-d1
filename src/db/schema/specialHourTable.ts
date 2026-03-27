@@ -7,7 +7,7 @@ import {
 } from "drizzle-orm/zod";
 import * as z from "zod";
 
-export const specialHours = sqliteTable("special_hours", {
+export const specialHoursTable = sqliteTable("special_hours", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("name", { length: 100 }),
   description: text("description", { length: 200 }),
@@ -25,16 +25,20 @@ export const specialHours = sqliteTable("special_hours", {
     .$onUpdate(() => sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 });
 
-export const insertSpecialHourSchema = createInsertSchema(specialHours).omit({
+export const insertSpecialHourSchema = createInsertSchema(
+  specialHoursTable,
+).omit({
   createdAt: true,
   updatedAt: true,
 });
-export const updateSpecialHourSchema = createUpdateSchema(specialHours).omit({
+export const updateSpecialHourSchema = createUpdateSchema(
+  specialHoursTable,
+).omit({
   createdAt: true,
   updatedAt: true,
 });
-export const selectSpecialHourSchema = createSelectSchema(specialHours);
+export const selectSpecialHourSchema = createSelectSchema(specialHoursTable);
 
-export type InsertSpecialHour = z.infer<typeof insertSpecialHourSchema>;
-export type UpdateSpecialHour = z.infer<typeof updateSpecialHourSchema>;
-export type SelectSpecialHour = z.infer<typeof selectSpecialHourSchema>;
+export type InsertSpecialHourType = z.infer<typeof insertSpecialHourSchema>;
+export type UpdateSpecialHourType = z.infer<typeof updateSpecialHourSchema>;
+export type SelectSpecialHourType = z.infer<typeof selectSpecialHourSchema>;

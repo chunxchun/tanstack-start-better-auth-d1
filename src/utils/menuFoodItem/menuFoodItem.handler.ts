@@ -36,7 +36,7 @@ export const fetchMenuFoodItemByIdHandler = async (id: number) => {
       .where(eq(menusFoodItemsTable.id, id))
       .limit(1);
 
-    if (!result) {
+    if (!result || result.length === 0) {
       throw new Error("Menu food item not found");
     }
 
@@ -74,7 +74,7 @@ export const createMenuFoodItemHandler = async (
       .values(menuFoodItem)
       .returning();
 
-    if (!result) {
+    if (!result || result.length === 0) {
       throw new Error("Failed to create menu food item, no result returned");
     }
 
@@ -85,7 +85,7 @@ export const createMenuFoodItemHandler = async (
   }
 };
 
-export const updateMenuFoodItemHandlerById = async (
+export const updateMenuFoodItemByIdHandler = async (
   id: number,
   menuFoodItem: UpdateMenuFoodItemType,
 ) => {
@@ -96,7 +96,7 @@ export const updateMenuFoodItemHandlerById = async (
       .where(eq(menusFoodItemsTable.id, id))
       .returning();
 
-    if (!result) {
+    if (!result || result.length === 0) {
       throw new Error("Failed to update menu food item, no result returned");
     }
 
@@ -114,7 +114,7 @@ export const deleteMenuFoodItemByIdHandler = async (id: number) => {
       .where(eq(menusFoodItemsTable.id, id))
       .returning();
 
-    if (!result) {
+    if (!result || result.length === 0) {
       throw new Error("Failed to delete menu food item, no result returned");
     }
 
