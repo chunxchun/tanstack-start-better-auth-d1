@@ -1,16 +1,62 @@
 import { db } from "@/db";
-import { menusTable, type InsertMenuType, type UpdateMenuType } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  foodItemsTable,
+  menusFoodItemsTable,
+  menusTable,
+  type InsertMenuType,
+  type UpdateMenuType,
+} from "@/db/schema";
+import { eq, desc } from "drizzle-orm";
 
 export const listMenuHandler = async (
   limit: number = 10,
   offset: number = 1,
 ) => {
   try {
-    const result = await db.select().from(menusTable).limit(limit).offset(offset);
+    const result = await db
+      .select()
+      .from(menusTable)
+      .limit(limit)
+      .offset(offset);
     return result;
   } catch (error) {
     console.error("Error listing menus:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
+export const listMenuWithFoodItemHandler = async (
+  limit: number = 10,
+  offset: number = 1,
+) => {
+  try {
+    const result = await db
+      .select({
+        menuId: menusTable.id,
+        menuName: menusTable.name,
+        menusCoverPhotoUrl: menusTable.coverPhotoUrl,
+        menuDate: menusTable.date,
+        menuShopId: menusTable.shopId,
+        menuDescription: menusTable.description,
+        foodItemId: foodItemsTable.id,
+        foodItemName: foodItemsTable.name,
+        foodImageUrl: foodItemsTable.imageUrl,
+      })
+      .from(menusTable)
+      .leftJoin(
+        menusFoodItemsTable,
+        eq(menusTable.id, menusFoodItemsTable.menuId),
+      )
+      .leftJoin(
+        foodItemsTable,
+        eq(menusFoodItemsTable.foodItemId, foodItemsTable.id),
+      )
+      .orderBy(desc(menusTable.createdAt))
+      .limit(limit)
+      .offset(offset);
+    return result;
+  } catch (error) {
+    console.error("Error listing menus with food items:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 };

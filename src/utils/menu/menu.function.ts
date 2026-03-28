@@ -6,12 +6,19 @@ import {
   deleteMenuByIdHandler,
   fetchMenuByIdHandler,
   listMenuHandler,
+  listMenuWithFoodItemHandler,
   updateMenuHandlerById,
 } from "./menu.handler";
 
 export const listMenuFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
   .handler(async ({ data }) => listMenuHandler(data.limit, data.offset));
+
+export const listMenuWithFoodItemFn = createServerFn({ method: "GET" })
+  .inputValidator(paginationSchema)
+  .handler(async ({ data }) =>
+    listMenuWithFoodItemHandler(data.limit, data.offset),
+  );
 
 export const createMenuFn = createServerFn({ method: "POST" })
   .inputValidator(insertMenuSchema)

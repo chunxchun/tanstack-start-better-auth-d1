@@ -42,5 +42,16 @@ export const selectMenuSchema = createSelectSchema(menusTable);
 export type InsertMenuType = z.infer<typeof insertMenuSchema>;
 export type UpdateMenuType = z.infer<typeof updateMenuSchema>;
 export type SelectMenuType = z.infer<typeof selectMenuSchema>;
-export type insertMenuWithFoodItemsType = InsertMenuType & { foodItemIds: number[] };
-export type updateMenuWithFoodItemsType = UpdateMenuType & { foodItemIds: number[] }; 
+
+export type MenuFoodItemType = { id: number; name: string; imageUrl?: string };
+
+export type InsertMenuWithFoodItemsType = InsertMenuType & {
+  menuFoodItems: MenuFoodItemType[];
+};
+export type UpdateMenuWithFoodItemsType = UpdateMenuType & {
+  menuFoodItems: MenuFoodItemType[];
+};
+export type SelectMenuWithFoodItemsType = SelectMenuType & {
+  menuFoodItems: MenuFoodItemType[];
+};
+

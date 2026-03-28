@@ -11,9 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import type {
   InsertMenuType,
-  insertMenuWithFoodItemsType,
+  InsertMenuWithFoodItemsType,
+  MenuFoodItemType,
   UpdateMenuType,
-  updateMenuWithFoodItemsType,
+  UpdateMenuWithFoodItemsType,
 } from "@/db/schema/menuTable";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
@@ -37,7 +38,9 @@ export function MenuForm({
   onCancel,
 }: MenuFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedFoodItems, setSelectedFoodItems] = useState<string[]>([]);
+  const [selectedFoodItems, setSelectedFoodItems] = useState<
+    MenuFoodItemType[]
+  >([]);
 
   const form = useForm({
     defaultValues: initialData || {
@@ -53,21 +56,25 @@ export function MenuForm({
       try {
         setIsLoading(true);
         if (mode === "edit") {
-          const dataWithFoodItems = {
+          const menuWithFoodItems: UpdateMenuWithFoodItemsType = {
             ...value,
-            foodItemIds: selectedFoodItems.map(Number),
-          } as updateMenuWithFoodItemsType;
-          await onSubmit(dataWithFoodItems);
+            menuFoodItems: selectedFoodItems.map((foodItems) => {
+              return { ...foodItems, id: Number(foodItems.id) };
+            }),
+          } as UpdateMenuWithFoodItemsType;
+          await onSubmit(menuWithFoodItems);
         }
 
         if (mode === "create") {
-          const dataWithFoodItems = {
+          const menuWithFoodItems: InsertMenuWithFoodItemsType = {
             ...value,
-            foodItemIds: selectedFoodItems.map(Number),
-          } as insertMenuWithFoodItemsType;
+            menuFoodItems: selectedFoodItems.map((foodItems) => {
+              return { ...foodItems, id: Number(foodItems.id) };
+            }),
+          } as InsertMenuWithFoodItemsType;
 
-          console.log("Submitting menu form with data:", dataWithFoodItems);
-          // await onSubmit(dataWithFoodItems);
+          console.log("Submitting menu form with data:", menuWithFoodItems);
+          await onSubmit(menuWithFoodItems);
         }
       } catch (error) {
         console.error("Error submitting menu form:", error);
@@ -160,7 +167,14 @@ export function MenuForm({
               <MultiSelectContent>
                 <MultiSelectGroup>
                   {foodItems?.map((item) => (
-                    <MultiSelectItem key={item.id} value={String(item.id)}>
+                    <MultiSelectItem
+                      key={item.id}
+                      value={{
+                        id: item.id,
+                        name: item.name,
+                        imageUrl: item.imageUrl || undefined,
+                      }}
+                    >
                       {item.name}
                     </MultiSelectItem>
                   ))}

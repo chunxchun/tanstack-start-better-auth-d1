@@ -45,6 +45,7 @@ export function FoodItemForm({
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
       try {
+        setIsLoading(true);
         if (mode === "edit") {
           await onSubmit(value as UpdateFoodItemType);
         }
@@ -54,6 +55,8 @@ export function FoodItemForm({
         }
       } catch (error) {
         console.error("Error submitting food item form:", error);
+      } finally {
+        setIsLoading(false);
       }
     },
   });
@@ -177,6 +180,7 @@ export function FoodItemForm({
           name="skuCode"
           label="SKU Code"
           isReadOnly={isReadOnly}
+          required
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

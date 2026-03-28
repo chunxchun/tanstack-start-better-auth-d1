@@ -1,3 +1,6 @@
+import { getMenuColumns } from "@/components/menu/dataTables/menuColumns";
+import { DataTable } from "@/components/menu/dataTables/menuDataTable";
+import { MenuForm } from "@/components/menu/forms/menuForm";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,49 +11,48 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MenuForm } from "@/components/menu/forms/menuForm";
 import type {
-  InsertMenuType,
-  SelectMenuType,
   SelectMenuType as Menu,
+  SelectMenuType,
   UpdateMenuType,
-  insertMenuWithFoodItemsType,
-  updateMenuWithFoodItemsType,
+  InsertMenuWithFoodItemsType,
+  UpdateMenuWithFoodItemsType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
+import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
 import {
   createMenuFn,
   deleteMenuByIdFn,
   listMenuFn,
+  listMenuWithFoodItemFn,
   updateMenuByIdFn,
 } from "@/utils/menu/menu.function";
+import { createMenuFoodItemFn } from "@/utils/menuFoodItem/menuFoodItem.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import { DataTable } from "@/components/menu/dataTables/menuDataTable";
-import { getMenuColumns } from "@/components/menu/dataTables/menuColumns";
-import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
-import { listShopFn } from "@/utils/shop/shop.function";
 
 export const Route = createFileRoute("/_protected/dashboard/menu/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => {
-    const [menus, shops, foodItems] = await Promise.all([
-      listMenuFn({ data: deps }),
+    const [menuWithFoodItems, shops, foodItems] = await Promise.all([
+      // listMenuFn({ data: deps }),
+      listMenuWithFoodItemFn({ data: deps }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
       listFoodItemFn({ data: { limit: 100, offset: 0 } }),
     ]);
-    return { menus, shops, foodItems };
+    return { menuWithFoodItems, shops, foodItems };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { menus, shops, foodItems } = Route.useLoaderData();
+  const { menuWithFoodItems, shops, foodItems } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -63,7 +65,7 @@ function RouteComponent() {
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = menus.length === limit;
+  const hasNextPage = menuWithFoodItems.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -121,23 +123,26 @@ function RouteComponent() {
     [],
   );
 
-  const handleCreateSubmit = async (values: insertMenuWithFoodItemsType) => {
+  const handleCreateSubmit = async (values: InsertMenuWithFoodItemsType) => {
     try {
-      const { foodItemIds, ...menuWithoutFoodItems } = values;
+      const { menuFoodItems, ...menuWithoutFoodItems } = values;
       const parsedValues = {
         ...menuWithoutFoodItems,
         shopId: Number(menuWithoutFoodItems.shopId),
       };
 
-      
       const menu = await createMenuFn({ data: parsedValues });
       if (!menu) {
         throw new Error("Menu creation failed");
       }
-
+      console.log("Menu created:", menu);
       const menuId = Number(menu[0].id);
-      
-      // [TODO] create menuFoodItem links
+
+      const createTasks = menuFoodItems.map(async (foodItem) =>
+        createMenuFoodItemFn({ data: { menuId, foodItemId: foodItem.id } }),
+      );
+      const createResult = await Promise.all(createTasks);
+      console.log("Menu created with food items:", createResult);
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -145,13 +150,16 @@ function RouteComponent() {
     }
   };
 
-  const handleEditSubmit = async (values: updateMenuWithFoodItemsType) => {
+  const handleEditSubmit = async (values: UpdateMenuWithFoodItemsType) => {
     if (!selectedMenu) return;
 
     try {
       const parsedValues = {
         ...values,
-        foodItemIds: values.foodItemIds.map(Number),
+        menuFoodItems: values.menuFoodItems.map((foodItem) => ({
+          ...foodItem,
+          id: Number(foodItem.id),
+        })),
       };
       await updateMenuByIdFn({ data: parsedValues });
 
@@ -245,7 +253,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={menus} />
+        <DataTable columns={columns} data={menuWithFoodItems} />
       </div>
 
       <Dialog

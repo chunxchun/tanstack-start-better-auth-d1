@@ -26,15 +26,16 @@ import {
   type ReactNode,
 } from "react"
 import { Badge } from "@/components/ui/badge"
+import type { MenuFoodItemType } from "@/db/schema/menuTable"
 
 type MultiSelectContextType = {
   open: boolean
   setOpen: (open: boolean) => void
-  selectedValues: Set<string>
-  toggleValue: (value: string) => void
-  items: Map<string, ReactNode>
+  selectedValues: Set<MenuFoodItemType>
+  toggleValue: (value: MenuFoodItemType) => void
+  items: Map<MenuFoodItemType, ReactNode>
   single: boolean
-  onItemAdded: (value: string, label: ReactNode) => void
+  onItemAdded: (value: MenuFoodItemType, label: ReactNode) => void
 }
 const MultiSelectContext = createContext<MultiSelectContextType | null>(null)
 
@@ -46,22 +47,22 @@ export function MultiSelect({
   single = false,
 }: {
   children: ReactNode
-  values?: string[]
-  defaultValues?: string[]
-  onValuesChange?: (values: string[]) => void
+  values?: MenuFoodItemType[]
+  defaultValues?: MenuFoodItemType[]
+  onValuesChange?: (values: MenuFoodItemType[]) => void
   single?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [internalValues, setInternalValues] = useState(
-    new Set<string>(values ?? defaultValues),
+    new Set<MenuFoodItemType>(values ?? defaultValues),
   )
   const selectedValues = values ? new Set(values) : internalValues
-  const [items, setItems] = useState<Map<string, ReactNode>>(new Map())
+  const [items, setItems] = useState<Map<MenuFoodItemType, ReactNode>>(new Map())
 
-  function toggleValue(value: string) {
-    const getNewSet = (prev: Set<string>) => {
+  function toggleValue(value: MenuFoodItemType) {
+    const getNewSet = (prev: Set<MenuFoodItemType>) => {
       if (single) {
-        return prev.has(value) ? new Set<string>() : new Set<string>([value])
+        return prev.has(value) ? new Set<MenuFoodItemType>() : new Set<MenuFoodItemType>([value])
       }
       const newSet = new Set(prev)
       if (newSet.has(value)) {
@@ -76,7 +77,7 @@ export function MultiSelect({
     if (single) setOpen(false)
   }
 
-  const onItemAdded = useCallback((value: string, label: ReactNode) => {
+  const onItemAdded = useCallback((value: MenuFoodItemType, label: ReactNode) => {
     setItems(prev => {
       if (prev.get(value) === label) return prev
       return new Map(prev).set(value, label)
@@ -232,7 +233,7 @@ export function MultiSelectValue({
             variant="outline"
             data-selected-item
             className="group flex items-center gap-1"
-            key={value}
+            key={value.id}
             onClick={
               clickToRemove
                 ? e => {
@@ -311,7 +312,7 @@ export function MultiSelectItem({
   ...props
 }: {
   badgeLabel?: ReactNode
-  value: string
+  value: MenuFoodItemType
 } & Omit<ComponentPropsWithoutRef<typeof CommandItem>, "value">) {
   const { toggleValue, selectedValues, onItemAdded } = useMultiSelectContext()
   const isSelected = selectedValues.has(value)
@@ -325,7 +326,7 @@ export function MultiSelectItem({
       {...props}
       onSelect={() => {
         toggleValue(value)
-        onSelect?.(value)
+        onSelect?.(value.name)
       }}
     >
       <CheckIcon

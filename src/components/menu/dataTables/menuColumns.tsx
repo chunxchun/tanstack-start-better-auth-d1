@@ -1,4 +1,5 @@
-import type { SelectMenuType as Menu } from "@/db/schema";
+// import type { SelectMenuType as Menu } from "@/db/schema";
+import type { SelectMenuWithFoodItemsType as Menu } from "@/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
