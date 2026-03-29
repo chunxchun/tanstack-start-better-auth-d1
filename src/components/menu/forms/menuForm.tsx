@@ -42,7 +42,7 @@ export function MenuForm({
   const [selectedFoodItems, setSelectedFoodItems] = useState<
     MenuFoodItemType[]
   >(initialSelectedFoodItems);
-
+console.log("Initial selected food items:", initialSelectedFoodItems);
   const form = useForm({
     defaultValues: initialData || {
       name: null,
@@ -157,6 +157,7 @@ export function MenuForm({
             <FieldLabel htmlFor="foodItemIds">Food Items</FieldLabel>
 
             <MultiSelect
+              defaultValues={initialSelectedFoodItems}
               values={selectedFoodItems}
               // disabled={isReadOnly}
               onValuesChange={setSelectedFoodItems}

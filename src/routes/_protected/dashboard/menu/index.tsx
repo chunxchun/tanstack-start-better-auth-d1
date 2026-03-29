@@ -59,7 +59,7 @@ function RouteComponent() {
   const { menuWithFoodItems, shops, foodItems } = Route.useLoaderData();
   console.log("Loaded menu with food items:", menuWithFoodItems);
   const constructedMenus = constructMenuWithFoodItem(menuWithFoodItems as queryMenuWithFoodItemType[]);
-  
+ console.log("Constructed menus with food items:", JSON.stringify(constructedMenus)); 
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
