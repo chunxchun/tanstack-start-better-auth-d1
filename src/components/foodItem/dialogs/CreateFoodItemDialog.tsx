@@ -6,16 +6,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { InsertShopType, SelectShopType } from "@/db/schema";
 import { FoodItemForm } from "../forms/foodItemForm";
-
-type CreateFoodItemDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: InsertShopType) => Promise<void>;
-  onCancel: () => void;
-  shops: SelectShopType;
-};
+import type { FoodItemCreateDialogProps } from "./foodItemDialogType";
 
 export default function CreateFoodItemDialog({
   open,
@@ -23,7 +15,7 @@ export default function CreateFoodItemDialog({
   onSubmit,
   onCancel,
   shops,
-}: CreateFoodItemDialogProps) {
+}: FoodItemCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>

@@ -1,38 +1,40 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertMenuWithFoodItemsType,
   SelectFoodItemType,
   SelectMenuWithFoodItemsType,
   SelectShopType,
-  UpdateMenuWithFoodItemsType
+  UpdateMenuWithFoodItemsType,
 } from "@/db/schema";
 
-type MenuFormBaseProps = {
-  onCancel: () => void;
-};
+type MenuFormBaseProps = FormDataDependency<"shops" | "foodItems">;
 
-type MenuFormCreateProps = MenuFormBaseProps & {
-  initialData?: never;
+type MenuFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
-  foodItems: SelectFoodItemType[];
-  onSubmit: (values: InsertMenuWithFoodItemsType, coverPhoto?: File) => Promise<void>;
-};
+  initialData?: never;
+  onSubmit: (
+    values: InsertMenuWithFoodItemsType,
+    coverPhoto?: File,
+  ) => Promise<void>;
+  onCancel: () => void;
+} & MenuFormBaseProps;
+
+type MenuFormEditProps = {
+  mode: "edit";
+  initialData: SelectMenuWithFoodItemsType;
+  onSubmit: (
+    values: UpdateMenuWithFoodItemsType,
+    coverPhoto?: File,
+  ) => Promise<void>;
+  onCancel: () => void;
+} & MenuFormBaseProps;
 
 type MenuFormViewProps = MenuFormBaseProps & {
-  initialData: SelectMenuWithFoodItemsType;
   mode: "view";
-  shops?: undefined;
-  foodItems?: undefined;
-  onSubmit?: undefined;
-};
-
-type MenuFormEditProps = MenuFormBaseProps & {
   initialData: SelectMenuWithFoodItemsType;
-  mode: "edit";
-  shops: SelectShopType[];
-  foodItems: SelectFoodItemType[];
-  onSubmit: (values: UpdateMenuWithFoodItemsType, coverPhoto?: File) => Promise<void>;
-};
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof MenuFormBaseProps, never>>;
 
 export type MenuFormProps =
   | MenuFormViewProps

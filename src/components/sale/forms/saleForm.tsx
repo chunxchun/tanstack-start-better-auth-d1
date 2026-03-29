@@ -21,7 +21,7 @@ export function SaleForm({
   initialData,
   shops,
   machines,
-  foodItems,
+  foodItems = [],
   onSubmit,
   onCancel,
 }: SaleFormProps) {

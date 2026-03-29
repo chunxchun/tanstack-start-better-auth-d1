@@ -4,28 +4,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectFoodItemType } from "@/db/schema";
-import type { ViewDialogProps } from "@/db/schema/commonSchema";
 import { FoodItemForm } from "../forms/foodItemForm";
-
-type ViewFoodItemDialogProps = ViewDialogProps<SelectFoodItemType>;
+import type { FoodItemViewDialogProps } from "./foodItemDialogType";
 
 export default function ViewFoodItemDialog({
   open,
   onOpenChange,
   onCancel,
-  data: foodItem,
-}: ViewFoodItemDialogProps) {
+  initialData,
+}: FoodItemViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogHeader className="sr-only">
+        <DialogTitle>Food Item Details</DialogTitle>
+      </DialogHeader>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
       >
-        <DialogHeader className="sr-only">
-          <DialogTitle>Food Item Details</DialogTitle>
-        </DialogHeader>
-        <FoodItemForm mode="create" initialData={foodItem} onCancel={onCancel} />
+        <FoodItemForm
+          mode="view"
+          initialData={initialData}
+          onCancel={onCancel}
+        />
       </DialogContent>
     </Dialog>
   );

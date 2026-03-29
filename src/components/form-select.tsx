@@ -1,4 +1,9 @@
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -31,6 +36,7 @@ type FormSelectProps<T, TForm> = {
   labelKey: (item: T) => string;
   description?: string | null;
   required?: boolean;
+  initialValue?: string | undefined;
 };
 
 export default function FormSelect<T, TForm>({
@@ -43,8 +49,8 @@ export default function FormSelect<T, TForm>({
   labelKey,
   description = null,
   required = false,
+  initialValue = undefined,
 }: FormSelectProps<T, TForm>) {
-
   return (
     <form.Field name={name}>
       {(field: any) => (
@@ -53,12 +59,17 @@ export default function FormSelect<T, TForm>({
             {label} {required && <span className="text-destructive">*</span>}
           </FieldLabel>
 
+          {isReadOnly ? <p>{initialValue}</p> : null}
           <Select
+            // defaultValue={`234`}
             value={String(field.state.value)}
             disabled={isReadOnly}
             onValueChange={(e) => field.handleChange(e)}
           >
-            <SelectTrigger onBlur={field.handleBlur} disabled={list.length === 0}>
+            <SelectTrigger
+              onBlur={field.handleBlur}
+              disabled={list.length === 0}
+            >
               <SelectValue placeholder={`Select a ${label.toLowerCase()}`} />
             </SelectTrigger>
             {!isReadOnly && list.length === 0 && (

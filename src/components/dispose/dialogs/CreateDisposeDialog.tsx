@@ -6,24 +6,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { UserForm } from "@/components/user/forms/userForm";
-import type {
-  SelectFoodItemType,
-  SelectMachineType,
-  SelectShopType,
-} from "@/db/schema";
-import type { Select } from "radix-ui";
 import { DisposeForm } from "../forms/disposeForm";
+import type { DisposeCreateDialogProps } from "./disposeDialogType";
 
-type CreateDisposeDialogProps = {
-  open: boolean;
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: any) => Promise<void>;
-  onCancel: () => void;
-};
 export default function CreateDisposeDialog({
   open,
   shops,
@@ -32,7 +17,7 @@ export default function CreateDisposeDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-}: CreateDisposeDialogProps) {
+}: DisposeCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>

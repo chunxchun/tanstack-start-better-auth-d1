@@ -1,16 +1,11 @@
+import { MachineForm } from "@/components/machine/forms/machineForm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectLocationType } from "@/db/schema/locationTable";
-import type {
-  SelectMachineType,
-  UpdateMachineType,
-} from "@/db/schema/machineTable";
-import type { SelectShopType } from "@/db/schema/shopTable";
-import { MachineForm } from "@/components/machine/forms/machineForm";
+import type { MachineEditDialogProps } from "./machineDialogType";
 
 export default function EditMachineDialog({
   open,
@@ -19,16 +14,8 @@ export default function EditMachineDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  machine,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  locations: SelectLocationType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: UpdateMachineType) => Promise<void>;
-  onCancel: () => void;
-  machine: SelectMachineType;
-}) {
+  initialData,
+}: MachineEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -42,7 +29,7 @@ export default function EditMachineDialog({
           mode="edit"
           shops={shops}
           locations={locations}
-          initialData={machine}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
         />

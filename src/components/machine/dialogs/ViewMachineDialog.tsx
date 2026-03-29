@@ -1,23 +1,18 @@
-import { MachineForm } from "../forms/machineForm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectMachineType } from "@/db/schema/machineTable";
+import { MachineForm } from "../forms/machineForm";
+import type { MachineViewDialogProps } from "./machineDialogType";
 
 export default function ViewMachineDialog({
   open,
   onOpenChange,
   onCancel,
-  machine,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCancel: () => void;
-  machine: SelectMachineType;
-}) {
+  initialData,
+}: MachineViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -27,7 +22,11 @@ export default function ViewMachineDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Machine Details</DialogTitle>
         </DialogHeader>
-        <MachineForm mode="view" initialData={machine} onCancel={onCancel} />
+        <MachineForm
+          mode="view"
+          initialData={initialData}
+          onCancel={onCancel}
+        />
       </DialogContent>
     </Dialog>
   );

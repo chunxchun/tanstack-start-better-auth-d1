@@ -4,12 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectShopType } from "@/db/schema";
-import type {
-  SelectLocationType,
-  UpdateLocationType,
-} from "@/db/schema/locationTable";
 import { LocationForm } from "../forms/locationForm";
+import type { LocationEditDialogProps } from "./locationDialogType";
 
 export default function EditLocationDialog({
   open,
@@ -17,15 +13,8 @@ export default function EditLocationDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  location,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: UpdateLocationType) => Promise<void>;
-  onCancel: () => void;
-  location: SelectLocationType;
-}) {
+  initialData,
+}: LocationEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -38,7 +27,7 @@ export default function EditLocationDialog({
         <LocationForm
           mode="edit"
           shops={shops}
-          initialData={location}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
         />

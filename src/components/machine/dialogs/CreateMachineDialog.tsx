@@ -7,9 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { MachineForm } from "../forms/machineForm";
-import type { InsertMachineType } from "@/db/schema/machineTable";
-import type { SelectLocationType } from "@/db/schema/locationTable";
-import type { SelectShopType } from "@/db/schema/shopTable";
+import type { MachineCreateDialogProps } from "./machineDialogType";
 
 export default function CreateMachineDialog({
   open,
@@ -18,14 +16,7 @@ export default function CreateMachineDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  locations: SelectLocationType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: InsertMachineType) => Promise<void>;
-  onCancel: () => void;
-}) {
+}: MachineCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -33,14 +24,20 @@ export default function CreateMachineDialog({
           <span>+</span>Create
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-w-[50vw]" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        className="min-w-[50vw]"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader className="sr-only">
           <DialogTitle>Create Machine</DialogTitle>
         </DialogHeader>
-        <MachineForm mode="create" 
+        <MachineForm
+          mode="create"
           shops={shops}
           locations={locations}
-          onSubmit={onSubmit} onCancel={onCancel} />
+          onSubmit={onSubmit}
+          onCancel={onCancel}
+        />
       </DialogContent>
     </Dialog>
   );

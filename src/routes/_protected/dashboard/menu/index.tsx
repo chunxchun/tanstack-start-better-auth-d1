@@ -1,23 +1,16 @@
 import { getMenuColumns } from "@/components/menu/dataTables/menuColumns";
 import { DataTable } from "@/components/menu/dataTables/menuDataTable";
+import CreateMenuDialog from "@/components/menu/dialogs/CreateMenuDialog";
+import DeleteMenuDialog from "@/components/menu/dialogs/DeleteMenuDialog";
+import EditMenuDialog from "@/components/menu/dialogs/EditMenuDialog";
+import ViewMenuDialog from "@/components/menu/dialogs/ViewMenuDialog";
 import { MenuForm } from "@/components/menu/forms/menuForm";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import type {
-  SelectMenuWithFoodItemsType,
-  SelectMenuType as Menu,
-  SelectMenuType,
-  UpdateMenuType,
-  UpdateMenuWithFoodItemsType,
   InsertMenuWithFoodItemsType,
+  SelectMenuWithFoodItemsType,
+  UpdateMenuWithFoodItemsType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
@@ -25,23 +18,40 @@ import {
   createMenuFn,
   deleteMenuByIdFn,
   listMenuWithFoodItemFn,
-  updateMenuByIdFn
+  updateMenuByIdFn,
 } from "@/utils/menu/menu.function";
 import {
   constructMenuWithFoodItem,
-  type queryMenuWithFoodItemType
+  type queryMenuWithFoodItemType,
 } from "@/utils/menu/menu.helper";
 import { createMenuFoodItemFn } from "@/utils/menuFoodItem/menuFoodItem.function";
 import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
+  redirect,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
+import { getSession } from '@/lib/session'
 import { type ChangeEvent, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/_protected/dashboard/menu/")({
   validateSearch: searchSchema,
+  beforeLoad: async () => {
+    const session = await getSession();
+
+    if (!session) {
+      throw redirect({
+        to: "/login",
+      }); 
+
+    }
+    const user = session.user;
+    if (user.role === "admin") {
+      throw redirect({ to: "/dashboard/admin-only" });
+    }
+    return { user };
+  },
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => {
     const [menuWithFoodItems, shops, foodItems] = await Promise.all([
@@ -58,8 +68,13 @@ export const Route = createFileRoute("/_protected/dashboard/menu/")({
 function RouteComponent() {
   const { menuWithFoodItems, shops, foodItems } = Route.useLoaderData();
   console.log("Loaded menu with food items:", menuWithFoodItems);
-  const constructedMenus = constructMenuWithFoodItem(menuWithFoodItems as queryMenuWithFoodItemType[]);
- console.log("Constructed menus with food items:", JSON.stringify(constructedMenus)); 
+  const constructedMenus = constructMenuWithFoodItem(
+    menuWithFoodItems as queryMenuWithFoodItemType[],
+  );
+  console.log(
+    "Constructed menus with food items:",
+    JSON.stringify(constructedMenus),
+  );
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -67,7 +82,8 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState<SelectMenuWithFoodItemsType | null>(null);
+  const [selectedMenu, setSelectedMenu] =
+    useState<SelectMenuWithFoodItemsType | null>(null);
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
@@ -145,7 +161,7 @@ function RouteComponent() {
       console.log("Menu created:", menu);
       const menuId = Number(menu[0].id);
 
-      const createTasks = menuFoodItems.map(async (foodItem)  =>
+      const createTasks = menuFoodItems.map(async (foodItem) =>
         createMenuFoodItemFn({ data: { menuId, foodItemId: foodItem.id } }),
       );
       const createResult = await Promise.all(createTasks);
@@ -196,25 +212,15 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Menu</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <MenuForm
-                mode="create"
-                shops={shops}
-                foodItems={foodItems}
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateMenuDialog
+            open={createOpen}
+            shops={shops}
+            foodItems={foodItems}
+            onOpenChange={setCreateOpen}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
+         
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -261,7 +267,7 @@ function RouteComponent() {
         </div>
 
         {/* <DataTable columns={columns} data={menus} /> */}
-        <DataTable columns={columns} data={constructedMenus  } />
+        <DataTable columns={columns} data={constructedMenus} />
         <p>Menu</p>
         {/* {menus.map((map) => (
           <pre>{JSON.stringify(map, null, 2)} </pre>
@@ -272,91 +278,48 @@ function RouteComponent() {
         ))}
       </div>
 
-      <Dialog
+      <ViewMenuDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedMenu(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <MenuForm
-            mode="view"
-            initialData={selectedMenu as SelectMenuWithFoodItemsType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedMenu(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        menu={selectedMenu as SelectMenuWithFoodItemsType}
+        onCancel={() => {
+          setViewOpen(false);
+          setSelectedMenu(null);
+        }}
+      />
 
-      <Dialog
+      <EditMenuDialog
         open={editOpen}
+        shops={shops}
+        foodItems={foodItems}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedMenu(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <MenuForm
-            mode="edit"
-            initialData={selectedMenu as SelectMenuWithFoodItemsType}
-            shops={shops}
-            foodItems={foodItems}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedMenu(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedMenu(null);
+        }}
+        menu={selectedMenu as SelectMenuWithFoodItemsType}
+      />
 
-      <Dialog
+      <DeleteMenuDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedMenu(null);
         }}
-      >
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete menu</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedMenu ? ` ${selectedMenu.name}` : " this menu"}? This
-              action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedMenu(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onDelete={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedMenu(null);
+        }}
+        menuWithFoodItems={selectedMenu as SelectMenuWithFoodItemsType}
+      />
     </>
   );
 }

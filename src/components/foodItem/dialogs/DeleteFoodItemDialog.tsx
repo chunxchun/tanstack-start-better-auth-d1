@@ -7,18 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { DeleteDialogProps } from "@/db/schema/commonSchema";
-import type { SelectFoodItemType } from "@/db/schema/foodItemTable";
-
-type DeleteFoodItemDialogProps = DeleteDialogProps<SelectFoodItemType>;
+import type { FoodItemDeleteDialogProps } from "./foodItemDialogType";
 
 export default function DeleteFoodItemDialog({
   open,
   onOpenChange,
   onCancel,
-  onDeleteConfirm,
-  data: foodItem,
-}: DeleteFoodItemDialogProps) {
+  onDelete,
+  data,
+}: FoodItemDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -29,8 +26,8 @@ export default function DeleteFoodItemDialog({
           <DialogTitle>Delete Food Item</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete the food item{" "}
-            {foodItem ? ` ${foodItem.name}` : " this food item"}? This action
-            cannot be undone.
+            {data ? ` ${data.name}` : " this food item"}? This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
 
@@ -38,7 +35,7 @@ export default function DeleteFoodItemDialog({
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="button" variant="destructive" onClick={onDeleteConfirm}>
+          <Button type="button" variant="destructive" onClick={onDelete}>
             Delete
           </Button>
         </DialogFooter>

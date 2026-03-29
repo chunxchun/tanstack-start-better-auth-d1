@@ -4,18 +4,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectDisposeType } from "@/db/schema";
-import type { ViewDialogProps } from "@/db/schema/commonSchema";
 import { DisposeForm } from "../forms/disposeForm";
-
-type ViewDisposeDialogProps = ViewDialogProps<SelectDisposeType>;
+import type { DisposeViewDialogProps } from "./disposeDialogType";
 
 export default function ViewDisposeDialog({
   open,
   onOpenChange,
   onCancel,
-  data: dispose,
-}: ViewDisposeDialogProps) {
+  initialData,
+}: DisposeViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogHeader className="sr-only">
@@ -31,7 +28,7 @@ export default function ViewDisposeDialog({
           machines={undefined}
           foodItems={undefined}
           onCancel={onCancel}
-          initialData={dispose}
+          initialData={initialData}
         />
       </DialogContent>
     </Dialog>

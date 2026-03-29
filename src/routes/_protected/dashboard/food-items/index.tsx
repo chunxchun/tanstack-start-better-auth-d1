@@ -1,16 +1,10 @@
 import { getFoodItemColumns } from "@/components/foodItem/dataTables/foodItemColumns";
 import { DataTable } from "@/components/foodItem/dataTables/foodItemDataTable";
-import { FoodItemForm } from "@/components/foodItem/forms/foodItemForm";
+import CreateFoodItemDialog from "@/components/foodItem/dialogs/CreateFoodItemDialog";
+import DeleteFoodItemDialog from "@/components/foodItem/dialogs/DeleteFoodItemDialog";
+import EditFoodItemDialog from "@/components/foodItem/dialogs/EditFoodItemDialog";
+import ViewFoodItemDialog from "@/components/foodItem/dialogs/ViewFoodItemDialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type {
   SelectFoodItemType as FoodItem,
   InsertFoodItemType,
@@ -160,24 +154,13 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Food Items</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <FoodItemForm
-                mode="create"
-                shops={shops}
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateFoodItemDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            shops={shops}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -226,92 +209,47 @@ function RouteComponent() {
         <DataTable columns={columns} data={foodItems} />
       </div>
 
-      <Dialog
+      <ViewFoodItemDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedFoodItem(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <FoodItemForm
-            mode="view"
-            initialData={selectedFoodItem as SelectFoodItemType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedFoodItem(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        initialData={selectedFoodItem as SelectFoodItemType}
+        onCancel={() => {
+          setViewOpen(false);
+          setSelectedFoodItem(null);
+        }}
+      />
 
-      <Dialog
+      <EditFoodItemDialog
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedFoodItem(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <FoodItemForm
-            mode="edit"
-            initialData={selectedFoodItem as UpdateFoodItemType}
-            shops={shops}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedFoodItem(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        initialData={selectedFoodItem as SelectFoodItemType}
+        shops={shops}
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedFoodItem(null);
+        }}
+      />
 
-      <Dialog
+      <DeleteFoodItemDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedFoodItem(null);
         }}
-      >
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete food item</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedFoodItem
-                ? ` ${selectedFoodItem.name}`
-                : " this food item"}
-              ? This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedFoodItem(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        data={selectedFoodItem as SelectFoodItemType}
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedFoodItem(null);
+        }}
+        onDelete={handleDeleteConfirm}
+      />
     </>
   );
 }

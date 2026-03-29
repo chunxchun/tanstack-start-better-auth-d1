@@ -7,8 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LocationForm } from "../forms/locationForm";
-import type { InsertLocationType } from "@/db/schema/locationTable";
-import type { SelectShopType } from "@/db/schema";
+import type { LocationCreateDialogProps } from "./locationDialogType";
 
 export default function CreateLocationDialog({
   open,
@@ -16,13 +15,7 @@ export default function CreateLocationDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-}: {
-  open: boolean;
-  shops: SelectShopType[]; // Replace `any` with the appropriate type for your shops
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: InsertLocationType) => Promise<void>;
-  onCancel: () => void;
-}) {
+}: LocationCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>

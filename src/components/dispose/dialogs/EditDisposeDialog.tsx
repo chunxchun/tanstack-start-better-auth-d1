@@ -1,22 +1,12 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type {
-  SelectFoodItemType,
-  SelectMachineType,
-  SelectShopType,
-} from "@/db/schema";
-import type { SelectDisposeType } from "@/db/schema/disposeTable";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DisposeForm } from "../forms/disposeForm";
+import type { DisposeEditDialogProps } from "./disposeDialogType";
 
-type EditDisposeDialogProps = {
-  open: boolean;
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: any) => Promise<void>;
-  onCancel: () => void;
-  dispose: SelectDisposeType;
-};
 export default function EditDisposeDialog({
   open,
   shops,
@@ -25,8 +15,8 @@ export default function EditDisposeDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  dispose,
-}: EditDisposeDialogProps) {
+  initialData,
+}: DisposeEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogHeader className="sr-only">
@@ -43,7 +33,7 @@ export default function EditDisposeDialog({
           foodItems={foodItems}
           onSubmit={onSubmit}
           onCancel={onCancel}
-          initialData={dispose}
+          initialData={initialData}
         />
       </DialogContent>
     </Dialog>

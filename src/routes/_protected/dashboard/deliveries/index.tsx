@@ -1,11 +1,10 @@
 import { getDeliveryColumns } from "@/components/delivery/dataTables/deliveryColumns";
 import { DataTable } from "@/components/delivery/dataTables/deliveryDataTable";
+import CreateDeliveryDialog from "@/components/delivery/dialogs/CreateDeliveryDialog";
 import DeleteDeliveryDialog from "@/components/delivery/dialogs/DeleteDeliveryDialog";
 import EditDeliveryDialog from "@/components/delivery/dialogs/EditDeliveryDialog";
 import ViewDeliveryDialog from "@/components/delivery/dialogs/ViewDeliveryDialog";
-import { DeliveryForm } from "@/components/delivery/forms/deliveryForm";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import type {
   SelectDeliveryType as Delivery,
   InsertDeliveryType,
@@ -158,26 +157,15 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Deliveries</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <DeliveryForm
-                mode="create"
-                shops={shops}
-                locations={locations}
-                machines={machines}
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateDeliveryDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            shops={shops}
+            locations={locations}
+            machines={machines}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -236,7 +224,7 @@ function RouteComponent() {
           setSelectedDelivery(null);
           setViewOpen(false);
         }}
-        data={selectedDelivery as SelectDeliveryType}
+        initialData={selectedDelivery as SelectDeliveryType}
       />
 
       <EditDeliveryDialog
@@ -253,7 +241,7 @@ function RouteComponent() {
           setEditOpen(false);
         }}
         onSubmit={handleEditSubmit}
-        delivery={selectedDelivery as SelectDeliveryType}
+        initialData={selectedDelivery as SelectDeliveryType}
       />
 
       <DeleteDeliveryDialog
@@ -267,7 +255,7 @@ function RouteComponent() {
           setDeleteOpen(false);
         }}
         onDelete={handleDeleteConfirm}
-        delivery={selectedDelivery as SelectDeliveryType}
+        data={selectedDelivery as SelectDeliveryType}
       />
     </>
   );

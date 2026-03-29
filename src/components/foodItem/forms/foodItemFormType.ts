@@ -1,34 +1,32 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertFoodItemType,
   SelectFoodItemType,
-  SelectShopType,
   UpdateFoodItemType,
 } from "@/db/schema";
 
-type FoodItemFormBaseProps = {
-  onCancel: () => void;
-};
+export type FoodItemFormBaseProps = FormDataDependency<"shops">;
 
-type FoodItemFormCreateProps = FoodItemFormBaseProps & {
-  initialData?: never;
+type FoodItemFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
+  initialData?: never;
   onSubmit: (values: InsertFoodItemType, image?: File) => Promise<void>;
-};
+  onCancel: () => void;
+} & FoodItemFormBaseProps;
 
-type FoodItemFormViewProps = FoodItemFormBaseProps & {
-  initialData: SelectFoodItemType;
-  mode: "view";
-  shops?: undefined;
-  onSubmit?: never;
-};
-
-type FoodItemFormEditProps = FoodItemFormBaseProps & {
-  initialData: UpdateFoodItemType;
+type FoodItemFormEditProps = {
   mode: "edit";
-  shops: SelectShopType[];
+  initialData: SelectFoodItemType;
   onSubmit: (values: UpdateFoodItemType, image?: File) => Promise<void>;
-};
+  onCancel: () => void;
+} & FoodItemFormBaseProps;
+
+type FoodItemFormViewProps = {
+  mode: "view";
+  initialData: SelectFoodItemType;
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof FoodItemFormBaseProps, never>>;
 
 export type FoodItemFormProps =
   | FoodItemFormViewProps

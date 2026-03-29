@@ -1,34 +1,32 @@
-import type { SelectShopType } from "@/db/schema/shopTable";
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertLocationType,
   SelectLocationType,
   UpdateLocationType,
 } from "@/db/schema/locationTable";
 
-type LocationFormBaseProps = {
-  onCancel: () => void;
-};
+export type LocationFormBaseProps = FormDataDependency<"shops">;
 
-type LocationFormCreateProps = LocationFormBaseProps & {
-  initialData?: never;
+type LocationFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
+  initialData?: never;
   onSubmit: (values: InsertLocationType) => Promise<void>;
-};
+  onCancel: () => void;
+} & LocationFormBaseProps;
 
-type LocationFormViewProps = LocationFormBaseProps & {
-  initialData: SelectLocationType;
-  mode: "view";
-  shops?: undefined;
-  onSubmit?: undefined;
-};
-
-type LocationFormEditProps = LocationFormBaseProps & {
-  initialData: SelectLocationType;
+type LocationFormEditProps = {
   mode: "edit";
-  shops: SelectShopType[];
+  initialData: SelectLocationType;
   onSubmit: (values: UpdateLocationType) => Promise<void>;
-};
+  onCancel: () => void;
+} & LocationFormBaseProps;
+
+type LocationFormViewProps = {
+  mode: "view";
+  initialData: SelectLocationType;
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof LocationFormBaseProps, never>>;
 
 export type LocationFormProps =
   | LocationFormCreateProps

@@ -1,3 +1,8 @@
+import FormDate from "@/components/form-date";
+import FormFooter from "@/components/form-footer";
+import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
+import FormText from "@/components/form-text";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
@@ -11,12 +16,6 @@ import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { MachineFormProps } from "./machineFormType";
-// import { Form } from "radix-ui";
-import FormDate from "@/components/form-date";
-import FormFooter from "@/components/form-footer";
-import FormHeader from "@/components/form-header";
-import FormSelect from "@/components/form-select";
-import FormText from "@/components/form-text";
 
 export function MachineForm({
   mode,

@@ -7,23 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectDeliveryType } from "@/db/schema";
-
-type DeleteDeliveryDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onDelete: () => Promise<void>;
-  onCancel: () => void;
-  delivery: SelectDeliveryType;
-};
+import type { DeliveryDeleteDialogProps } from "./deliveryDialogType";
 
 export default function DeleteDeliveryDialog({
   open,
   onOpenChange,
   onDelete,
   onCancel,
-  delivery,
-}: DeleteDeliveryDialogProps) {
+  data,
+}: DeliveryDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -34,8 +26,8 @@ export default function DeleteDeliveryDialog({
           <DialogTitle>Delete Delivery</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete the delivery{" "}
-            {delivery ? ` ${delivery.courierReference}` : " this delivery"}?
-            This action cannot be undone.
+            {data ? ` ${data.courierReference}` : " this delivery"}? This action
+            cannot be undone.
           </DialogDescription>
         </DialogHeader>
 

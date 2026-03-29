@@ -4,18 +4,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { ViewDialogProps } from "@/db/schema/commonSchema";
-import type { SelectLocationType } from "@/db/schema/locationTable";
 import { LocationForm } from "../forms/locationForm";
-
-type ViewLocationDialogProps = ViewDialogProps<SelectLocationType>;
+import type { LocationViewDialogProps } from "./locationDialogType";
 
 export default function ViewLocationDialog({
   open,
   onOpenChange,
   onCancel,
-  data: location,
-}: ViewLocationDialogProps) {
+  initialData,
+}: LocationViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -25,7 +22,11 @@ export default function ViewLocationDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Location Details</DialogTitle>
         </DialogHeader>
-        <LocationForm mode="view" initialData={location} onCancel={onCancel} />
+        <LocationForm
+          mode="view"
+          initialData={initialData}
+          onCancel={onCancel}
+        />
       </DialogContent>
     </Dialog>
   );

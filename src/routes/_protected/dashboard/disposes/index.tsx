@@ -1,16 +1,10 @@
 import { getDisposeColumns } from "@/components/dispose/dataTables/disposeColumns";
 import { DataTable } from "@/components/dispose/dataTables/disposeDataTable";
-import { DisposeForm } from "@/components/dispose/forms/disposeForm";
+import CreateDisposeDialog from "@/components/dispose/dialogs/CreateDisposeDialog";
+import DeleteDisposeDialog from "@/components/dispose/dialogs/DeleteDisposeDialog";
+import EditDisposeDialog from "@/components/dispose/dialogs/EditDisposeDialog";
+import ViewDisposeDialog from "@/components/dispose/dialogs/ViewDisposeDialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type {
   SelectDisposeType as Dispose,
   InsertDisposeType,
@@ -160,26 +154,15 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Dispose</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <DisposeForm
-                mode="create"
-                shops={shops}
-                foodItems={foodItems}
-                machines={machines}
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateDisposeDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            shops={shops}
+            foodItems={foodItems}
+            machines={machines}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -228,92 +211,49 @@ function RouteComponent() {
         <DataTable columns={columns} data={disposes} />
       </div>
 
-      <Dialog
+      <ViewDisposeDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedDispose(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DisposeForm
-            mode="view"
-            initialData={selectedDispose as SelectDisposeType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedDispose(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setViewOpen(false);
+          setSelectedDispose(null);
+        }}
+        initialData={selectedDispose as SelectDisposeType}
+      />
 
-      <Dialog
+      <EditDisposeDialog
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedDispose(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <DisposeForm
-            mode="edit"
-            initialData={selectedDispose as UpdateDisposeType}
-            shops={shops}
-            foodItems={foodItems}
-            machines={machines}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedDispose(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedDispose(null);
+        }}
+        onSubmit={handleEditSubmit}
+        initialData={selectedDispose as SelectDisposeType}
+        shops={shops}
+        foodItems={foodItems}
+        machines={machines}
+      />
 
-      <Dialog
+      <DeleteDisposeDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedDispose(null);
         }}
-      >
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete dispose</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedDispose ? ` dispose #${selectedDispose.id}` : " this dispose"}?
-              This action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedDispose(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedDispose(null);
+        }}
+        onDelete={handleDeleteConfirm}
+        data={selectedDispose as SelectDisposeType}
+      />
     </>
   );
 }

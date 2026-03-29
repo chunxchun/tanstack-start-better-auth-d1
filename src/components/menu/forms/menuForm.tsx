@@ -42,7 +42,7 @@ export function MenuForm({
   const [selectedFoodItems, setSelectedFoodItems] = useState<
     MenuFoodItemType[]
   >(initialSelectedFoodItems);
-console.log("Initial selected food items:", initialSelectedFoodItems);
+  console.log("Initial selected food items:", initialSelectedFoodItems);
   const form = useForm({
     defaultValues: initialData || {
       name: null,
@@ -125,6 +125,10 @@ console.log("Initial selected food items:", initialSelectedFoodItems);
             form={form}
             name="shopId"
             label="Shop"
+            initialValue={
+              shops?.find((shop) => shop.id === initialData?.shopId)?.name
+              // 'abc'
+            }
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
@@ -156,32 +160,39 @@ console.log("Initial selected food items:", initialSelectedFoodItems);
           <Field>
             <FieldLabel htmlFor="foodItemIds">Food Items</FieldLabel>
 
-            <MultiSelect
-              defaultValues={initialSelectedFoodItems}
-              values={selectedFoodItems}
-              // disabled={isReadOnly}
-              onValuesChange={setSelectedFoodItems}
-            >
-              <MultiSelectTrigger>
-                <MultiSelectValue placeholder="Select frameworks..." />
-              </MultiSelectTrigger>
-              <MultiSelectContent>
-                <MultiSelectGroup>
-                  {foodItems?.map((item) => (
-                    <MultiSelectItem
-                      key={item.id}
-                      value={{
-                        id: item.id,
-                        name: item.name,
-                        imageUrl: item.imageUrl || undefined,
-                      }}
-                    >
-                      {item.name}
-                    </MultiSelectItem>
-                  ))}
-                </MultiSelectGroup>
-              </MultiSelectContent>
-            </MultiSelect>
+            {isReadOnly ? (
+              initialSelectedFoodItems.map((item) => (
+                <div key={item.id} className="flex items-center space-x-2">
+                  <p>- {item.name}</p>
+                </div>
+              ))
+            ) : (
+              <MultiSelect
+                defaultValues={initialSelectedFoodItems}
+                values={selectedFoodItems}
+                onValuesChange={setSelectedFoodItems}
+              >
+                <MultiSelectTrigger>
+                  <MultiSelectValue placeholder="Select frameworks..." />
+                </MultiSelectTrigger>
+                <MultiSelectContent>
+                  <MultiSelectGroup>
+                    {foodItems?.map((item) => (
+                      <MultiSelectItem
+                        key={item.id}
+                        value={{
+                          id: item.id,
+                          name: item.name,
+                          imageUrl: item.imageUrl || undefined,
+                        }}
+                      >
+                        {item.name}
+                      </MultiSelectItem>
+                    ))}
+                  </MultiSelectGroup>
+                </MultiSelectContent>
+              </MultiSelect>
+            )}
           </Field>
 
           {/* date */}

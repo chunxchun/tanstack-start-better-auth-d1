@@ -1,42 +1,34 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertDisposeType,
   SelectDisposeType,
-  SelectFoodItemType,
-  SelectMachineType,
-  SelectShopType,
   UpdateDisposeType,
 } from "@/db/schema";
 
-type DisposeFormBaseProps = {
-  onCancel: () => void;
-};
+export type DisposeFormBaseProps = FormDataDependency<
+  "shops" | "machines" | "foodItems"
+>;
 
-type DisposeFormCreateProps = DisposeFormBaseProps & {
-  initialData?: never;
+type DisposeFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
+  initialData?: never;
   onSubmit: (values: InsertDisposeType) => Promise<void>;
-};
+  onCancel: () => void;
+} & DisposeFormBaseProps;
 
-type DisposeFormViewProps = DisposeFormBaseProps & {
-  initialData: SelectDisposeType;
-  mode: "view";
-  shops?: undefined;
-  machines?: undefined;
-  foodItems?: undefined;
-  onSubmit?: never;
-};
-
-type DisposeFormEditProps = DisposeFormBaseProps & {
-  initialData: UpdateDisposeType;
+type DisposeFormEditProps = {
   mode: "edit";
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
+  initialData: SelectDisposeType;
   onSubmit: (values: UpdateDisposeType) => Promise<void>;
-};
+  onCancel: () => void;
+} & DisposeFormBaseProps;
+
+type DisposeFormViewProps = {
+  mode: "view";
+  initialData: SelectDisposeType;
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof DisposeFormBaseProps, never>>;
 
 export type DisposeFormProps =
   | DisposeFormViewProps

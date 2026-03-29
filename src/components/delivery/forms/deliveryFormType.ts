@@ -1,42 +1,35 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertDeliveryType,
   SelectDeliveryType,
-  SelectLocationType,
-  SelectMachineType,
-  SelectShopType,
   UpdateDeliveryType,
 } from "@/db/schema";
 
-type DeliveryFormBaseProps = {
-  onCancel: () => void;
-};
+// form props
+export type DeliveryFormBaseProps = FormDataDependency<
+  "shops" | "locations" | "machines"
+>;
 
-type DeliveryFormCreateProps = DeliveryFormBaseProps & {
-  initialData?: never;
+type DeliveryFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
-  locations: SelectLocationType[];
-  machines: SelectMachineType[];
+  initialData?: never;
   onSubmit: (values: InsertDeliveryType) => Promise<void>;
-};
+  onCancel: () => void;
+} & DeliveryFormBaseProps;
 
-type DeliveryFormViewProps = DeliveryFormBaseProps & {
-  initialData: SelectDeliveryType;
-  mode: "view";
-  shops?: undefined;
-  locations?: undefined;
-  machines?: undefined;
-  onSubmit?: never;
-};
-
-type DeliveryFormEditProps = DeliveryFormBaseProps & {
-  initialData: UpdateDeliveryType;
+type DeliveryFormEditProps = {
   mode: "edit";
-  shops: SelectShopType[];
-  locations: SelectLocationType[];
-  machines: SelectMachineType[];
+  initialData: SelectDeliveryType;
   onSubmit: (values: UpdateDeliveryType) => Promise<void>;
-};
+  onCancel: () => void;
+} & DeliveryFormBaseProps;
+
+type DeliveryFormViewProps = {
+  mode: "view";
+  initialData: SelectDeliveryType;
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof DeliveryFormBaseProps, never>>;
 
 export type DeliveryFormProps =
   | DeliveryFormViewProps

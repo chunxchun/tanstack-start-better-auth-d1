@@ -4,25 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type {
-  SelectDeliveryType,
-  SelectMachineType,
-  SelectShopType,
-  UpdateDeliveryType,
-} from "@/db/schema";
-import type { SelectLocationType } from "@/db/schema/locationTable";
 import { DeliveryForm } from "../forms/deliveryForm";
-
-type EditDeliveryDialogProps = {
-  open: boolean;
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  locations: SelectLocationType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: UpdateDeliveryType) => Promise<void>;
-  onCancel: () => void;
-  delivery: SelectDeliveryType;
-};
+import type { DeliveryEditDialogProps } from "./deliveryDialogType";
 
 export default function EditDeliveryDialog({
   open,
@@ -32,8 +15,8 @@ export default function EditDeliveryDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  delivery,
-}: EditDeliveryDialogProps) {
+  initialData,
+}: DeliveryEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -48,7 +31,7 @@ export default function EditDeliveryDialog({
           shops={shops}
           machines={machines}
           locations={locations}
-          initialData={delivery}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
         />

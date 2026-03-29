@@ -1,42 +1,33 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertInventoryType,
-  SelectFoodItemType,
   SelectInventoryType,
-  SelectMachineType,
-  SelectShopType,
   UpdateInventoryType,
 } from "@/db/schema";
 
-type InventoryFormBaseProps = {
-  onCancel: () => void;
-};
+export type InventoryFormBaseProps = FormDataDependency<
+  "shops" | "machines" | "foodItems"
+>;
 
-type InventoryFormCreateProps = InventoryFormBaseProps & {
-  initialData?: never;
+type InventoryFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
+  initialData?: never;
   onSubmit: (values: InsertInventoryType) => Promise<void>;
-};
-
-type InventoryFormViewProps = InventoryFormBaseProps & {
-  initialData: SelectInventoryType;
-  mode: "view";
-  shops?: undefined;
-  machines?: undefined;
-  foodItems?: undefined;
-  onSubmit?: never;
-};
-
-type InventoryFormEditProps = InventoryFormBaseProps & {
-  initialData: UpdateInventoryType;
+  onCancel: () => void;
+} & InventoryFormBaseProps;
+type InventoryFormEditProps = {
   mode: "edit";
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
+  initialData: SelectInventoryType;
   onSubmit: (values: UpdateInventoryType) => Promise<void>;
-};
+  onCancel: () => void;
+} & InventoryFormBaseProps;
+
+type InventoryFormViewProps = {
+  mode: "view";
+  initialData: SelectInventoryType;
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof InventoryFormBaseProps, never>>;
 
 export type InventoryFormProps =
   | InventoryFormViewProps

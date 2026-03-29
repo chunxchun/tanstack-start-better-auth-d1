@@ -237,7 +237,7 @@ function RouteComponent() {
           setSelectedLocation(null);
           setViewOpen(false);
         }}
-        data={selectedLocation as SelectLocationType}
+        initialData={selectedLocation as SelectLocationType}
       />
 
       <EditLocationDialog
@@ -252,7 +252,7 @@ function RouteComponent() {
           setSelectedLocation(null);
         }}
         shops={shops}
-        location={selectedLocation as SelectLocationType}
+        initialData={selectedLocation as SelectLocationType}
       />
 
       <DeleteLocationDialog
@@ -266,7 +266,7 @@ function RouteComponent() {
           setSelectedLocation(null);
         }}
         onDelete={handleDeleteConfirm}
-        location={selectedLocation as SelectLocationType}
+        data={selectedLocation as SelectLocationType}
       />
     </>
   );

@@ -1,37 +1,32 @@
-import type { SelectLocationType, SelectShopType } from "@/db/schema";
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertMachineType,
   SelectMachineType,
   UpdateMachineType,
 } from "@/db/schema/machineTable";
 
-type MachineFormBaseProps = {
-  onCancel: () => void;
-};
+export type MachineFormBaseProps = FormDataDependency<"shops" | "locations">;
 
-type MachineFormCreateProps = MachineFormBaseProps & {
-  initialData?: never;
+type MachineFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
-  locations: SelectLocationType[];
+  initialData?: never;
   onSubmit: (values: InsertMachineType) => Promise<void>;
-};
+  onCancel: () => void;
+} & MachineFormBaseProps;
+
+type MachineFormEditProps = {
+  mode: "edit";
+  initialData: SelectMachineType;
+  onSubmit: (values: UpdateMachineType) => Promise<void>;
+  onCancel: () => void;
+} & MachineFormBaseProps;
 
 type MachineFormViewProps = MachineFormBaseProps & {
-  initialData: SelectMachineType;
   mode: "view";
-  locations?: undefined;
-  shops?: undefined;
-  onSubmit?: undefined;
-};
-
-type MachineFormEditProps = MachineFormBaseProps & {
   initialData: SelectMachineType;
-  mode: "edit";
-  shops: SelectShopType[];
-  locations: SelectLocationType[];
-  onSubmit: (values: UpdateMachineType) => Promise<void>;
-};
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof MachineFormBaseProps, never>>;
 
 export type MachineFormProps =
   | MachineFormCreateProps

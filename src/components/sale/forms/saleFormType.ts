@@ -1,42 +1,32 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertSaleType,
-  SelectFoodItemType,
-  SelectMachineType,
   SelectSaleType,
-  SelectShopType,
   UpdateSaleType,
 } from "@/db/schema";
 
-type SaleFormBaseProps = {
-  onCancel: () => void;
-};
+type SaleFormBaseProps = FormDataDependency<"shops" | "machines" | "foodItems">;
 
-type SaleFormCreateProps = SaleFormBaseProps & {
-  initialData?: never;
+type SaleFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
+  initialData?: never;
   onSubmit: (values: InsertSaleType) => Promise<void>;
-};
+  onCancel: () => void;
+} & SaleFormBaseProps;
 
-type SaleFormViewProps = SaleFormBaseProps & {
+type SaleFormEditProps = {
+  mode: "edit";
+  initialData: SelectSaleType;
+  onSubmit: (values: UpdateSaleType) => Promise<void>;
+  onCancel: () => void;
+} & SaleFormBaseProps;
+
+type SaleFormViewProps = {
   initialData: SelectSaleType;
   mode: "view";
-  shops?: undefined;
-  machines?: undefined;
-  foodItems?: undefined;
   onSubmit?: never;
-};
-
-type SaleFormEditProps = SaleFormBaseProps & {
-  initialData: SelectSaleType;
-  mode: "edit";
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
-  onSubmit: (values: UpdateSaleType) => Promise<void>;
-};
+  onCancel: () => void;
+} & Partial<Record<keyof SaleFormBaseProps, never>>;
 
 export type SaleFormProps =
   | SaleFormViewProps

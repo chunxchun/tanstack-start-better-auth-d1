@@ -4,30 +4,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type {
-  SelectDeliveryType,
-  SelectMachineType,
-  SelectShopType,
-  UpdateDeliveryType,
-} from "@/db/schema";
 import { FoodItemForm } from "../forms/foodItemForm";
+import type { FoodItemEditDialogProps } from "./foodItemDialogType";
 
-type EditFoodItemDialogProps = {
-  open: boolean;
-  shops: SelectShopType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: UpdateDeliveryType) => Promise<void>;
-  onCancel: () => void;
-  delivery: SelectDeliveryType;
-};
 export default function EditFoodItemDialog({
   open,
   shops,
   onOpenChange,
   onSubmit,
   onCancel,
-  delivery,
-}: EditFoodItemDialogProps) {
+  initialData,
+}: FoodItemEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogHeader className="sr-only">
@@ -39,10 +26,10 @@ export default function EditFoodItemDialog({
       >
         <FoodItemForm
           mode="edit"
-          shops={shops}
-          initialData={delivery}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          shops={shops}
         />
       </DialogContent>
     </Dialog>

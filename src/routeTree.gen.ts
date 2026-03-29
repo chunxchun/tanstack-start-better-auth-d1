@@ -47,6 +47,7 @@ import { Route as ProtectedDashboardInventoriesIndexRouteImport } from './routes
 import { Route as ProtectedDashboardFoodItemsIndexRouteImport } from './routes/_protected/dashboard/food-items/index'
 import { Route as ProtectedDashboardDisposesIndexRouteImport } from './routes/_protected/dashboard/disposes/index'
 import { Route as ProtectedDashboardDeliveriesIndexRouteImport } from './routes/_protected/dashboard/deliveries/index'
+import { Route as ProtectedDashboardAdminOnlyIndexRouteImport } from './routes/_protected/dashboard/admin-only/index'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -247,6 +248,12 @@ const ProtectedDashboardDeliveriesIndexRoute =
     path: '/deliveries/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardAdminOnlyIndexRoute =
+  ProtectedDashboardAdminOnlyIndexRouteImport.update({
+    id: '/admin-only/',
+    path: '/admin-only/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -276,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/api/menuFoodItem/': typeof ApiMenuFoodItemIndexRoute
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
+  '/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
   '/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
   '/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
@@ -315,6 +323,7 @@ export interface FileRoutesByTo {
   '/api/menuFoodItem': typeof ApiMenuFoodItemIndexRoute
   '/api/sale': typeof ApiSaleIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
+  '/dashboard/admin-only': typeof ProtectedDashboardAdminOnlyIndexRoute
   '/dashboard/deliveries': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes': typeof ProtectedDashboardDisposesIndexRoute
   '/dashboard/food-items': typeof ProtectedDashboardFoodItemsIndexRoute
@@ -356,6 +365,7 @@ export interface FileRoutesById {
   '/api/menuFoodItem/': typeof ApiMenuFoodItemIndexRoute
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
+  '/_protected/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
   '/_protected/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/_protected/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
   '/_protected/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/api/menuFoodItem/'
     | '/api/sale/'
     | '/api/shop/'
+    | '/dashboard/admin-only/'
     | '/dashboard/deliveries/'
     | '/dashboard/disposes/'
     | '/dashboard/food-items/'
@@ -436,6 +447,7 @@ export interface FileRouteTypes {
     | '/api/menuFoodItem'
     | '/api/sale'
     | '/api/shop'
+    | '/dashboard/admin-only'
     | '/dashboard/deliveries'
     | '/dashboard/disposes'
     | '/dashboard/food-items'
@@ -476,6 +488,7 @@ export interface FileRouteTypes {
     | '/api/menuFoodItem/'
     | '/api/sale/'
     | '/api/shop/'
+    | '/_protected/dashboard/admin-only/'
     | '/_protected/dashboard/deliveries/'
     | '/_protected/dashboard/disposes/'
     | '/_protected/dashboard/food-items/'
@@ -785,10 +798,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardDeliveriesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/admin-only/': {
+      id: '/_protected/dashboard/admin-only/'
+      path: '/admin-only'
+      fullPath: '/dashboard/admin-only/'
+      preLoaderRoute: typeof ProtectedDashboardAdminOnlyIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
   }
 }
 
 interface ProtectedDashboardRouteChildren {
+  ProtectedDashboardAdminOnlyIndexRoute: typeof ProtectedDashboardAdminOnlyIndexRoute
   ProtectedDashboardDeliveriesIndexRoute: typeof ProtectedDashboardDeliveriesIndexRoute
   ProtectedDashboardDisposesIndexRoute: typeof ProtectedDashboardDisposesIndexRoute
   ProtectedDashboardFoodItemsIndexRoute: typeof ProtectedDashboardFoodItemsIndexRoute
@@ -802,6 +823,7 @@ interface ProtectedDashboardRouteChildren {
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
+  ProtectedDashboardAdminOnlyIndexRoute: ProtectedDashboardAdminOnlyIndexRoute,
   ProtectedDashboardDeliveriesIndexRoute:
     ProtectedDashboardDeliveriesIndexRoute,
   ProtectedDashboardDisposesIndexRoute: ProtectedDashboardDisposesIndexRoute,

@@ -6,23 +6,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import type { SelectMachineType } from "@/db/schema";
+import type { MachineDeleteDialogProps } from "./machineDialogType";
 
 export default function DeleteMachineDialog({
   open,
   onOpenChange,
   onDelete,
   onCancel,
-  machine,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onDelete: () => Promise<void>;
-  onCancel: () => void;
-  machine: SelectMachineType;
-}) {
+  data,
+}: MachineDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -33,8 +26,8 @@ export default function DeleteMachineDialog({
           <DialogTitle>Delete Machine</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete
-            {machine ? `${machine.name}` : " this machine"}? This action cannot
-            be undone.
+            {data ? `${data.name}` : " this machine"}? This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
