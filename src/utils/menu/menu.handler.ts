@@ -30,30 +30,55 @@ export const listMenuWithFoodItemHandler = async (
   offset: number = 1,
 ) => {
   try {
-    const result = await db
-      .select({
-        menuId: menusTable.id,
-        menuName: menusTable.name,
-        menusCoverPhotoUrl: menusTable.coverPhotoUrl,
-        menuDate: menusTable.date,
-        menuShopId: menusTable.shopId,
-        menuDescription: menusTable.description,
-        foodItemId: foodItemsTable.id,
-        foodItemName: foodItemsTable.name,
-        foodImageUrl: foodItemsTable.imageUrl,
-      })
-      .from(menusTable)
-      .leftJoin(
-        menusFoodItemsTable,
-        eq(menusTable.id, menusFoodItemsTable.menuId),
-      )
-      .leftJoin(
-        foodItemsTable,
-        eq(menusFoodItemsTable.foodItemId, foodItemsTable.id),
-      )
-      .orderBy(desc(menusTable.createdAt))
-      .limit(limit)
-      .offset(offset);
+    // const result = await db
+    //   .select({
+    //     menuId: menusTable.id,
+    //     menuName: menusTable.name,
+    //     menusCoverPhotoUrl: menusTable.coverPhotoUrl,
+    //     menuDate: menusTable.date,
+    //     menuShopId: menusTable.shopId,
+    //     menuDescription: menusTable.description,
+    //     foodItemId: foodItemsTable.id,
+    //     foodItemName: foodItemsTable.name,
+    //     foodImageUrl: foodItemsTable.imageUrl,
+    //   })
+    //   .from(menusTable)
+    //   .leftJoin(
+    //     menusFoodItemsTable,
+    //     eq(menusTable.id, menusFoodItemsTable.menuId),
+    //   )
+    //   .leftJoin(
+    //     foodItemsTable,
+    //     eq(menusFoodItemsTable.foodItemId, foodItemsTable.id),
+    //   )
+    //   .orderBy(desc(menusTable.createdAt))
+    //   .limit(limit)
+    //   .offset(offset);
+    const menus = db
+      .$with("menus_cte")
+      .as(
+        db
+          .select()
+          .from(menusTable)
+          .orderBy(desc(menusTable.createdAt))
+          .limit(10),
+      );
+
+    const result = await db.with(menus).select({
+      menuId: menus.id,
+      menuName: menus.name,
+      menusCoverPhotoUrl: menus.coverPhotoUrl,
+      menuDate: menus.date,
+      menuShopId: menus.shopId,
+      menuDescription: menus.description,
+      foodItemId: foodItemsTable.id,
+      foodItemName: foodItemsTable.name,
+      foodImageUrl: foodItemsTable.imageUrl,
+    })
+    .from(menus)
+    .leftJoin(menusFoodItemsTable, eq(menus.id, menusFoodItemsTable.menuId))
+    .leftJoin(foodItemsTable, eq(menusFoodItemsTable.foodItemId, foodItemsTable.id));
+    
     return result;
   } catch (error) {
     console.error("Error listing menus with food items:", error);

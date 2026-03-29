@@ -12,21 +12,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type {
+  SelectMenuWithFoodItemsType,
   SelectMenuType as Menu,
   SelectMenuType,
   UpdateMenuType,
-  InsertMenuWithFoodItemsType,
   UpdateMenuWithFoodItemsType,
+  InsertMenuWithFoodItemsType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
 import {
   createMenuFn,
   deleteMenuByIdFn,
-  listMenuFn,
   listMenuWithFoodItemFn,
-  updateMenuByIdFn,
+  updateMenuByIdFn
 } from "@/utils/menu/menu.function";
+import {
+  constructMenuWithFoodItem,
+  type queryMenuWithFoodItemType
+} from "@/utils/menu/menu.helper";
 import { createMenuFoodItemFn } from "@/utils/menuFoodItem/menuFoodItem.function";
 import { listShopFn } from "@/utils/shop/shop.function";
 import {
@@ -53,6 +57,9 @@ export const Route = createFileRoute("/_protected/dashboard/menu/")({
 
 function RouteComponent() {
   const { menuWithFoodItems, shops, foodItems } = Route.useLoaderData();
+  console.log("Loaded menu with food items:", menuWithFoodItems);
+  const constructedMenus = constructMenuWithFoodItem(menuWithFoodItems as queryMenuWithFoodItemType[]);
+  
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -60,7 +67,7 @@ function RouteComponent() {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
+  const [selectedMenu, setSelectedMenu] = useState<SelectMenuWithFoodItemsType | null>(null);
 
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
@@ -138,7 +145,7 @@ function RouteComponent() {
       console.log("Menu created:", menu);
       const menuId = Number(menu[0].id);
 
-      const createTasks = menuFoodItems.map(async (foodItem) =>
+      const createTasks = menuFoodItems.map(async (foodItem)  =>
         createMenuFoodItemFn({ data: { menuId, foodItemId: foodItem.id } }),
       );
       const createResult = await Promise.all(createTasks);
@@ -253,7 +260,16 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={menuWithFoodItems} />
+        {/* <DataTable columns={columns} data={menus} /> */}
+        <DataTable columns={columns} data={constructedMenus  } />
+        <p>Menu</p>
+        {/* {menus.map((map) => (
+          <pre>{JSON.stringify(map, null, 2)} </pre>
+        ))} */}
+        <p>Menu with Food Item</p>
+        {menuWithFoodItems.map((map) => (
+          <pre>{JSON.stringify(map, null, 2)} </pre>
+        ))}
       </div>
 
       <Dialog
@@ -269,7 +285,7 @@ function RouteComponent() {
         >
           <MenuForm
             mode="view"
-            initialData={selectedMenu as SelectMenuType}
+            initialData={selectedMenu as SelectMenuWithFoodItemsType}
             onCancel={() => {
               setViewOpen(false);
               setSelectedMenu(null);
@@ -291,7 +307,7 @@ function RouteComponent() {
         >
           <MenuForm
             mode="edit"
-            initialData={selectedMenu as UpdateMenuType}
+            initialData={selectedMenu as SelectMenuWithFoodItemsType}
             shops={shops}
             foodItems={foodItems}
             onSubmit={handleEditSubmit}

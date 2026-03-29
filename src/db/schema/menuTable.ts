@@ -43,7 +43,12 @@ export type InsertMenuType = z.infer<typeof insertMenuSchema>;
 export type UpdateMenuType = z.infer<typeof updateMenuSchema>;
 export type SelectMenuType = z.infer<typeof selectMenuSchema>;
 
-export type MenuFoodItemType = { id: number; name: string; imageUrl?: string };
+export const menuFoodItemSchema = z.object({
+id: z.number(),
+name: z.string(),
+imageUrl: z.url().optional(),
+})
+export type MenuFoodItemType = z.infer<typeof menuFoodItemSchema>;
 
 export type InsertMenuWithFoodItemsType = InsertMenuType & {
   menuFoodItems: MenuFoodItemType[];

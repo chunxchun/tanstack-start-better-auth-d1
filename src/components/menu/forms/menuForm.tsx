@@ -37,10 +37,11 @@ export function MenuForm({
   onSubmit,
   onCancel,
 }: MenuFormProps) {
+  const initialSelectedFoodItems = initialData?.menuFoodItems || [];
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFoodItems, setSelectedFoodItems] = useState<
     MenuFoodItemType[]
-  >([]);
+  >(initialSelectedFoodItems);
 
   const form = useForm({
     defaultValues: initialData || {
@@ -48,7 +49,6 @@ export function MenuForm({
       description: null,
       coverPhotoUrl: null,
       shopId: null,
-      // foodItemIds: [],
       date: new Date().toISOString().slice(0, 10),
     },
     onSubmit: async ({ value }) => {
