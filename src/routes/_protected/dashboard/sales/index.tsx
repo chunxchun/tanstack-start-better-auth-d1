@@ -1,45 +1,50 @@
+import { getSaleColumns } from "@/components/sale/dataTables/saleColumns";
+import { DataTable } from "@/components/sale/dataTables/saleDataTable";
+import CreateSaleDialog from "@/components/sale/dialogs/CreateSaleDialog";
+import DeleteSaleDialog from "@/components/sale/dialogs/DeleteSaleDialog";
+import EditSaleDialog from "@/components/sale/dialogs/EditSaleDialog";
+import ViewSaleDialog from "@/components/sale/dialogs/ViewSaleDialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { SaleForm } from "@/components/sale/forms/saleForm";
 import type {
   InsertSaleType,
-  SelectSaleType,
   SelectSaleType as Sale,
+  SelectSaleType,
   UpdateSaleType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
+import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
+import { listMachineFn } from "@/utils/machine/machine.function";
 import {
   createSaleFn,
   deleteSaleByIdFn,
   listSaleFn,
   updateSaleByIdFn,
 } from "@/utils/sale/sale.function";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import { DataTable } from "@/components/sale/dataTables/saleDataTable";
-import { getSaleColumns } from "@/components/sale/dataTables/saleColumns";
 
 export const Route = createFileRoute("/_protected/dashboard/sales/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => listSaleFn({ data: deps }),
+  loader: async ({ deps }) => {
+    const [sales, shops, machines, foodItems] = await Promise.all([
+      listSaleFn({ data: deps }),
+      listShopFn({ data: { limit: 100, offset: 0 } }),
+      listMachineFn({ data: { limit: 100, offset: 0 } }),
+      listFoodItemFn({ data: { limit: 100, offset: 0 } }),
+    ]);
+    return { sales, shops, machines, foodItems };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { sales, shops, machines, foodItems } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -52,7 +57,7 @@ function RouteComponent() {
   const { limit, offset } = search;
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
-  const hasNextPage = data.length === limit;
+  const hasNextPage = sales.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -149,23 +154,15 @@ function RouteComponent() {
       <div className="container mx-auto px-10 py-10">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Sales</h1>
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default">
-                <span>+</span>Create
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              className="min-w-[50vw]"
-              onInteractOutside={(e) => e.preventDefault()}
-            >
-              <SaleForm
-                mode="create"
-                onSubmit={handleCreateSubmit}
-                onCancel={() => setCreateOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          <CreateSaleDialog
+            open={createOpen}
+            shops={shops}
+            machines={machines}
+            foodItems={foodItems}
+            onOpenChange={setCreateOpen}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setCreateOpen(false)}
+          />
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -211,92 +208,52 @@ function RouteComponent() {
           </div>
         </div>
 
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={sales} />
       </div>
 
-      <Dialog
+      <ViewSaleDialog
         open={viewOpen}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedSale(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <SaleForm
-            mode="view"
-            initialData={selectedSale as SelectSaleType}
-            onCancel={() => {
-              setViewOpen(false);
-              setSelectedSale(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        initialData={selectedSale as SelectSaleType}
+        onCancel={() => {
+          setViewOpen(false);
+          setSelectedSale(null);
+        }}
+      />
 
-      <Dialog
+      <EditSaleDialog
         open={editOpen}
         onOpenChange={(open) => {
           setEditOpen(open);
           if (!open) setSelectedSale(null);
         }}
-      >
-        <DialogContent
-          className="min-w-[50vw]"
-          onInteractOutside={(e) => e.preventDefault()}
-        >
-          <SaleForm
-            mode="edit"
-            initialData={selectedSale as UpdateSaleType}
-            onSubmit={handleEditSubmit}
-            onCancel={() => {
-              setEditOpen(false);
-              setSelectedSale(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+        initialData={selectedSale as SelectSaleType}
+        onSubmit={handleEditSubmit}
+        onCancel={() => {
+          setEditOpen(false);
+          setSelectedSale(null);
+        }}
+        shops={shops}
+        machines={machines}
+        foodItems={foodItems}
+      />
 
-      <Dialog
+      <DeleteSaleDialog
         open={deleteOpen}
         onOpenChange={(open) => {
           setDeleteOpen(open);
           if (!open) setSelectedSale(null);
         }}
-      >
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete sale</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete
-              {selectedSale ? ` sale #${selectedSale.id}` : " this sale"}? This
-              action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setDeleteOpen(false);
-                setSelectedSale(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteConfirm}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onCancel={() => {
+          setDeleteOpen(false);
+          setSelectedSale(null);
+        }}
+        onDelete={handleDeleteConfirm}
+        data={selectedSale as SelectSaleType}
+      />
     </>
   );
 }

@@ -107,7 +107,6 @@ function RouteComponent() {
     [offset],
   );
 
-
   const handleCreateSubmit = async (
     values: InsertShopType,
     banner: File | null = null,
@@ -190,7 +189,7 @@ function RouteComponent() {
       console.error("Failed to delete shop:", error);
       toast.error("Failed to delete shop");
     } finally {
-      setDeleteOpen(false); 
+      setDeleteOpen(false);
       setSelectedShop(null);
       await router.invalidate();
     }
@@ -265,7 +264,7 @@ function RouteComponent() {
           setViewOpen(false);
           setSelectedShop(null);
         }}
-        shop={selectedShop as SelectShopType}
+        initialData={selectedShop as SelectShopType}
       />
 
       <EditShopDialog
@@ -279,7 +278,7 @@ function RouteComponent() {
           setEditOpen(false);
           setSelectedShop(null);
         }}
-        shop={selectedShop as SelectShopType}
+        initialData={selectedShop as SelectShopType}
       />
 
       <DeleteShopDialog
@@ -292,8 +291,8 @@ function RouteComponent() {
           setDeleteOpen(false);
           setSelectedShop(null);
         }}
-        onDeleteConfirm={handleDeleteConfirm}
-        shop={selectedShop as SelectShopType}
+        onDelete={handleDeleteConfirm}
+        data={selectedShop as SelectShopType}
       />
     </>
   );

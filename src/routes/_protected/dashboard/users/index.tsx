@@ -1,31 +1,31 @@
+import { Button } from "@/components/ui/button";
+import { getUserColumns } from "@/components/user/dataTables/userColumns";
+import { DataTable } from "@/components/user/dataTables/userDataTable";
 import CreateUserDialog from "@/components/user/dialogs/CreateUserDialog";
 import DeleteUserDialog from "@/components/user/dialogs/DeleteUserDialog";
 import EditUserDialog from "@/components/user/dialogs/EditUserDialog";
 import ViewUserDialog from "@/components/user/dialogs/ViewUserDialog";
-import { getUserColumns } from "@/components/user/dataTables/userColumns";
-import { DataTable } from "@/components/user/dataTables/userDataTable";
-import { Button } from "@/components/ui/button";
 import type {
   InsertUserType,
   SelectUserType,
   UpdateUserType,
 } from "@/db/schema/authSchema";
 import { searchSchema } from "@/db/schema/commonSchema";
+import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createUserFn,
   deleteUserByIdFn,
   listUserFn,
   updateUserByIdFn,
 } from "@/utils/user/user.function";
+import { getImageUrl } from "@/utils/user/user.helper";
 import {
   createFileRoute,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
-import { getImageUrl } from "@/utils/user/user.helper";
 import { toast } from "sonner";
-import { listShopFn } from "@/utils/shop/shop.function";
 
 export const Route = createFileRoute("/_protected/dashboard/users/")({
   validateSearch: searchSchema,
@@ -262,7 +262,7 @@ function RouteComponent() {
           setViewOpen(false);
           setSelectedUser(null);
         }}
-        user={selectedUser as SelectUserType}
+        initialData={selectedUser as SelectUserType}
       />
 
       <EditUserDialog
@@ -277,7 +277,7 @@ function RouteComponent() {
           setEditOpen(false);
           setSelectedUser(null);
         }}
-        user={selectedUser as SelectUserType}
+        initialData={selectedUser as SelectUserType}
       />
 
       <DeleteUserDialog
@@ -290,8 +290,8 @@ function RouteComponent() {
           setDeleteOpen(false);
           setSelectedUser(null);
         }}
-        onDeleteConfirm={handleDeleteConfirm}
-        user={selectedUser as SelectUserType}
+        onDelete={handleDeleteConfirm}
+        data={selectedUser as SelectUserType}
       />
     </>
   );

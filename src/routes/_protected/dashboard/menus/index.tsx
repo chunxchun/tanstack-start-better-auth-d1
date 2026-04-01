@@ -284,7 +284,7 @@ function RouteComponent() {
           setViewOpen(open);
           if (!open) setSelectedMenu(null);
         }}
-        menu={selectedMenu as SelectMenuWithFoodItemsType}
+        initialData={selectedMenu as SelectMenuWithFoodItemsType}
         onCancel={() => {
           setViewOpen(false);
           setSelectedMenu(null);
@@ -304,7 +304,7 @@ function RouteComponent() {
           setEditOpen(false);
           setSelectedMenu(null);
         }}
-        menu={selectedMenu as SelectMenuWithFoodItemsType}
+        initialData={selectedMenu as SelectMenuWithFoodItemsType}
       />
 
       <DeleteMenuDialog
@@ -318,7 +318,7 @@ function RouteComponent() {
           setDeleteOpen(false);
           setSelectedMenu(null);
         }}
-        menuWithFoodItems={selectedMenu as SelectMenuWithFoodItemsType}
+        data={selectedMenu as SelectMenuWithFoodItemsType}
       />
     </>
   );

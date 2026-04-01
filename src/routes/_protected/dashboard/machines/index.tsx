@@ -163,18 +163,18 @@ function RouteComponent() {
     }
   };
 
-  const handleCreateLocationSubmit = async (values: InsertLocationType) => {
-    try {
-      await createLocationFn({ data: values });
-      toast.success("Location created successfully");
-    } catch (error) {
-      console.error("Failed to create location:", error);
-      toast.error("Failed to create location");
-    } finally {
-      setCreateLocationOpen(false);
-      await router.invalidate();
-    }
-  };
+  // const handleCreateLocationSubmit = async (values: InsertLocationType) => {
+  //   try {
+  //     await createLocationFn({ data: values });
+  //     toast.success("Location created successfully");
+  //   } catch (error) {
+  //     console.error("Failed to create location:", error);
+  //     toast.error("Failed to create location");
+  //   } finally {
+  //     setCreateLocationOpen(false);
+  //     await router.invalidate();
+  //   }
+  // };
 
   const handleDeleteConfirm = async () => {
     if (!selectedMachine) return;
@@ -263,7 +263,7 @@ function RouteComponent() {
           setSelectedMachine(null);
           setViewOpen(false);
         }}
-        machine={selectedMachine as SelectMachineType}
+        initialData={selectedMachine as SelectMachineType}
       />
 
       <EditMachineDialog
@@ -279,7 +279,7 @@ function RouteComponent() {
         }}
         shops={shops}
         locations={locations}
-        machine={selectedMachine as SelectMachineType}
+        initialData={selectedMachine as SelectMachineType}
       />
 
       <DeleteMachineDialog
@@ -293,7 +293,7 @@ function RouteComponent() {
           setDeleteOpen(false);
           setSelectedMachine(null);
         }}
-        machine={selectedMachine as SelectMachineType}
+        data={selectedMachine as SelectMachineType}
       />
     </>
   );
