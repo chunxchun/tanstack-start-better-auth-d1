@@ -7,21 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectShopType } from "@/db/schema/shopTable";
+import type { ShopDeleteDialogProps } from "./shopDialogType";
 
 export default function DeleteShopDialog({
   open,
   onOpenChange,
   onCancel,
-  onDeleteConfirm,
-  shop,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCancel: () => void;
-  onDeleteConfirm: () => void;
-  shop: SelectShopType;
-}) {
+  onDelete,
+  data,
+}: ShopDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -32,7 +26,7 @@ export default function DeleteShopDialog({
           <DialogTitle>Delete shop</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete
-            {shop ? ` ${shop.name}` : " this shop"}? This action cannot be
+            {data ? ` ${data.name}` : " this shop"}? This action cannot be
             undone.
           </DialogDescription>
         </DialogHeader>
@@ -40,7 +34,7 @@ export default function DeleteShopDialog({
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="button" variant="destructive" onClick={onDeleteConfirm}>
+          <Button type="button" variant="destructive" onClick={onDelete}>
             Delete
           </Button>
         </DialogFooter>

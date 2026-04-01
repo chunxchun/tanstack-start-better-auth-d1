@@ -6,25 +6,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import type {
-  SelectMenuWithFoodItemsType,
-} from "@/db/schema";
+import type { MenuDeleteDialogProps } from "./menuDialogType";
 
 export default function DeleteMenuDialog({
   open,
   onOpenChange,
   onDelete,
   onCancel,
-  menuWithFoodItems,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onDelete: () => Promise<void>;
-  onCancel: () => void;
-  menuWithFoodItems: SelectMenuWithFoodItemsType;
-}) {
+  data,
+}: MenuDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -35,8 +26,8 @@ export default function DeleteMenuDialog({
           <DialogTitle>Delete Menu</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete
-            {menuWithFoodItems ? `${menuWithFoodItems.name}` : " this menu"}? This action cannot
-            be undone.
+            {data ? `${data.name}` : " this menu"}? This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -48,6 +39,6 @@ export default function DeleteMenuDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog> 
+    </Dialog>
   );
 }

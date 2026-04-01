@@ -4,7 +4,7 @@ import type {
   UpdateShopType,
 } from "@/db/schema/shopTable";
 
-// type ShopFormBaseProps =
+// export type ShopFormBaseProps = FormDataDependency<>;
 
 type ShopFormCreateProps = {
   mode: "create";

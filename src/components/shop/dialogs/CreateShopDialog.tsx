@@ -7,23 +7,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { InsertShopType } from "@/db/schema/shopTable";
+import type { ShopCreateDialogProps } from "./shopDialogType";
 
 export default function CreateShopDialog({
   open,
   onOpenChange,
   onSubmit,
   onCancel,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (
-    values: InsertShopType,
-    banner?: File,
-    logo?: File,
-  ) => Promise<void>;
-  onCancel: () => void;
-}) {
+}: ShopCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>

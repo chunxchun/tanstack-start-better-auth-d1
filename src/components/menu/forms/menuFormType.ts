@@ -1,13 +1,11 @@
 import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertMenuWithFoodItemsType,
-  SelectFoodItemType,
   SelectMenuWithFoodItemsType,
-  SelectShopType,
   UpdateMenuWithFoodItemsType,
 } from "@/db/schema";
 
-type MenuFormBaseProps = FormDataDependency<"shops" | "foodItems">;
+export type MenuFormBaseProps = FormDataDependency<"shops" | "foodItems">;
 
 type MenuFormCreateProps = {
   mode: "create";
@@ -29,7 +27,7 @@ type MenuFormEditProps = {
   onCancel: () => void;
 } & MenuFormBaseProps;
 
-type MenuFormViewProps = MenuFormBaseProps & {
+type MenuFormViewProps = {
   mode: "view";
   initialData: SelectMenuWithFoodItemsType;
   onSubmit?: never;

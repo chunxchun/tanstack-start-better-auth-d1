@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -5,30 +6,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { SelectMachineType } from "@/db/schema/machineTable";
-import type { InsertSaleType } from "@/db/schema/saleTable";
-import type { SelectShopType } from "@/db/schema/shopTable";
 import { SaleForm } from "../forms/saleForm";
-import { Button } from "@/components/ui/button";
-import type { SelectFoodItemType } from "@/db/schema";
+import type { SaleCreateDialogProps } from "./saleDialogType";
 
 export default function CreateSaleDialog({
   open,
   shops,
   machines,
+  foodItems,
+
   onOpenChange,
   onSubmit,
   onCancel,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  machines: SelectMachineType[];
-  foodItems: SelectFoodItemType[];
-
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: InsertSaleType) => Promise<void>;
-  onCancel: () => void;
-}) {
+}: SaleCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>

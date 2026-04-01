@@ -1,6 +1,7 @@
 import FormDate from "@/components/form-date";
 import FormFooter from "@/components/form-footer";
 import FormHeader from "@/components/form-header";
+import FormSelect from "@/components/form-select";
 import FormText from "@/components/form-text";
 import {
   Field,
@@ -9,17 +10,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type {
-  InsertMenuType,
-  InsertMenuWithFoodItemsType,
-  MenuFoodItemType,
-  UpdateMenuType,
-  UpdateMenuWithFoodItemsType,
-} from "@/db/schema/menuTable";
-import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
-import type { MenuFormProps } from "./menuFormType";
-import FormSelect from "@/components/form-select";
 import {
   MultiSelect,
   MultiSelectContent,
@@ -28,6 +18,14 @@ import {
   MultiSelectTrigger,
   MultiSelectValue,
 } from "@/components/ui/multi-select";
+import type {
+  InsertMenuWithFoodItemsType,
+  MenuFoodItemType,
+  UpdateMenuWithFoodItemsType,
+} from "@/db/schema/menuTable";
+import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import type { MenuFormProps } from "./menuFormType";
 
 export function MenuForm({
   mode,

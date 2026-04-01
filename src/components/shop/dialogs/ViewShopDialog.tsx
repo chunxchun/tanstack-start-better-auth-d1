@@ -5,19 +5,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectShopType } from "@/db/schema/shopTable";
+import type { ShopViewDialogProps } from "./shopDialogType";
 
 export default function ViewShopDialog({
   open,
   onOpenChange,
   onCancel,
-  shop,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCancel: () => void;
-  shop: SelectShopType;
-}) {
+  initialData,
+}: ShopViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -27,7 +22,7 @@ export default function ViewShopDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Shop Details</DialogTitle>
         </DialogHeader>
-        <ShopForm mode="view" initialData={shop} onCancel={onCancel} />
+        <ShopForm mode="view" initialData={initialData} onCancel={onCancel} />
       </DialogContent>
     </Dialog>
   );

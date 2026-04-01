@@ -35,7 +35,7 @@ import {
 import { getSession } from '@/lib/session'
 import { type ChangeEvent, useMemo, useState } from "react";
 
-export const Route = createFileRoute("/_protected/dashboard/menu/")({
+export const Route = createFileRoute("/_protected/dashboard/menus/")({
   validateSearch: searchSchema,
   beforeLoad: async () => {
     const session = await getSession();

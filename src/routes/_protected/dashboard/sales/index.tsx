@@ -31,7 +31,7 @@ import { type ChangeEvent, useMemo, useState } from "react";
 import { DataTable } from "@/components/sale/dataTables/saleDataTable";
 import { getSaleColumns } from "@/components/sale/dataTables/saleColumns";
 
-export const Route = createFileRoute("/_protected/dashboard/sale/")({
+export const Route = createFileRoute("/_protected/dashboard/sales/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => listSaleFn({ data: deps }),

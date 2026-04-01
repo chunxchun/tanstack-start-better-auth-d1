@@ -1,3 +1,4 @@
+import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type { SelectShopType } from "@/db/schema";
 import type {
   InsertUserType,
@@ -5,30 +6,28 @@ import type {
   UpdateUserType,
 } from "@/db/schema/authSchema";
 
-type UserFormBaseProps = {
-  onCancel: () => void;
-};
+export type UserFormBaseProps = FormDataDependency<"shops">;
 
-type UserFormCreateProps = UserFormBaseProps & {
-  initialData?: never;
+type UserFormCreateProps = {
   mode: "create";
-  shops: SelectShopType[];
+  initialData?: never;
   onSubmit: (values: InsertUserType, image?: File) => Promise<void>;
-};
+  onCancel: () => void;
+} & UserFormBaseProps;
 
-type UserFormViewProps = UserFormBaseProps & {
-  initialData: SelectUserType;
-  mode: "view";
-  shops?: undefined;
-  onSubmit?: undefined;
-};
-
-type UserFormEditProps = UserFormBaseProps & {
-  initialData: SelectUserType;
+type UserFormEditProps = {
   mode: "edit";
-  shops: SelectShopType[];
+  initialData: SelectUserType;
   onSubmit: (values: UpdateUserType, image?: File) => Promise<void>;
-};
+  onCancel: () => void;
+} & UserFormBaseProps;
+
+type UserFormViewProps = {
+  mode: "view";
+  initialData: SelectUserType;
+  onSubmit?: never;
+  onCancel: () => void;
+} & Partial<Record<keyof UserFormBaseProps, never>>;
 
 export type UserFormProps =
   | UserFormViewProps

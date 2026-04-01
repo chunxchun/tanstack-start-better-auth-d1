@@ -42,12 +42,12 @@ export function LocationForm({
         setIsLoading(true);
         if (mode === "edit") {
           await onSubmit(value as UpdateLocationType);
-          toast.success("Location updated successfully");
+          // toast.success("Location updated successfully");
         }
 
         if (mode === "create") {
           await onSubmit(value as InsertLocationType);
-          toast.success("Location created successfully");
+          // toast.success("Location created successfully");
         }
       } catch (error) {
         console.error("Error saving location:", error);

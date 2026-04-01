@@ -5,8 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { UserForm } from "@/components/user/forms/userForm";
-import type { SelectUserType, UpdateUserType } from "@/db/schema/authSchema";
-import type { SelectShopType } from "@/db/schema/shopTable";
+import type { UserEditDialogProps } from "./userDialogType";
 
 export default function EditUserDialog({
   open,
@@ -14,15 +13,8 @@ export default function EditUserDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  user,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: UpdateUserType) => Promise<void>;
-  onCancel: () => void;
-  user: SelectUserType;
-}) {
+  initialData,
+}: UserEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -35,7 +27,7 @@ export default function EditUserDialog({
         <UserForm
           mode="edit"
           shops={shops}
-          initialData={user}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
         />

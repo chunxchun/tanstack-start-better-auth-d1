@@ -5,25 +5,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectShopType, UpdateShopType } from "@/db/schema/shopTable";
+import type { ShopEditDialogProps } from "./shopDialogType";
 
 export default function EditShopDialog({
   open,
   onOpenChange,
   onSubmit,
   onCancel,
-  shop,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (
-    values: UpdateShopType,
-    banner?: File,
-    logo?: File,
-  ) => Promise<void>;
-  onCancel: () => void;
-  shop: SelectShopType
-}) {
+  initialData,
+}: ShopEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -35,7 +25,7 @@ export default function EditShopDialog({
         </DialogHeader>
         <ShopForm
           mode="edit"
-          initialData={shop}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
         />

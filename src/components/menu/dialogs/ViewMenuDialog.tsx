@@ -4,21 +4,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-import type { SelectMenuWithFoodItemsType } from "@/db/schema";
 import { MenuForm } from "../forms/menuForm";
+import type { MenuViewDialogProps } from "./menuDialogType";
 
 export default function ViewMenuDialog({
   open,
   onOpenChange,
   onCancel,
-  menu,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCancel: () => void;
-  menu: SelectMenuWithFoodItemsType;
-}) {
+  initialData,
+}: MenuViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -28,7 +22,7 @@ export default function ViewMenuDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Menu Details</DialogTitle>
         </DialogHeader>
-        <MenuForm mode="view" initialData={menu} onCancel={onCancel} />
+        <MenuForm mode="view" initialData={initialData} onCancel={onCancel} />
       </DialogContent>
     </Dialog>
   );

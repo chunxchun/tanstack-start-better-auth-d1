@@ -21,7 +21,7 @@ type MachineFormEditProps = {
   onCancel: () => void;
 } & MachineFormBaseProps;
 
-type MachineFormViewProps = MachineFormBaseProps & {
+type MachineFormViewProps = {
   mode: "view";
   initialData: SelectMachineType;
   onSubmit?: never;

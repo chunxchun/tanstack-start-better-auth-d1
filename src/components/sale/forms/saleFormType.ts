@@ -5,7 +5,7 @@ import type {
   UpdateSaleType,
 } from "@/db/schema";
 
-type SaleFormBaseProps = FormDataDependency<"shops" | "machines" | "foodItems">;
+export type SaleFormBaseProps = FormDataDependency<"shops" | "machines" | "foodItems">;
 
 type SaleFormCreateProps = {
   mode: "create";
@@ -22,8 +22,8 @@ type SaleFormEditProps = {
 } & SaleFormBaseProps;
 
 type SaleFormViewProps = {
-  initialData: SelectSaleType;
   mode: "view";
+  initialData: SelectSaleType;
   onSubmit?: never;
   onCancel: () => void;
 } & Partial<Record<keyof SaleFormBaseProps, never>>;

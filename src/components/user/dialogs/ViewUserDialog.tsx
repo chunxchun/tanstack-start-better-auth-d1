@@ -5,17 +5,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { UserForm } from "@/components/user/forms/userForm";
-import type { SelectUserType } from "@/db/schema/authSchema";
-import type { ViewDialogProps } from "@/db/schema/commonSchema";
-
-type ViewUserDialogProps = ViewDialogProps<SelectUserType>;
+import type { UserViewDialogProps } from "./userDialogType";
 
 export default function ViewUserDialog({
   open,
   onOpenChange,
   onCancel,
-  data: user,
-}: ViewUserDialogProps) {
+  initialData,
+}: UserViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -29,7 +26,7 @@ export default function ViewUserDialog({
           mode="view"
           shops={undefined}
           onSubmit={undefined}
-          initialData={user}
+          initialData={initialData}
           onCancel={onCancel}
         />
       </DialogContent>

@@ -7,8 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { UserForm } from "@/components/user/forms/userForm";
-import type { SelectShopType } from "@/db/schema";
-import type { InsertUserType } from "@/db/schema/authSchema";
+import type { UserCreateDialogProps } from "./userDialogType";
 
 export default function CreateUserDialog({
   open,
@@ -16,13 +15,7 @@ export default function CreateUserDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: InsertUserType) => Promise<void>;
-  onCancel: () => void;
-}) {
+}: UserCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>

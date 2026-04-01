@@ -24,7 +24,7 @@ import {
   FileQuestionMark,
   LifeBuoy,
 } from "lucide-react";
-import type { SelectShopType,  } from "@/db/schema";
+import type { SelectShopType } from "@/db/schema";
 import type { SelectUserType } from "@/db/schema/authSchema";
 import type { Dispatch, SetStateAction } from "react";
 
@@ -61,6 +61,7 @@ const data = {
           title: "Machines",
           url: "/dashboard/machines",
         },
+        { title: "Schedules", url: "/dashboard/schedules" },
         // { title: "Maintainence & Repair", url: "#", disabled: true },
       ],
     },

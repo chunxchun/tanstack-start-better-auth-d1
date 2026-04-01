@@ -4,15 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectLocationType } from "@/db/schema/locationTable";
-import type {
-  SelectMachineType,
-  UpdateMachineType,
-} from "@/db/schema/machineTable";
-import type { SelectMenuWithFoodItemsType } from "@/db/schema/menuTable";
-import type { UpdateMenuWithFoodItemsType } from "@/db/schema/menuTable";
 import { MenuForm } from "../forms/menuForm";
-import type { SelectFoodItemType, SelectShopType } from "@/db/schema";
+import type { MenuEditDialogProps } from "./menuDialogType";
 
 export default function EditMenuDialog({
   open,
@@ -21,16 +14,8 @@ export default function EditMenuDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  menu,
-}: {
-  open: boolean;
-  shops: SelectShopType[];
-  foodItems: SelectFoodItemType[];
-  onOpenChange: (open: boolean) => void;
-  onSubmit: (values: UpdateMenuWithFoodItemsType) => Promise<void>;
-  onCancel: () => void;
-  menu: SelectMenuWithFoodItemsType;
-}) {
+  initialData,
+}: MenuEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -40,15 +25,15 @@ export default function EditMenuDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Edit Menu</DialogTitle>
         </DialogHeader>
-         <MenuForm
+        <MenuForm
           mode="edit"
           shops={shops}
           foodItems={foodItems}
-          initialData={menu}
+          initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
         />
       </DialogContent>
-    </Dialog> 
+    </Dialog>
   );
 }

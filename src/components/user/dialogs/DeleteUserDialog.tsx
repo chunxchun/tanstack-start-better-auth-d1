@@ -7,18 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { SelectUserType } from "@/db/schema/authSchema";
-import type { DeleteDialogProps } from "@/db/schema/commonSchema";
-
-type DeleteUserDialogProps = DeleteDialogProps<SelectUserType>;
+import type { UserDeleteDialogProps } from "./userDialogType";
 
 export default function DeleteUserDialog({
   open,
   onOpenChange,
   onCancel,
-  onDeleteConfirm,
-  data: user,
-}: DeleteUserDialogProps) {
+  onDelete,
+  data,
+}: UserDeleteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -29,7 +26,7 @@ export default function DeleteUserDialog({
           <DialogTitle>Delete user</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete
-            {user ? ` ${user.displayName}` : " this user"}? This action cannot
+            {data ? ` ${data.displayName}` : " this user"}? This action cannot
             be undone.
           </DialogDescription>
         </DialogHeader>
@@ -38,7 +35,7 @@ export default function DeleteUserDialog({
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="button" variant="destructive" onClick={onDeleteConfirm}>
+          <Button type="button" variant="destructive" onClick={onDelete}>
             Delete
           </Button>
         </DialogFooter>
