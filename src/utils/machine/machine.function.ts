@@ -14,7 +14,9 @@ import {
 
 export const listMachineFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listMachineHandler(data.limit, data.offset));
+  .handler(async ({ data }) =>
+    listMachineHandler(data.limit, data.offset, data.shopId),
+  );
 
 export const createMachineFn = createServerFn({ method: "POST" })
   .inputValidator(insertMachineSchema)
@@ -22,12 +24,12 @@ export const createMachineFn = createServerFn({ method: "POST" })
 
 export const fetchMachineByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => fetchMachineByIdHandler(data.id));
+  .handler(async ({ data }) => fetchMachineByIdHandler(Number(data.id)));
 
 export const updateMachineByIdFn = createServerFn({ method: "POST" })
   .inputValidator(updateMachineSchema)
-  .handler(async ({ data }) => updateMachineByIdHandler(data.id as number, data));
+  .handler(async ({ data }) => updateMachineByIdHandler(Number(data.id), data));
 
 export const deleteMachineByIdFn = createServerFn({ method: "GET" })
   .inputValidator(idSchema)
-  .handler(async ({ data }) => deleteMachineByIdHandler(data.id));
+  .handler(async ({ data }) => deleteMachineByIdHandler(Number(data.id)));

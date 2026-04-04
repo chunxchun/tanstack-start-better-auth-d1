@@ -14,7 +14,7 @@ import {
 
 export const listDeliveryFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listDeliveryHandler(data.limit, data.offset));
+  .handler(async ({ data }) => listDeliveryHandler(data.limit, data.offset, data.shopId)  );
 
 export const createDeliveryFn = createServerFn({ method: "POST" })
   .inputValidator(insertDeliverySchema)

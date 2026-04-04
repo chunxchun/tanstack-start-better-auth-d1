@@ -1,6 +1,6 @@
-import CreateShopDialog from "@/components/shop/dialogs/CreateShopDialog";
 import { getShopColumns } from "@/components/shop/dataTables/shopColumns";
 import { DataTable } from "@/components/shop/dataTables/shopDataTable";
+import CreateShopDialog from "@/components/shop/dialogs/CreateShopDialog";
 import DeleteShopDialog from "@/components/shop/dialogs/DeleteShopDialog";
 import EditShopDialog from "@/components/shop/dialogs/EditShopDialog";
 import ViewShopDialog from "@/components/shop/dialogs/ViewShopDialog";
@@ -12,13 +12,11 @@ import type {
   UpdateShopType,
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
+import { deleteShopByIdFn, listShopFn } from "@/utils/shop/shop.function";
 import {
-  createShopFn,
-  deleteShopByIdFn,
-  listShopFn,
-  updateShopByIdFn,
-} from "@/utils/shop/shop.function";
-import { getBannerUrl, getLogoUrl } from "@/utils/shop/shop.helper";
+  shopHandleCreateSubmit,
+  shopHandleUpdateSubmit,
+} from "@/utils/shop/shop.helper";
 import {
   createFileRoute,
   useNavigate,
@@ -113,32 +111,8 @@ function RouteComponent() {
     logo: File | null = null,
   ) => {
     try {
-      const result = await createShopFn({ data: values });
-      if (!result || result.length === 0) {
-        throw new Error("Failed to create shop: No result returned");
-      }
-
-      const shopId = result[0].id;
-
-      let bannerUrl: string | null = null;
-      let logoUrl: string | null = null;
-
-      if (banner) {
-        bannerUrl = await getBannerUrl(banner, shopId);
-      }
-
-      if (logo) {
-        logoUrl = await getLogoUrl(logo, shopId);
-      }
-
-      await updateShopByIdFn({
-        data: {
-          id: shopId,
-          bannerUrl: bannerUrl ?? null,
-          logoUrl: logoUrl ?? null,
-        },
-      });
-
+      await shopHandleCreateSubmit(values, banner, logo);
+      setSelectedShop(null);
       toast.success("Shop created successfully");
     } catch (error) {
       console.error("Failed to create shop:", error);
@@ -157,24 +131,14 @@ function RouteComponent() {
     if (!selectedShop) return;
 
     try {
-      if (banner) {
-        values.bannerUrl = await getBannerUrl(banner, values.id as number);
-      }
-
-      if (logo) {
-        values.logoUrl = await getLogoUrl(logo, values.id as number);
-      }
-
-      console.log("Updating shop with values:", values);
-      const result = await updateShopByIdFn({ data: values });
-      console.log(result);
+      await shopHandleUpdateSubmit(values, banner, logo);
+      setSelectedShop(null);
       toast.success("Shop updated successfully");
     } catch (error) {
       console.error("Failed to update shop:", error);
       toast.error("Failed to update shop");
     } finally {
       setEditOpen(false);
-      setSelectedShop(null);
       await router.invalidate();
     }
   };

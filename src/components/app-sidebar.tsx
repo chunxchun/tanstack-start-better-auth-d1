@@ -74,7 +74,7 @@ const data = {
           title: "Food Items",
           url: "/dashboard/food-items",
         },
-        { title: "Menus", url: "/dashboard/menu" },
+        { title: "Menus", url: "/dashboard/menus" },
         { title: "Disposes", url: "/dashboard/disposes" },
         { title: "Inventories", url: "/dashboard/inventories" },
       ],

@@ -12,7 +12,9 @@ import {
 
 export const listMenuFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listMenuHandler(data.limit, data.offset));
+  .handler(async ({ data }) =>
+    listMenuHandler(data.limit, data.offset, data.shopId),
+  );
 
 export const listMenuWithFoodItemFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)

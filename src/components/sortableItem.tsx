@@ -1,0 +1,21 @@
+import { useSortable } from "@dnd-kit/react/sortable";
+
+export function Item({
+  id,
+  column,
+  index,
+}: {
+  id: string;
+  column: string;
+  index: number;
+}) {
+  const { ref } = useSortable({
+    id,
+    index,
+    group: column,
+    type: "item",
+    accept: ["item"],
+  });
+
+  return <button ref={ref}>{id}</button>;
+}

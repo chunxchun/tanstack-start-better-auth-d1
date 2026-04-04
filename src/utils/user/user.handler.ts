@@ -2,18 +2,20 @@ import { db } from "@/db";
 import {
   user as userTable,
   type InsertUserType,
-  type UpdateUserType
+  type UpdateUserType,
 } from "@/db/schema/authSchema";
 import { eq } from "drizzle-orm";
 
 export const listUserHandler = async (
   limit: number = 10,
   offset: number = 0,
+  shopId?: number,
 ) => {
   try {
     const result = await db
       .select()
       .from(userTable)
+      .where(shopId ? eq(userTable.shopId, shopId) : undefined)
       .limit(limit)
       .offset(offset);
     return result;

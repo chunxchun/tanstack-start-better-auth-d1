@@ -6,6 +6,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ShopContext } from "@/context/shop.context";
 import type { SelectShopType } from "@/db/schema";
 import type { SelectUserType } from "@/db/schema/authSchema";
 import { getVersionedImageUrl } from "@/lib/utils";
@@ -29,36 +30,41 @@ function RouteComponent() {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <AppSidebar
-          shops={shops}
-          user={user as SelectUserType}
-          activeShop={activeShop}
-          setActiveShop={setActiveShop}
-        />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              {activeShop ? (
-                activeShop.bannerUrl ? (
-                  <img
-                    src={getVersionedImageUrl(activeShop.bannerUrl, activeShop.updatedAt)}
-                    alt={activeShop.name}
-                    className="w-2/3 max-h-24  object-cover rounded-lg"
-                  />
-                ) : (
-                  <p>{activeShop.name}</p>
-                )
-              ) : null}
-              <p>{user.name}</p>
-            </div>
-          </header>
-          <Outlet />
-        </SidebarInset>
+        <ShopContext.Provider value={activeShop}>
+          <AppSidebar
+            shops={shops}
+            user={user as SelectUserType}
+            activeShop={activeShop}
+            setActiveShop={setActiveShop}
+          />
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+              <div className="flex items-center gap-2 px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator
+                  orientation="vertical"
+                  className="mr-2 data-[orientation=vertical]:h-4"
+                />
+                {activeShop ? (
+                  activeShop.bannerUrl ? (
+                    <img
+                      src={getVersionedImageUrl(
+                        activeShop.bannerUrl,
+                        activeShop.updatedAt,
+                      )}
+                      alt={activeShop.name}
+                      className="w-2/3 max-h-24  object-cover rounded-lg"
+                    />
+                  ) : (
+                    <p>{activeShop.name}</p>
+                  )
+                ) : null}
+                <p>{user.name}</p>
+              </div>
+            </header>
+            <Outlet />
+          </SidebarInset>
+        </ShopContext.Provider>
       </SidebarProvider>
     </TooltipProvider>
   );

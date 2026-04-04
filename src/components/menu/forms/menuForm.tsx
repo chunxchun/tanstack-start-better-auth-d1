@@ -24,8 +24,9 @@ import type {
   UpdateMenuWithFoodItemsType,
 } from "@/db/schema/menuTable";
 import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import type { MenuFormProps } from "./menuFormType";
+import { ShopContext } from "@/context/shop.context";
 
 export function MenuForm({
   mode,
@@ -35,6 +36,7 @@ export function MenuForm({
   onSubmit,
   onCancel,
 }: MenuFormProps) {
+  const activeShop = useContext(ShopContext);
   const initialSelectedFoodItems = initialData?.menuFoodItems || [];
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFoodItems, setSelectedFoodItems] = useState<
@@ -46,7 +48,7 @@ export function MenuForm({
       name: null,
       description: null,
       coverPhotoUrl: null,
-      shopId: null,
+      shopId: activeShop?.id ?? null,
       date: new Date().toISOString().slice(0, 10),
     },
     onSubmit: async ({ value }) => {
@@ -124,13 +126,14 @@ export function MenuForm({
             name="shopId"
             label="Shop"
             initialValue={
-              shops?.find((shop) => shop.id === initialData?.shopId)?.name
-              // 'abc'
+              activeShop
+                ? shops?.find((shop) => shop.id === activeShop.id)?.name
+                : shops?.find((shop) => shop.id === initialData?.shopId)?.name
             }
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
+            isReadOnly={!!activeShop || isReadOnly}
             required
           />
 
@@ -192,6 +195,7 @@ export function MenuForm({
               </MultiSelect>
             )}
           </Field>
+
 
           {/* date */}
           <FormDate

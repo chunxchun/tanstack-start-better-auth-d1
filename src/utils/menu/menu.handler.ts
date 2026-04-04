@@ -6,16 +6,18 @@ import {
   type InsertMenuType,
   type UpdateMenuType,
 } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const listMenuHandler = async (
   limit: number = 10,
   offset: number = 1,
+  shopId?: number,
 ) => {
   try {
     const result = await db
       .select()
       .from(menusTable)
+      .where(shopId ? eq(menusTable.shopId, shopId) : undefined)
       .limit(limit)
       .offset(offset);
     return result;
@@ -28,6 +30,7 @@ export const listMenuHandler = async (
 export const listMenuWithFoodItemHandler = async (
   limit: number = 10,
   offset: number = 1,
+  shopId?: number,
 ) => {
   try {
     // const result = await db
@@ -54,31 +57,36 @@ export const listMenuWithFoodItemHandler = async (
     //   .orderBy(desc(menusTable.createdAt))
     //   .limit(limit)
     //   .offset(offset);
-    const menus = db
-      .$with("menus_cte")
-      .as(
-        db
-          .select()
-          .from(menusTable)
-          .orderBy(desc(menusTable.createdAt))
-          .limit(10),
+
+    const menus = db.$with("menus_cte").as(
+      db
+        .select()
+        .from(menusTable)
+        .where(shopId ? eq(menusTable.shopId, shopId) : undefined)
+        .orderBy(desc(menusTable.createdAt))
+        .limit(10),
+    );
+
+    const result = await db
+      .with(menus)
+      .select({
+        menuId: menus.id,
+        menuName: menus.name,
+        menusCoverPhotoUrl: menus.coverPhotoUrl,
+        menuDate: menus.date,
+        menuShopId: menus.shopId,
+        menuDescription: menus.description,
+        foodItemId: foodItemsTable.id,
+        foodItemName: foodItemsTable.name,
+        foodImageUrl: foodItemsTable.imageUrl,
+      })
+      .from(menus)
+      .leftJoin(menusFoodItemsTable, eq(menus.id, menusFoodItemsTable.menuId))
+      .leftJoin(
+        foodItemsTable,
+        eq(menusFoodItemsTable.foodItemId, foodItemsTable.id),
       );
 
-    const result = await db.with(menus).select({
-      menuId: menus.id,
-      menuName: menus.name,
-      menusCoverPhotoUrl: menus.coverPhotoUrl,
-      menuDate: menus.date,
-      menuShopId: menus.shopId,
-      menuDescription: menus.description,
-      foodItemId: foodItemsTable.id,
-      foodItemName: foodItemsTable.name,
-      foodImageUrl: foodItemsTable.imageUrl,
-    })
-    .from(menus)
-    .leftJoin(menusFoodItemsTable, eq(menus.id, menusFoodItemsTable.menuId))
-    .leftJoin(foodItemsTable, eq(menusFoodItemsTable.foodItemId, foodItemsTable.id));
-    
     return result;
   } catch (error) {
     console.error("Error listing menus with food items:", error);

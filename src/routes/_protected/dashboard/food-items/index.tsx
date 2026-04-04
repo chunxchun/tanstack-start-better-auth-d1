@@ -13,18 +13,23 @@ import type {
 } from "@/db/schema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import {
-  createFoodItemFn,
   deleteFoodItemByIdFn,
   listFoodItemFn,
   updateFoodItemByIdFn,
 } from "@/utils/foodItem/foodItem.function";
+import {
+  foodItemHandleCreateSubmit,
+  foodItemHandleUpdateSubmit,
+} from "@/utils/foodItem/foodItem.helper";
 import { listShopFn } from "@/utils/shop/shop.function";
+// import { getImageUrl } from "@/utils/user/user.helper";
 import {
   createFileRoute,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_protected/dashboard/food-items/")({
   validateSearch: searchSchema,
@@ -111,28 +116,42 @@ function RouteComponent() {
     [],
   );
 
-  const handleCreateSubmit = async (values: InsertFoodItemType) => {
+  const handleCreateSubmit = async (
+    values: InsertFoodItemType,
+    image: File | null = null,
+    shopId: string | number | null = null,
+  ) => {
     try {
-      const parsedValues = { ...values, shopId: Number(values.shopId) };
-      await createFoodItemFn({ data: parsedValues });
-      setCreateOpen(false);
-      await router.invalidate();
+      await foodItemHandleCreateSubmit(values, image, shopId);
+      setSelectedFoodItem(null);
+      toast.success("Food item created successfully");
     } catch (error) {
       console.error("Failed to create food item:", error);
+      toast.error("Failed to create food item");
+    } finally {
+      setCreateOpen(false);
+      await router.invalidate();
     }
   };
 
-  const handleEditSubmit = async (values: UpdateFoodItemType) => {
+  const handleEditSubmit = async (
+    values: UpdateFoodItemType,
+    image: File | null = null,
+    shopId: string | number | null = null,
+  ) => {
     if (!selectedFoodItem) return;
 
     try {
       const parsedValues = { ...values, shopId: Number(values.shopId) };
-      await updateFoodItemByIdFn({ data: parsedValues });
-      setEditOpen(false);
+      await foodItemHandleUpdateSubmit(parsedValues, image, shopId);
       setSelectedFoodItem(null);
-      await router.invalidate();
+      toast.success("Food item updated successfully");
     } catch (error) {
       console.error("Failed to update food item:", error);
+      toast.error("Failed to update food item");
+    } finally {
+      setEditOpen(false);
+      await router.invalidate();
     }
   };
 

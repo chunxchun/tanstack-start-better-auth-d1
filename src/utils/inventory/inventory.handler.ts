@@ -9,11 +9,13 @@ import { eq } from "drizzle-orm";
 export const listInventoryHandler = async (
   limit: number = 10,
   offset: number = 1,
+  shopId?: number,
 ) => {
   try {
     const result = await db
       .select()
       .from(inventoriesTable)
+      .where(shopId ? eq(inventoriesTable.shopId, shopId) : undefined)
       .limit(limit)
       .offset(offset);
     return result;
@@ -37,7 +39,9 @@ export const fetchInventoryByIdHandler = async (id: number) => {
   }
 };
 
-export const createInventoryHandler = async (inventory: InsertInventoryType) => {
+export const createInventoryHandler = async (
+  inventory: InsertInventoryType,
+) => {
   try {
     const result = await db
       .insert(inventoriesTable)

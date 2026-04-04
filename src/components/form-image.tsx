@@ -3,6 +3,7 @@ import { getVersionedImageUrl } from "@/lib/utils";
 import { type ReactFormExtendedApi } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import type { Dispatch, SetStateAction } from "react";
+import { get } from "http";
 
 type FormSelectProps<T, TForm> = {
   form: ReactFormExtendedApi<
@@ -25,7 +26,7 @@ type FormSelectProps<T, TForm> = {
   description?: string | null;
   required?: boolean;
   file?: File | null;
-  onChange: React.Dispatch<SetStateAction<File | null>>;
+  onChange: Dispatch<SetStateAction<File | null>>;
 };
 
 export default function FormSelect<T, TForm>({
@@ -52,8 +53,11 @@ export default function FormSelect<T, TForm>({
             {label} {required && <span className="text-red-500">*</span>}
           </FieldLabel>
           {isReadOnly ? (
-            src ? (
-              <img src={src} alt={label} className="max-h-32 object-contain" />
+            const imageSrc = getVersionedImageUrl(
+              field.state.value,
+            updatedAt);
+            imageSrc ? (
+              <img src={imageSrc} alt={label} className="max-h-32 object-contain" />
             ) : (
               <FieldDescription>
                 No {label.toLowerCase()} uploaded.
@@ -69,8 +73,11 @@ export default function FormSelect<T, TForm>({
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
                   if (!file) {
+                    // field.handleChange(undefined);
                     onChange(null);
+                    return;
                   }
+                  // field.handleChange(file.name);
                   onChange(file);
                 }}
               />

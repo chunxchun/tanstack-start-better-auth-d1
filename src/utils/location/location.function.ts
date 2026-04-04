@@ -14,7 +14,9 @@ import {
 
 export const listLocationFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listLocationHandler(data.limit, data.offset));
+  .handler(async ({ data }) =>
+    listLocationHandler(data.limit, data.offset, data.shopId),
+  );
 
 export const createLocationFn = createServerFn({ method: "POST" })
   .inputValidator(insertLocationSchema)

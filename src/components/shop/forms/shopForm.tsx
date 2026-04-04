@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 import type { InsertShopType, UpdateShopType } from "@/db/schema";
 import { getVersionedImageUrl } from "@/lib/utils";
 import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
 import type { ShopFormProps } from "./shopFormType";
+import { ShopContext } from "@/context/shop.context";
 
 export function ShopForm({
   mode,
@@ -25,6 +26,8 @@ export function ShopForm({
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // const shop = useContext(ShopContext);
+  
   const form = useForm({
     defaultValues: initialData || {
       name: "",

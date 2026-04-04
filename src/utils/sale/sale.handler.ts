@@ -9,11 +9,13 @@ import { eq } from "drizzle-orm";
 export const listSaleHandler = async (
   limit: number = 10,
   offset: number = 1,
+  shopId?: number,
 ) => {
   try {
     const result = await db
       .select()
       .from(salesTable)
+      .where(shopId ? eq(salesTable.shopId, shopId) : undefined)
       .limit(limit)
       .offset(offset);
     return result;

@@ -14,7 +14,7 @@ import {
 
 export const listDisposeFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listDisposeHandler(data.limit, data.offset));
+  .handler(async ({ data }) => listDisposeHandler(data.limit, data.offset, data.shopId)  );
 
 export const createDisposeFn = createServerFn({ method: "POST" })
   .inputValidator(insertDisposeSchema)

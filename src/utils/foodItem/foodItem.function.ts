@@ -14,7 +14,7 @@ import {
 
 export const listFoodItemFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listFoodItemHandler(data.limit, data.offset));
+  .handler(async ({ data }) => listFoodItemHandler(data.limit, data.offset, data.shopId)  );
 
 export const createFoodItemFn = createServerFn({ method: "POST" })
   .inputValidator(insertFoodItemSchema)

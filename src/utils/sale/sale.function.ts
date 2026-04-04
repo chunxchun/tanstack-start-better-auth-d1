@@ -11,7 +11,9 @@ import {
 
 export const listSaleFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listSaleHandler(data.limit, data.offset));
+  .handler(async ({ data }) =>
+    listSaleHandler(data.limit, data.offset, data.shopId),
+  );
 
 export const createSaleFn = createServerFn({ method: "POST" })
   .inputValidator(insertSaleSchema)

@@ -11,7 +11,9 @@ import {
 
 export const listUserFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listUserHandler(data.limit, data.offset));
+  .handler(async ({ data }) =>
+    listUserHandler(data.limit, data.offset, data.shopId),
+  );
 
 export const createUserFn = createServerFn({ method: "POST" })
   .inputValidator(insertUserSchema)

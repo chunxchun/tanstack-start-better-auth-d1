@@ -1,19 +1,21 @@
 import { db } from "@/db";
 import {
   machinesTable,
-  type InsertMachine,
-  type UpdateMachine,
+  type InsertMachineType,
+  type UpdateMachineType,
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listMachineHandler = async (
   limit: number = 10,
   offset: number = 1,
+  shopId?: number,
 ) => {
   try {
     const result = await db
       .select()
       .from(machinesTable)
+      .where(shopId ? eq(machinesTable.shopId, shopId) : undefined)
       .limit(limit)
       .offset(offset);
     return result;
@@ -50,7 +52,7 @@ export const fetchMachineByLocationIdHandler = async (locationId: number) => {
   }
 };
 
-export const createMachineHandler = async (machine: InsertMachine) => {
+export const createMachineHandler = async (machine: InsertMachineType) => {
   try {
     const result = await db.insert(machinesTable).values(machine).returning();
     return result;
@@ -62,7 +64,7 @@ export const createMachineHandler = async (machine: InsertMachine) => {
 
 export const updateMachineByIdHandler = async (
   id: number,
-  machine: UpdateMachine,
+  machine: UpdateMachineType,
 ) => {
   try {
     const result = await db

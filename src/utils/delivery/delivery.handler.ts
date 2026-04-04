@@ -1,15 +1,21 @@
 import { db } from "@/db";
-import { deliveriesTable, type InsertDeliveryType, type UpdateDeliveryType } from "@/db/schema";
+import {
+  deliveriesTable,
+  type InsertDeliveryType,
+  type UpdateDeliveryType,
+} from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const listDeliveryHandler = async (
   limit: number = 10,
   offset: number = 1,
+  shopId?: number,
 ) => {
   try {
     const result = await db
       .select()
       .from(deliveriesTable)
+      .where(shopId ? eq(deliveriesTable.shopId, shopId) : undefined)
       .limit(limit)
       .offset(offset);
     return result;
@@ -35,7 +41,10 @@ export const fetchDeliveryByIdHandler = async (id: number) => {
 
 export const createDeliveryHandler = async (delivery: InsertDeliveryType) => {
   try {
-    const result = await db.insert(deliveriesTable).values(delivery).returning();
+    const result = await db
+      .insert(deliveriesTable)
+      .values(delivery)
+      .returning();
     return result;
   } catch (error) {
     console.error("Error creating delivery:", error);

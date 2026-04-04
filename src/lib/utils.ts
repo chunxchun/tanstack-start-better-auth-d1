@@ -7,13 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export function buildR2AccessKey(
   folder: string,
-  id: number|string,
-  asset: string,
+  // id: number|string,
+  key: string,
   file: File,
 ) {
   const ext = file.name.split(".").pop();
-  const filename = `${asset}.${ext}`;
-  return `${folder}/${id}/${filename}`;
+  const filename = `${key}.${ext}`;
+  return `${folder}/${filename}`;
 }
 
 export function getVersionedImageUrl(

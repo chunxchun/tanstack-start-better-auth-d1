@@ -12,13 +12,11 @@ import type {
 } from "@/db/schema/authSchema";
 import { searchSchema } from "@/db/schema/commonSchema";
 import { listShopFn } from "@/utils/shop/shop.function";
+import { deleteUserByIdFn, listUserFn } from "@/utils/user/user.function";
 import {
-  createUserFn,
-  deleteUserByIdFn,
-  listUserFn,
-  updateUserByIdFn,
-} from "@/utils/user/user.function";
-import { getImageUrl } from "@/utils/user/user.helper";
+  userHandleCreateSubmit,
+  userHandleUpdateSubmit,
+} from "@/utils/user/user.helper";
 import {
   createFileRoute,
   useNavigate,
@@ -33,7 +31,7 @@ export const Route = createFileRoute("/_protected/dashboard/users/")({
   loader: async ({ deps }) => {
     const [users, shops] = await Promise.all([
       listUserFn({ data: deps }),
-      listShopFn({ data: { limit: 100, offset: 0 } })
+      listShopFn({ data: { limit: 100, offset: 0 } }),
     ]);
     return { users, shops };
   },
@@ -41,7 +39,7 @@ export const Route = createFileRoute("/_protected/dashboard/users/")({
 });
 
 function RouteComponent() {
-  const {users, shops} = Route.useLoaderData();
+  const { users, shops } = Route.useLoaderData();
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -116,28 +114,11 @@ function RouteComponent() {
   const handleCreateSubmit = async (
     values: InsertUserType,
     image: File | null = null,
+    shopId: string | number | null = null,
   ) => {
     try {
-      const result = await createUserFn({ data: values });
-      if (!result || result.length === 0) {
-        throw new Error("Failed to create user: No result returned");
-      }
-
-      const userId = result[0].id;
-
-      let imageUrl: string | null = null;
-
-      if (image) {
-        imageUrl = await getImageUrl(image, userId);
-      }
-
-      await updateUserByIdFn({
-        data: {
-          id: userId,
-          image: imageUrl ?? null,
-        },
-      });
-
+      await userHandleCreateSubmit(values, image, shopId);
+      setSelectedUser(null);
       toast.success("User created successfully");
     } catch (error) {
       console.error("Failed to create user:", error);
@@ -151,27 +132,19 @@ function RouteComponent() {
   const handleEditSubmit = async (
     values: UpdateUserType,
     image: File | null = null,
+    shopId: string | number | null = null,
   ) => {
     if (!selectedUser) return;
 
     try {
-      if (image) {
-        values.image = await getImageUrl(image, selectedUser.id);
-      }
-
-      const result = await updateUserByIdFn({ data: values });
-
-      if (!result || result.length === 0) {
-        throw new Error("Failed to update user: No result returned");
-      }
-
+      await userHandleUpdateSubmit(values, image, shopId);
+      setSelectedUser(null);
       toast.success("User updated successfully");
     } catch (error) {
       console.error("Failed to update user:", error);
       toast.error("Failed to update user");
     } finally {
       setEditOpen(false);
-      setSelectedUser(null);
       await router.invalidate();
     }
   };

@@ -14,7 +14,9 @@ import {
 
 export const listInventoryFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
-  .handler(async ({ data }) => listInventoryHandler(data.limit, data.offset));
+  .handler(async ({ data }) =>
+    listInventoryHandler(data.limit, data.offset, data.shopId),
+  );
 
 export const createInventoryFn = createServerFn({ method: "POST" })
   .inputValidator(insertInventorySchema)

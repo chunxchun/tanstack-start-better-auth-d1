@@ -4,9 +4,8 @@ import CreateMenuDialog from "@/components/menu/dialogs/CreateMenuDialog";
 import DeleteMenuDialog from "@/components/menu/dialogs/DeleteMenuDialog";
 import EditMenuDialog from "@/components/menu/dialogs/EditMenuDialog";
 import ViewMenuDialog from "@/components/menu/dialogs/ViewMenuDialog";
-import { MenuForm } from "@/components/menu/forms/menuForm";
+import { SortableList } from "@/components/sortableList";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import type {
   InsertMenuWithFoodItemsType,
   SelectMenuWithFoodItemsType,
@@ -15,43 +14,41 @@ import type {
 import { searchSchema } from "@/db/schema/commonSchema";
 import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
 import {
-  createMenuFn,
   deleteMenuByIdFn,
   listMenuWithFoodItemFn,
-  updateMenuByIdFn,
 } from "@/utils/menu/menu.function";
 import {
   constructMenuWithFoodItem,
+  menuHandleCreateSubmit,
+  menuHandleUpdateSubmit,
   type queryMenuWithFoodItemType,
 } from "@/utils/menu/menu.helper";
-import { createMenuFoodItemFn } from "@/utils/menuFoodItem/menuFoodItem.function";
 import { listShopFn } from "@/utils/shop/shop.function";
 import {
   createFileRoute,
-  redirect,
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { getSession } from '@/lib/session'
 import { type ChangeEvent, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_protected/dashboard/menus/")({
   validateSearch: searchSchema,
-  beforeLoad: async () => {
-    const session = await getSession();
+  // beforeLoad: async () => {
+  //   const session = await getSession();
 
-    if (!session) {
-      throw redirect({
-        to: "/login",
-      }); 
+  //   if (!session) {
+  //     throw redirect({
+  //       to: "/login",
+  //     });
 
-    }
-    const user = session.user;
-    if (user.role === "admin") {
-      throw redirect({ to: "/dashboard/admin-only" });
-    }
-    return { user };
-  },
+  //   }
+  //   const user = session.user;
+  //   if (user.role === "admin") {
+  //     throw redirect({ to: "/dashboard/admin-only" });
+  //   }
+  //   return { user };
+  // },
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
   loader: async ({ deps }) => {
     const [menuWithFoodItems, shops, foodItems] = await Promise.all([
@@ -146,51 +143,41 @@ function RouteComponent() {
     [],
   );
 
-  const handleCreateSubmit = async (values: InsertMenuWithFoodItemsType) => {
+  const handleCreateSubmit = async (
+    values: InsertMenuWithFoodItemsType,
+    image: File | null = null,
+    shopId: string | number | null = null,
+  ) => {
     try {
-      const { menuFoodItems, ...menuWithoutFoodItems } = values;
-      const parsedValues = {
-        ...menuWithoutFoodItems,
-        shopId: Number(menuWithoutFoodItems.shopId),
-      };
-
-      const menu = await createMenuFn({ data: parsedValues });
-      if (!menu) {
-        throw new Error("Menu creation failed");
-      }
-      console.log("Menu created:", menu);
-      const menuId = Number(menu[0].id);
-
-      const createTasks = menuFoodItems.map(async (foodItem) =>
-        createMenuFoodItemFn({ data: { menuId, foodItemId: foodItem.id } }),
-      );
-      const createResult = await Promise.all(createTasks);
-      console.log("Menu created with food items:", createResult);
-      setCreateOpen(false);
-      await router.invalidate();
+      await menuHandleCreateSubmit(values, image, shopId);
+      setSelectedMenu(null);
+      toast.success("Menu created successfully");
     } catch (error) {
       console.error("Failed to create menu:", error);
+      toast.error("Failed to create menu");
+    } finally {
+      setCreateOpen(false);
+      await router.invalidate();
     }
   };
 
-  const handleEditSubmit = async (values: UpdateMenuWithFoodItemsType) => {
+  const handleEditSubmit = async (
+    values: UpdateMenuWithFoodItemsType,
+    image: File | null = null,
+    shopId: string | number | null = null,
+  ) => {
     if (!selectedMenu) return;
 
     try {
-      const parsedValues = {
-        ...values,
-        menuFoodItems: values.menuFoodItems.map((foodItem) => ({
-          ...foodItem,
-          id: Number(foodItem.id),
-        })),
-      };
-      await updateMenuByIdFn({ data: parsedValues });
-
-      setEditOpen(false);
+      await menuHandleUpdateSubmit(values, image, shopId);
       setSelectedMenu(null);
-      await router.invalidate();
+      toast.success("Menu updated successfully");
     } catch (error) {
       console.error("Failed to update menu:", error);
+      toast.error("Failed to update menu");
+    } finally {
+      setEditOpen(false);
+      await router.invalidate();
     }
   };
 
@@ -199,11 +186,13 @@ function RouteComponent() {
 
     try {
       await deleteMenuByIdFn({ data: { id: selectedMenu.id } });
-      setDeleteOpen(false);
       setSelectedMenu(null);
-      await router.invalidate();
     } catch (error) {
       console.error("Failed to delete menu:", error);
+      toast.error("Failed to delete menu");
+    } finally {
+      setDeleteOpen(false);
+      await router.invalidate();
     }
   };
 
@@ -220,7 +209,6 @@ function RouteComponent() {
             onSubmit={handleCreateSubmit}
             onCancel={() => setCreateOpen(false)}
           />
-         
         </div>
 
         <div className="mb-4 flex items-center justify-between gap-3">
@@ -268,14 +256,15 @@ function RouteComponent() {
 
         {/* <DataTable columns={columns} data={menus} /> */}
         <DataTable columns={columns} data={constructedMenus} />
-        <p>Menu</p>
+        {/* <p>Menu</p> */}
         {/* {menus.map((map) => (
           <pre>{JSON.stringify(map, null, 2)} </pre>
         ))} */}
-        <p>Menu with Food Item</p>
+        {/* <p>Menu with Food Item</p>
         {menuWithFoodItems.map((map) => (
           <pre>{JSON.stringify(map, null, 2)} </pre>
-        ))}
+        ))} */}
+        <SortableList />
       </div>
 
       <ViewMenuDialog
