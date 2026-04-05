@@ -1,22 +1,16 @@
 import FormDecimal from "@/components/form-decimal";
 import FormFooter from "@/components/form-footer";
 import FormHeader from "@/components/form-header";
+import FormImage from "@/components/form-image";
 import FormSelect from "@/components/form-select";
 import FormText from "@/components/form-text";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldGroup } from "@/components/ui/field";
 import { currencyValues } from "@/db/schema/commonSchema";
 import {
   foodCategoryValues,
   type InsertFoodItemType,
   type UpdateFoodItemType,
 } from "@/db/schema/foodItemTable";
-import { getImageValidationError, uploadImage } from "@/lib/imageUpload";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import type { FoodItemFormProps } from "./foodItemFormType";
@@ -27,9 +21,10 @@ export function FoodItemForm({
   shops,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: FoodItemFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const form = useForm({
     defaultValues: initialData || {
@@ -47,11 +42,19 @@ export function FoodItemForm({
       try {
         setIsLoading(true);
         if (mode === "edit") {
-          await onSubmit(value as UpdateFoodItemType);
+          await onSubmit(
+            value as UpdateFoodItemType,
+            imageFile ?? undefined,
+            defaultShopId ?? undefined,
+          );
         }
 
         if (mode === "create") {
-          await onSubmit(value as InsertFoodItemType);
+          await onSubmit(
+            value as InsertFoodItemType,
+            imageFile ?? undefined,
+            defaultShopId ?? undefined,
+          );
         }
       } catch (error) {
         console.error("Error submitting food item form:", error);
@@ -89,71 +92,6 @@ export function FoodItemForm({
           required
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* shop */}
-          <FormSelect
-            form={form}
-            name="shopId"
-            label="Shop"
-            isReadOnly={isReadOnly}
-            list={shops || []}
-            valueKey={(item) => item.id}
-            labelKey={(item) => item.name}
-            description="Select the shop for this delivery."
-            required
-          />
-
-          {/* image */}
-          <form.Field name="imageUrl">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Image</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="file"
-                  accept="image/*"
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-
-                    if (!file) {
-                      return;
-                    }
-
-                    const validationError = getImageValidationError(file);
-                    if (validationError) {
-                      setUploadError(validationError);
-                      return;
-                    }
-
-                    try {
-                      setUploadError(null);
-                      const data = await uploadImage(file);
-                      field.handleChange(data.url || null);
-                    } catch {
-                      setUploadError(
-                        "Failed to upload image. Please try again.",
-                      );
-                    }
-                  }}
-                />
-                {uploadError ? (
-                  <FieldDescription className="text-destructive">
-                    {uploadError}
-                  </FieldDescription>
-                ) : null}
-                {field.state.value ? (
-                  <FieldDescription>
-                    Uploaded URL: {field.state.value}
-                  </FieldDescription>
-                ) : null}
-              </Field>
-            )}
-          </form.Field>
-        </div>
-
         {/* description */}
         <FormText
           form={form}
@@ -162,17 +100,44 @@ export function FoodItemForm({
           isReadOnly={isReadOnly}
         />
 
-        {/* category */}
-        <FormSelect
+        {/* image */}
+        <FormImage
           form={form}
-          name="category"
-          label="Category"
-          list={[...foodCategoryValues]}
-          valueKey={(item) => item}
-          labelKey={(item) => item}
+          name="imageUrl"
+          label="Image"
           isReadOnly={isReadOnly}
-          required
+          description="Upload an image for this food item."
+          setFile={setImageFile}
+          lastUpdatedAt={initialData?.updatedAt}
         />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* shop */}
+          <FormSelect
+            form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
+            name="shopId"
+            label="Shop"
+            isReadOnly={!!defaultShopId || isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the shop for this delivery."
+            required
+          />
+
+          {/* category */}
+          <FormSelect
+            form={form}
+            name="category"
+            label="Category"
+            list={[...foodCategoryValues]}
+            valueKey={(item) => item}
+            labelKey={(item) => item}
+            isReadOnly={isReadOnly}
+            required
+          />
+        </div>
 
         {/* sku */}
         <FormText

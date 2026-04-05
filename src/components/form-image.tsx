@@ -3,9 +3,8 @@ import { getVersionedImageUrl } from "@/lib/utils";
 import { type ReactFormExtendedApi } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import type { Dispatch, SetStateAction } from "react";
-import { get } from "http";
 
-type FormSelectProps<T, TForm> = {
+type FormSelectProps<TForm> = {
   form: ReactFormExtendedApi<
     TForm,
     any,
@@ -25,26 +24,27 @@ type FormSelectProps<T, TForm> = {
   isReadOnly: boolean;
   description?: string | null;
   required?: boolean;
-  file?: File | null;
-  onChange: Dispatch<SetStateAction<File | null>>;
+  // file?: File | null;
+  setFile: Dispatch<SetStateAction<File | null>>;
+  lastUpdatedAt?: number;
 };
 
-export default function FormSelect<T, TForm>({
+export default function FormSelect<TForm>({
   form,
   name,
   label,
   isReadOnly,
   description = null,
   required = false,
-  file,
-  onChange,
-}: FormSelectProps<T, TForm>) {
-  const src = getVersionedImageUrl(
-    form.getFieldValue(name) as string,
-    form.getFieldValue("updatedAt") as string,
+  // file,
+  setFile,
+  lastUpdatedAt,
+}: FormSelectProps<TForm>) {
+  const imageUrl = getVersionedImageUrl(
+    form.getFieldValue("imageUrl") as string,
+    lastUpdatedAt,
   );
 
-  form;
   return (
     <form.Field name={name}>
       {(field) => (
@@ -53,18 +53,27 @@ export default function FormSelect<T, TForm>({
             {label} {required && <span className="text-red-500">*</span>}
           </FieldLabel>
           {isReadOnly ? (
-            const imageSrc = getVersionedImageUrl(
-              field.state.value,
-            updatedAt);
-            imageSrc ? (
-              <img src={imageSrc} alt={label} className="max-h-32 object-contain" />
+            field.state.value ? (
+              <img
+                src={imageUrl}
+                alt={label}
+                className="max-h-32 object-contain"
+              />
             ) : (
               <FieldDescription>
                 No {label.toLowerCase()} uploaded.
               </FieldDescription>
             )
           ) : (
+            // edit or create
             <>
+              {lastUpdatedAt ? (
+                <img
+                  src={imageUrl}
+                  alt={label}
+                  className="max-h-32 object-contain"
+                />
+              ) : null}
               <Input
                 type="file"
                 name={field.name}
@@ -73,12 +82,12 @@ export default function FormSelect<T, TForm>({
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
                   if (!file) {
-                    // field.handleChange(undefined);
-                    onChange(null);
+                    // field.handleChange(null);
+                    setFile(null);
                     return;
                   }
                   // field.handleChange(file.name);
-                  onChange(file);
+                  setFile(file);
                 }}
               />
               {description && (

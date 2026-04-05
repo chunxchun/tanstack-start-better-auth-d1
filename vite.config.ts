@@ -9,6 +9,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
 
 const config = defineConfig({
+
   plugins: [
     devtools(),
     cloudflare({ viteEnvironment: { name: 'ssr' } }),
@@ -23,6 +24,11 @@ const config = defineConfig({
       'better-auth/adapters/drizzle',
       'better-auth/tanstack-start',
     ],
+  },
+  build: {
+    rollupOptions: {
+      external: ['cloudflare:workers'],
+    },
   },
 })
 

@@ -15,7 +15,6 @@ import { searchSchema } from "@/db/schema/commonSchema";
 import {
   deleteFoodItemByIdFn,
   listFoodItemFn,
-  updateFoodItemByIdFn,
 } from "@/utils/foodItem/foodItem.function";
 import {
   foodItemHandleCreateSubmit,
@@ -34,18 +33,23 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_protected/dashboard/food-items/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context }) => {
+    const { user } = context;
     const [foodItems, shops] = await Promise.all([
-      listFoodItemFn({ data: deps }),
+      listFoodItemFn({
+        data: { ...deps, shopId: user.shopId ? user.shopId : undefined },
+      }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
     ]);
-    return { foodItems, shops };
+    return { foodItems, shops, user };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { foodItems, shops } = Route.useLoaderData();
+  const { foodItems, shops, user } = Route.useLoaderData();
+  const defaultShopId = user.shopId ?? undefined;
+
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -179,6 +183,7 @@ function RouteComponent() {
             shops={shops}
             onSubmit={handleCreateSubmit}
             onCancel={() => setCreateOpen(false)}
+            defaultShopId={defaultShopId}
           />
         </div>
 
@@ -254,6 +259,7 @@ function RouteComponent() {
           setEditOpen(false);
           setSelectedFoodItem(null);
         }}
+        defaultShopId={defaultShopId}
       />
 
       <DeleteFoodItemDialog

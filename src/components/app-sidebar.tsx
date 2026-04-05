@@ -28,7 +28,6 @@ import type { SelectShopType } from "@/db/schema";
 import type { SelectUserType } from "@/db/schema/authSchema";
 import type { Dispatch, SetStateAction } from "react";
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -37,14 +36,16 @@ const data = {
       icon: <BotIcon />,
       isActive: true,
       items: [
-        { title: "Shops", url: "/dashboard/shops" },
+        { title: "Shops", url: "/dashboard/shops", canAccess: ["admin"] },
         {
           title: "Branding",
           url: "/dashboard/branding",
+          canAccess: ["admin", "manager"],
         },
         {
           title: "Users",
           url: "/dashboard/users",
+          canAccess: ["admin", "manager"],
         },
       ],
     },
@@ -56,14 +57,19 @@ const data = {
         {
           title: "Locations",
           url: "/dashboard/locations",
+          canAccess: ["admin"],
         },
         {
           title: "Machines",
           url: "/dashboard/machines",
+          canAccess: ["admin"],
         },
-        { title: "Schedules", url: "/dashboard/schedules" },
-        // { title: "Maintainence & Repair", url: "#", disabled: true },
-      ],
+        {
+          title: "Schedules",
+          url: "/dashboard/schedules",
+          canAccess: ["admin", "manager"],
+        },
+       ],
     },
     {
       title: "Products",
@@ -73,23 +79,48 @@ const data = {
         {
           title: "Food Items",
           url: "/dashboard/food-items",
+          canAccess: ["admin", "manager", "staff"],
         },
-        { title: "Menus", url: "/dashboard/menus" },
-        { title: "Disposes", url: "/dashboard/disposes" },
-        { title: "Inventories", url: "/dashboard/inventories" },
+        {
+          title: "Menus",
+          url: "/dashboard/menus",
+          canAccess: ["admin", "manager", "staff"],
+        },
+        {
+          title: "Disposes",
+          url: "/dashboard/disposes",
+          canAccess: ["admin", "manager", "staff"],
+        },
+        {
+          title: "Inventories",
+          url: "/dashboard/inventories",
+          canAccess: ["admin", "manager", "staff"],
+        },
       ],
     },
     {
       title: "Logistics",
       url: "#",
       icon: <Truck />,
-      items: [{ title: "Delivery", url: "/dashboard/deliveries" }],
+      items: [
+        {
+          title: "Delivery",
+          url: "/dashboard/deliveries",
+          canAccess: ["admin", "manager", "staff"],
+        },
+      ],
     },
     {
       title: "Business",
       url: "#",
       icon: <CircleDollarSign />,
-      items: [{ title: "Daily Sales", url: "/dashboard/daily-sales" }],
+      items: [
+        {
+          title: "Daily Sales",
+          url: "/dashboard/daily-sales",
+          canAccess: ["admin", "manager"],
+        },
+      ],
     },
     {
       title: "Documentation",
@@ -99,11 +130,17 @@ const data = {
         {
           title: "User Guide",
           url: "/dashboard/user-guide",
+          canAccess: ["admin", "manager", "staff"],
         },
-        { title: "API documents", url: "/dashboard/api-doc" },
+        {
+          title: "API documents",
+          url: "/dashboard/api-doc",
+          canAccess: ["admin", "manager", "staff"],
+        },
         {
           title: "Changelog",
           url: "#",
+          canAccess: ["admin", "manager", "staff"],
           disabled: true,
         },
       ],
@@ -116,10 +153,12 @@ const data = {
         {
           title: "Layout",
           url: "/dashboard/layout",
+          canAccess: ["admin", "manager", "staff"],
         },
         {
           title: "Language",
           url: "/dashboard/language",
+          canAccess: ["admin", "manager", "staff"],
           disabled: true,
         },
       ],
@@ -127,13 +166,13 @@ const data = {
   ],
   projects: [
     {
-      name: "Support",
-      url: "#",
-      icon: <LifeBuoy />,
+      name: "Live Chat",
+      url: "https://wa.me/+85253487126",
+      icon: <LifeBuoy />
     },
     {
       name: "FAQs",
-      url: "#",
+      url: "/dashboard/faqs",
       icon: <FileQuestionMark />,
     },
   ],
@@ -151,18 +190,38 @@ export function AppSidebar({
   activeShop: SelectShopType;
   setActiveShop: Dispatch<SetStateAction<SelectShopType>>;
 }) {
+  const { role } = user;
+  const filteredNavMain = data.navMain.flatMap((section) => {
+    const filteredItems = section.items.filter((nav) =>
+      nav.canAccess.includes(role),
+    );
+
+    if (filteredItems.length === 0) {
+      return [];
+    }
+
+    return [{
+      ...section,
+      items: filteredItems,
+    }];
+  });
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <ShopSwitcher
-          shops={shops}
-          activeShop={activeShop}
-          setActiveShop={setActiveShop}
-        />
+        {role === "admin" && (
+          <ShopSwitcher
+            shops={shops}
+            activeShop={activeShop}
+            setActiveShop={setActiveShop}
+          />
+        )}  
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <div className="flex min-h-full flex-1 flex-col justify-between">
+          <NavMain items={filteredNavMain} />
+          <NavProjects projects={data.projects} />
+        </div>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

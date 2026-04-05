@@ -47,7 +47,10 @@ export function ShopSwitcher({
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 {activeShop.logoUrl ? (
                   <img
-                    src={getVersionedImageUrl(activeShop.logoUrl, activeShop.updatedAt)}
+                    src={getVersionedImageUrl(
+                      activeShop.logoUrl,
+                      activeShop.updatedAt,
+                    )}
                     alt={activeShop.name}
                     className="w-full h-full object-cover rounded-lg"
                   />
@@ -91,17 +94,17 @@ export function ShopSwitcher({
                 {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <Button onClick={() => {}}>
-                {/* <div className="flex size-6 items-center justify-center rounded-md border bg-transparent"> */}
+                <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <PlusIcon className="size-4" />
-                {/* </div> */}
-                {/* <div className="font-medium text-muted-foreground"> */}
+                </div>
+                <div className="font-medium text-muted-foreground">
                 Add shop
-                {/* </div> */}
+                </div>
               </Button>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

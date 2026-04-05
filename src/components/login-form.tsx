@@ -1,28 +1,45 @@
-import { useState } from "react"
-import { useForm } from "@tanstack/react-form"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/authClient";
+import { Link } from "@tanstack/react-router";
 
 export function LoginForm({
   className,
   onSubmit: externalOnSubmit,
   ...props
 }: React.ComponentProps<"form">) {
-  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const getFieldError = (errors: Array<unknown>) => {
-    const firstError = errors.find((error) => typeof error === "string")
-    return typeof firstError === "string" ? firstError : null
-  }
+    const firstError = errors.find((error) => typeof error === "string");
+    return typeof firstError === "string" ? firstError : null;
+  };
+
+  const resetPassword = async () => {
+    try {
+      const { error } = await authClient.requestPasswordReset({
+        email: "",
+        redirectTo: "/reset-password",
+      });
+      if (error) {
+        console.error("Error requesting password reset:", error);
+        setSubmitError(
+          "Failed to send password reset email. Please try again.",
+        );
+      }
+    } catch (error) {
+      console.error("Error requesting password reset:", error);
+      setSubmitError("Failed to send password reset email. Please try again.");
+    }
+  };
 
   const form = useForm({
     defaultValues: {
@@ -30,29 +47,30 @@ export function LoginForm({
       password: "",
     },
     onSubmit: async ({ value }) => {
-      setSubmitError(null)
+      setSubmitError(null);
 
       const { error } = await authClient.signIn.email({
         email: value.email,
         password: value.password,
         callbackURL: "/dashboard",
-      })
+      });
 
       if (error) {
-        setSubmitError(error.message || "Login failed. Please check your credentials.")
+        setSubmitError(
+          error.message || "Login failed. Please check your credentials.",
+        );
       }
     },
-  })
+  });
 
-  
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
       onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        externalOnSubmit?.(e)
-        form.handleSubmit()
+        e.preventDefault();
+        e.stopPropagation();
+        externalOnSubmit?.(e);
+        form.handleSubmit();
       }}
       {...props}
     >
@@ -67,16 +85,20 @@ export function LoginForm({
           name="email"
           validators={{
             onChange: ({ value }) => {
-              if (!value) return "Email is required"
+              if (!value) return "Email is required";
               if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                return "Enter a valid email address"
+                return "Enter a valid email address";
               }
-              return undefined
+              return undefined;
             },
           }}
         >
           {(field) => (
-            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
               <FieldLabel htmlFor={field.name}>Email</FieldLabel>
               <Input
                 id={field.name}
@@ -90,7 +112,9 @@ export function LoginForm({
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldError>
-                {field.state.meta.isTouched ? getFieldError(field.state.meta.errors) : null}
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
               </FieldError>
             </Field>
           )}
@@ -99,22 +123,27 @@ export function LoginForm({
           name="password"
           validators={{
             onChange: ({ value }) => {
-              if (!value) return "Password is required"
-              if (value.length < 8) return "Password must be at least 8 characters"
-              return undefined
+              if (!value) return "Password is required";
+              if (value.length < 8)
+                return "Password must be at least 8 characters";
+              return undefined;
             },
           }}
         >
           {(field) => (
-            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+            <Field
+              data-invalid={
+                field.state.meta.isTouched && !field.state.meta.isValid
+              }
+            >
               <div className="flex items-center">
                 <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <a
-                  href="#"
+                <Button
+                  variant="link"
                   className="ml-auto text-sm underline-offset-4 hover:underline"
                 >
-                  Forgot your password?
-                </a>
+                  <Link to="/forgot-password">Forgot your password?</Link>
+                </Button>
               </div>
               <Input
                 id={field.name}
@@ -127,7 +156,9 @@ export function LoginForm({
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldError>
-                {field.state.meta.isTouched ? getFieldError(field.state.meta.errors) : null}
+                {field.state.meta.isTouched
+                  ? getFieldError(field.state.meta.errors)
+                  : null}
               </FieldError>
             </Field>
           )}
@@ -164,5 +195,5 @@ export function LoginForm({
         </Field> */}
       </FieldGroup>
     </form>
-  )
+  );
 }

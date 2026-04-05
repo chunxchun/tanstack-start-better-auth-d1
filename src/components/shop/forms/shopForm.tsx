@@ -1,5 +1,6 @@
 import FormFooter from "@/components/form-footer";
 import FormHeader from "@/components/form-header";
+import FormImage from "@/components/form-image";
 import FormText from "@/components/form-text";
 import {
   Field,
@@ -11,10 +12,9 @@ import { Input } from "@/components/ui/input";
 import type { InsertShopType, UpdateShopType } from "@/db/schema";
 import { getVersionedImageUrl } from "@/lib/utils";
 import { useForm } from "@tanstack/react-form";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import type { ShopFormProps } from "./shopFormType";
-import { ShopContext } from "@/context/shop.context";
 
 export function ShopForm({
   mode,
@@ -27,7 +27,7 @@ export function ShopForm({
   const [isLoading, setIsLoading] = useState(false);
 
   // const shop = useContext(ShopContext);
-  
+
   const form = useForm({
     defaultValues: initialData || {
       name: "",
@@ -39,6 +39,7 @@ export function ShopForm({
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
       setIsLoading(true);
+
       try {
         if (mode === "edit") {
           const data = value as UpdateShopType;
@@ -157,7 +158,17 @@ export function ShopForm({
             )}
           </form.Field>
 
-          <form.Field name="bannerUrl">
+          <FormImage
+            form={form}
+            name="bannerUrl"
+            label="Banner"
+            isReadOnly={isReadOnly}
+            description="Optional public image URL for this shop banner."
+            // file={bannerFile}
+            setFile={setBannerFile}
+            lastUpdatedAt={initialData?.updatedAt}
+          />
+          {/* <form.Field name="bannerUrl">
             {(field) => (
               <Field>
                 <FieldLabel htmlFor={field.name}>Banner</FieldLabel>
@@ -204,7 +215,7 @@ export function ShopForm({
                 )}
               </Field>
             )}
-          </form.Field>
+          </form.Field> */}
         </div>
       </FieldGroup>
 

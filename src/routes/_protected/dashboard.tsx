@@ -1,9 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ShopContext } from "@/context/shop.context";
@@ -38,29 +36,21 @@ function RouteComponent() {
             setActiveShop={setActiveShop}
           />
           <SidebarInset>
-            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-              <div className="flex items-center gap-2 px-4">
-                <SidebarTrigger className="-ml-1" />
-                <Separator
-                  orientation="vertical"
-                  className="mr-2 data-[orientation=vertical]:h-4"
-                />
-                {activeShop ? (
-                  activeShop.bannerUrl ? (
-                    <img
-                      src={getVersionedImageUrl(
-                        activeShop.bannerUrl,
-                        activeShop.updatedAt,
-                      )}
-                      alt={activeShop.name}
-                      className="w-2/3 max-h-24  object-cover rounded-lg"
-                    />
-                  ) : (
-                    <p>{activeShop.name}</p>
-                  )
-                ) : null}
-                <p>{user.name}</p>
-              </div>
+            <header className="w-full shrink-0 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+              {activeShop ? (
+                activeShop.bannerUrl ? (
+                  <img
+                    src={getVersionedImageUrl(
+                      activeShop.bannerUrl,
+                      activeShop.updatedAt,
+                    )}
+                    alt={activeShop.name}
+                    className="block h-32 w-full object-cover"
+                  />
+                ) : (
+                  <p className="px-4 py-6 text-lg font-semibold">{activeShop.name}</p>
+                )
+              ) : null}
             </header>
             <Outlet />
           </SidebarInset>

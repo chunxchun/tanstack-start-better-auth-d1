@@ -61,7 +61,6 @@ export const updateUserByIdHandler = async (
       .returning();
     return result;
   } catch (error) {
-    console.error("Error updating user:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 };

@@ -1,6 +1,7 @@
 {
   "include": ["**/*.ts", "**/*.tsx", "src/routes/_protected/dashboard/admin-only"],
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "target": "ES2022",
     "jsx": "react-jsx",
     "module": "ESNext",
@@ -12,7 +13,8 @@
     "types": [
         "./worker-configuration.d.ts",
         "node",
-        "vite/client"
+        "vite/client",
+        "@cloudflare/workers-types"
     ],
 
     /* Bundler mode */

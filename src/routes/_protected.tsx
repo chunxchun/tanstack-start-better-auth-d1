@@ -1,7 +1,8 @@
-import { createFileRoute, redirect, Outlet } from '@tanstack/react-router'
-import { getSession } from '@/lib/session'
+import { getSession } from "@/lib/session";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_protected')({
+// let shopId = undefined as string | undefined;
+export const Route = createFileRoute("/_protected")({
   beforeLoad: async ({ location }) => {
     const session = await getSession();
 
@@ -12,7 +13,13 @@ export const Route = createFileRoute('/_protected')({
       });
     }
 
+    // shopId = String(session.user.shopId);
+
     return { user: session.user };
   },
-  component: () => <Outlet />,
-})
+  component: () => (
+    // <RouterProvider context={{ shopId }}>
+    <Outlet />
+    // </RouterProvider>
+  ),
+});

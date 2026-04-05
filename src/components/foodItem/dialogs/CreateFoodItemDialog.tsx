@@ -15,6 +15,7 @@ export default function CreateFoodItemDialog({
   onSubmit,
   onCancel,
   shops,
+  defaultShopId,
 }: FoodItemCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,6 +36,7 @@ export default function CreateFoodItemDialog({
           shops={shops}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

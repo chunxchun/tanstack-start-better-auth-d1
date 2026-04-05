@@ -17,7 +17,6 @@
     "db:remote:reset": "wrangler d1 execute hono-better-auth-demo-d1 --remote --file='./drizzle/migrations/seed.sql'"
   },
   "dependencies": {
-    "@cloudflare/vite-plugin": "^1.13.8",
     "@dnd-kit/react": "^0.3.2",
     "@fontsource-variable/geist": "^5.2.8",
     "@tailwindcss/vite": "^4.1.18",
@@ -48,6 +47,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.27.0",
+    "@cloudflare/workers-types": "^4.20260405.1",
     "@tanstack/devtools-vite": "^0.3.11",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",

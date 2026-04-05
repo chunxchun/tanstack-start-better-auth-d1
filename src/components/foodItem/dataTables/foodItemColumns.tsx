@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getVersionedImageUrl } from "@/lib/utils";
 
 type FoodItemColumnsOptions = {
   rowNumberOffset?: number;
@@ -35,8 +36,24 @@ export const getFoodItemColumns = ({
     },
   },
   {
-    accessorKey: "shopId",
-    header: "Shop",
+    accessorKey: "imageUrl",
+    header: "Image",
+    cell: ({ getValue, row }) => {
+      const imageUrl = getValue() as string | null;
+      const updatedAt = row.original.updatedAt;
+      return imageUrl ? (
+        <img
+          src={getVersionedImageUrl(imageUrl, updatedAt)}
+          alt={row.original.name}
+          className="max-h-16 object-contain"
+        />
+      ) : (
+        <span>-</span>
+      );
+    },
+  },
+  { accessorKey: "shopId", header: "Shop" 
+    
   },
   {
     accessorKey: "name",

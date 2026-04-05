@@ -59,10 +59,15 @@ export default function FormSelect<T, TForm>({
             {label} {required && <span className="text-destructive">*</span>}
           </FieldLabel>
 
-          {isReadOnly ? <p>{initialValue}</p> : null}
+          {/* {isReadOnly ? <p>{initialValue}</p> : null} */}
           <Select
+            // defaultValue={
+            //   initialValue
+            //     ? list?.find((item) => item.id === initialValue)
+            //     : field.state.value
+            // }
             // defaultValue={`234`}
-            value={String(field.state.value)}
+            value={initialValue ?? String(field.state.value)}
             disabled={isReadOnly}
             onValueChange={(e) => field.handleChange(e)}
           >

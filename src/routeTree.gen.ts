@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProtectedSettingRouteImport } from './routes/_protected/setting'
@@ -46,8 +48,10 @@ import { Route as ProtectedDashboardMachinesIndexRouteImport } from './routes/_p
 import { Route as ProtectedDashboardLocationsIndexRouteImport } from './routes/_protected/dashboard/locations/index'
 import { Route as ProtectedDashboardInventoriesIndexRouteImport } from './routes/_protected/dashboard/inventories/index'
 import { Route as ProtectedDashboardFoodItemsIndexRouteImport } from './routes/_protected/dashboard/food-items/index'
+import { Route as ProtectedDashboardFaqsIndexRouteImport } from './routes/_protected/dashboard/faqs/index'
 import { Route as ProtectedDashboardDisposesIndexRouteImport } from './routes/_protected/dashboard/disposes/index'
 import { Route as ProtectedDashboardDeliveriesIndexRouteImport } from './routes/_protected/dashboard/deliveries/index'
+import { Route as ProtectedDashboardBrandingIndexRouteImport } from './routes/_protected/dashboard/branding/index'
 import { Route as ProtectedDashboardAdminOnlyIndexRouteImport } from './routes/_protected/dashboard/admin-only/index'
 
 const SignupRoute = SignupRouteImport.update({
@@ -55,9 +59,19 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProtectedRoute = ProtectedRouteImport.update({
@@ -243,6 +257,12 @@ const ProtectedDashboardFoodItemsIndexRoute =
     path: '/food-items/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardFaqsIndexRoute =
+  ProtectedDashboardFaqsIndexRouteImport.update({
+    id: '/faqs/',
+    path: '/faqs/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardDisposesIndexRoute =
   ProtectedDashboardDisposesIndexRouteImport.update({
     id: '/disposes/',
@@ -255,6 +275,12 @@ const ProtectedDashboardDeliveriesIndexRoute =
     path: '/deliveries/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardBrandingIndexRoute =
+  ProtectedDashboardBrandingIndexRouteImport.update({
+    id: '/branding/',
+    path: '/branding/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardAdminOnlyIndexRoute =
   ProtectedDashboardAdminOnlyIndexRouteImport.update({
     id: '/admin-only/',
@@ -264,7 +290,9 @@ const ProtectedDashboardAdminOnlyIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
@@ -291,8 +319,10 @@ export interface FileRoutesByFullPath {
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
+  '/dashboard/branding/': typeof ProtectedDashboardBrandingIndexRoute
   '/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
+  '/dashboard/faqs/': typeof ProtectedDashboardFaqsIndexRoute
   '/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
   '/dashboard/inventories/': typeof ProtectedDashboardInventoriesIndexRoute
   '/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
@@ -305,7 +335,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/setting': typeof ProtectedSettingRoute
@@ -332,8 +364,10 @@ export interface FileRoutesByTo {
   '/api/sale': typeof ApiSaleIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
   '/dashboard/admin-only': typeof ProtectedDashboardAdminOnlyIndexRoute
+  '/dashboard/branding': typeof ProtectedDashboardBrandingIndexRoute
   '/dashboard/deliveries': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes': typeof ProtectedDashboardDisposesIndexRoute
+  '/dashboard/faqs': typeof ProtectedDashboardFaqsIndexRoute
   '/dashboard/food-items': typeof ProtectedDashboardFoodItemsIndexRoute
   '/dashboard/inventories': typeof ProtectedDashboardInventoriesIndexRoute
   '/dashboard/locations': typeof ProtectedDashboardLocationsIndexRoute
@@ -348,7 +382,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_protected': typeof ProtectedRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_protected/dashboard': typeof ProtectedDashboardRouteWithChildren
   '/_protected/setting': typeof ProtectedSettingRoute
@@ -375,8 +411,10 @@ export interface FileRoutesById {
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/_protected/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
+  '/_protected/dashboard/branding/': typeof ProtectedDashboardBrandingIndexRoute
   '/_protected/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/_protected/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
+  '/_protected/dashboard/faqs/': typeof ProtectedDashboardFaqsIndexRoute
   '/_protected/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
   '/_protected/dashboard/inventories/': typeof ProtectedDashboardInventoriesIndexRoute
   '/_protected/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
@@ -391,7 +429,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
     | '/dashboard'
     | '/setting'
@@ -418,8 +458,10 @@ export interface FileRouteTypes {
     | '/api/sale/'
     | '/api/shop/'
     | '/dashboard/admin-only/'
+    | '/dashboard/branding/'
     | '/dashboard/deliveries/'
     | '/dashboard/disposes/'
+    | '/dashboard/faqs/'
     | '/dashboard/food-items/'
     | '/dashboard/inventories/'
     | '/dashboard/locations/'
@@ -432,7 +474,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
     | '/dashboard'
     | '/setting'
@@ -459,8 +503,10 @@ export interface FileRouteTypes {
     | '/api/sale'
     | '/api/shop'
     | '/dashboard/admin-only'
+    | '/dashboard/branding'
     | '/dashboard/deliveries'
     | '/dashboard/disposes'
+    | '/dashboard/faqs'
     | '/dashboard/food-items'
     | '/dashboard/inventories'
     | '/dashboard/locations'
@@ -474,7 +520,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_protected'
+    | '/forgot-password'
     | '/login'
+    | '/reset-password'
     | '/signup'
     | '/_protected/dashboard'
     | '/_protected/setting'
@@ -501,8 +549,10 @@ export interface FileRouteTypes {
     | '/api/sale/'
     | '/api/shop/'
     | '/_protected/dashboard/admin-only/'
+    | '/_protected/dashboard/branding/'
     | '/_protected/dashboard/deliveries/'
     | '/_protected/dashboard/disposes/'
+    | '/_protected/dashboard/faqs/'
     | '/_protected/dashboard/food-items/'
     | '/_protected/dashboard/inventories/'
     | '/_protected/dashboard/locations/'
@@ -517,7 +567,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ProtectedRoute: typeof ProtectedRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiDeliveryIdRoute: typeof ApiDeliveryIdRoute
@@ -552,11 +604,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_protected': {
@@ -804,6 +870,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardFoodItemsIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/faqs/': {
+      id: '/_protected/dashboard/faqs/'
+      path: '/faqs'
+      fullPath: '/dashboard/faqs/'
+      preLoaderRoute: typeof ProtectedDashboardFaqsIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/disposes/': {
       id: '/_protected/dashboard/disposes/'
       path: '/disposes'
@@ -818,6 +891,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardDeliveriesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/branding/': {
+      id: '/_protected/dashboard/branding/'
+      path: '/branding'
+      fullPath: '/dashboard/branding/'
+      preLoaderRoute: typeof ProtectedDashboardBrandingIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/admin-only/': {
       id: '/_protected/dashboard/admin-only/'
       path: '/admin-only'
@@ -830,8 +910,10 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedDashboardRouteChildren {
   ProtectedDashboardAdminOnlyIndexRoute: typeof ProtectedDashboardAdminOnlyIndexRoute
+  ProtectedDashboardBrandingIndexRoute: typeof ProtectedDashboardBrandingIndexRoute
   ProtectedDashboardDeliveriesIndexRoute: typeof ProtectedDashboardDeliveriesIndexRoute
   ProtectedDashboardDisposesIndexRoute: typeof ProtectedDashboardDisposesIndexRoute
+  ProtectedDashboardFaqsIndexRoute: typeof ProtectedDashboardFaqsIndexRoute
   ProtectedDashboardFoodItemsIndexRoute: typeof ProtectedDashboardFoodItemsIndexRoute
   ProtectedDashboardInventoriesIndexRoute: typeof ProtectedDashboardInventoriesIndexRoute
   ProtectedDashboardLocationsIndexRoute: typeof ProtectedDashboardLocationsIndexRoute
@@ -845,9 +927,11 @@ interface ProtectedDashboardRouteChildren {
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardAdminOnlyIndexRoute: ProtectedDashboardAdminOnlyIndexRoute,
+  ProtectedDashboardBrandingIndexRoute: ProtectedDashboardBrandingIndexRoute,
   ProtectedDashboardDeliveriesIndexRoute:
     ProtectedDashboardDeliveriesIndexRoute,
   ProtectedDashboardDisposesIndexRoute: ProtectedDashboardDisposesIndexRoute,
+  ProtectedDashboardFaqsIndexRoute: ProtectedDashboardFaqsIndexRoute,
   ProtectedDashboardFoodItemsIndexRoute: ProtectedDashboardFoodItemsIndexRoute,
   ProtectedDashboardInventoriesIndexRoute:
     ProtectedDashboardInventoriesIndexRoute,
@@ -880,7 +964,9 @@ const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ProtectedRoute: ProtectedRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiDeliveryIdRoute: ApiDeliveryIdRoute,

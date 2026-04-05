@@ -36,12 +36,20 @@ export function NavProjects({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
+      <SidebarGroupLabel>Support</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <a
+                href={item.url}
+                target={item.url.startsWith("http") ? "_blank" : undefined}
+                rel={
+                  item.url.startsWith("http")
+                    ? "noopener noreferrer"
+                    : undefined
+                }
+              >
                 {item.icon}
                 <span>{item.name}</span>
               </a>

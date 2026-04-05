@@ -38,7 +38,16 @@ export const auth = betterAuth({
       },
     },
   },
-  emailAndPassword: { enabled: true },
+  emailAndPassword: {
+    enabled: true,
+    // sendResetPassword: async ({ user, url, token }, request) => {
+    //   await sendEmail({
+    //     to: user.email,
+    //     subject: "Reset your password for WadaFoodTech Web App",
+    //     html: ``
+    //   })
+    // },
+  },
   database: drizzleAdapter(db, {
     provider: "sqlite", // or "mysql", "sqlite"
   }),

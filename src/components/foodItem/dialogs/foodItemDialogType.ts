@@ -13,12 +13,22 @@ import type { FoodItemFormBaseProps } from "../forms/foodItemFormType";
 
 export type FoodItemEditDialogProps = FoodItemFormBaseProps &
   EditDialogProps<SelectFoodItemType> & {
-    onSubmit: (values: UpdateFoodItemType, image?: File) => Promise<void>;
+    onSubmit: (
+      values: UpdateFoodItemType,
+      image?: File,
+      shopId?: number,
+    ) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type FoodItemCreateDialogProps = FoodItemFormBaseProps &
   CreateDialogProps & {
-    onSubmit: (values: InsertFoodItemType, image?: File) => Promise<void>;
+    onSubmit: (
+      values: InsertFoodItemType,
+      image?: File,
+      shopId?: number,
+    ) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type FoodItemViewDialogProps = ViewDialogProps<SelectFoodItemType>;
