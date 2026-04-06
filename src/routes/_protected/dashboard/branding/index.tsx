@@ -1,93 +1,33 @@
+import { Button } from "@/components/ui/button";
+import { ThemeContext } from "@/context/theme.context";
+import { PALETTES } from "@/lib/theme";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 
-type Palette = {
-  id: string;
-  name: string;
-  description: string;
-  primary: string;
-  primaryForeground: string;
-  secondary: string;
-  secondaryForeground: string;
-};
 
-const BRANDING_STORAGE_KEY = "branding-palette";
+// const applyPalette = (palette: Palette) => {
+//   if (typeof document === "undefined") return;
 
-const PALETTES: Palette[] = [
-  {
-    id: "slate",
-    name: "Slate Core",
-    description: "Calm and professional with neutral contrast.",
-    primary: "oklch(0.205 0 0)",
-    primaryForeground: "oklch(0.985 0 0)",
-    secondary: "oklch(0.97 0 0)",
-    secondaryForeground: "oklch(0.205 0 0)",
-  },
-  {
-    id: "ocean",
-    name: "Ocean Blue",
-    description: "Fresh and modern with cool blue accents.",
-    primary: "oklch(0.56 0.19 253)",
-    primaryForeground: "oklch(0.98 0.01 250)",
-    secondary: "oklch(0.93 0.03 240)",
-    secondaryForeground: "oklch(0.34 0.08 250)",
-  },
-  {
-    id: "forest",
-    name: "Forest Mint",
-    description: "Natural greens with soft mint highlights.",
-    primary: "oklch(0.53 0.16 154)",
-    primaryForeground: "oklch(0.98 0.02 150)",
-    secondary: "oklch(0.94 0.03 160)",
-    secondaryForeground: "oklch(0.31 0.08 158)",
-  },
-  {
-    id: "sunset",
-    name: "Sunset Ember",
-    description: "Warm and energetic with amber-red tones.",
-    primary: "oklch(0.62 0.21 30)",
-    primaryForeground: "oklch(0.99 0.01 50)",
-    secondary: "oklch(0.95 0.04 45)",
-    secondaryForeground: "oklch(0.34 0.11 28)",
-  },
-];
-
-const applyPalette = (palette: Palette) => {
-  if (typeof document === "undefined") return;
-
-  const root = document.documentElement;
-  root.style.setProperty("--primary", palette.primary);
-  root.style.setProperty("--primary-foreground", palette.primaryForeground);
-  root.style.setProperty("--secondary", palette.secondary);
-  root.style.setProperty("--secondary-foreground", palette.secondaryForeground);
-};
+//   const root = document.documentElement;
+//   root.style.setProperty("--primary", palette.primary);
+//   root.style.setProperty("--primary-foreground", palette.primaryForeground);
+//   root.style.setProperty("--secondary", palette.secondary);
+//   root.style.setProperty("--secondary-foreground", palette.secondaryForeground);
+// };
 
 export const Route = createFileRoute("/_protected/dashboard/branding/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [selectedPaletteId, setSelectedPaletteId] = useState(PALETTES[0].id);
+ 
+  const themeContext = useContext(ThemeContext);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  if (!themeContext) {
+    throw new Error("Branding route must be used within ThemeProvider.");
+  }
 
-    const savedPaletteId = window.localStorage.getItem(BRANDING_STORAGE_KEY);
-    const savedPalette = PALETTES.find((palette) => palette.id === savedPaletteId);
-    const initialPalette = savedPalette ?? PALETTES[0];
-
-    setSelectedPaletteId(initialPalette.id);
-    applyPalette(initialPalette);
-  }, []);
-
-  const handlePaletteChange = (palette: Palette) => {
-    setSelectedPaletteId(palette.id);
-    applyPalette(palette);
-
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(BRANDING_STORAGE_KEY, palette.id);
-    }
-  };
+  const { theme, setThemeCookie } = themeContext;
 
   return (
     <div className="container mx-auto px-6 py-8 space-y-6">
@@ -98,15 +38,15 @@ function RouteComponent() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 w-1/2 min-w-100 mx-auto">
         {PALETTES.map((palette) => {
-          const isActive = palette.id === selectedPaletteId;
+          const isActive = palette.id === theme?.id;
 
           return (
             <button
               key={palette.id}
               type="button"
-              onClick={() => handlePaletteChange(palette)}
+              onClick={() => setThemeCookie(palette)}
               className={[
                 "rounded-xl border p-4 text-left transition-all",
                 "hover:border-primary/60 hover:shadow-sm",
@@ -154,6 +94,7 @@ function RouteComponent() {
             </button>
           );
         })}
+        <Button>Test</Button>
       </div>
     </div>
   );

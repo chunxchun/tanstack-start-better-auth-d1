@@ -4,7 +4,7 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ShopContext } from "@/context/shop.context";
+import { ShopProvider } from "@/context/shop.provider";
 import type { SelectShopType } from "@/db/schema";
 import type { SelectUserType } from "@/db/schema/authSchema";
 import { getVersionedImageUrl } from "@/lib/utils";
@@ -28,7 +28,8 @@ function RouteComponent() {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <ShopContext.Provider value={activeShop}>
+        
+        <ShopProvider initialValue={activeShop}>
           <AppSidebar
             shops={shops}
             user={user as SelectUserType}
@@ -54,7 +55,7 @@ function RouteComponent() {
             </header>
             <Outlet />
           </SidebarInset>
-        </ShopContext.Provider>
+        </ShopProvider>
       </SidebarProvider>
     </TooltipProvider>
   );

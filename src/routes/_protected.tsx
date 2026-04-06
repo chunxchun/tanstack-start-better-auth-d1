@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/session";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { ThemeProvider } from "@/context/theme.provider";
 
-// let shopId = undefined as string | undefined;
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async ({ location }) => {
     const session = await getSession();
@@ -13,13 +13,11 @@ export const Route = createFileRoute("/_protected")({
       });
     }
 
-    // shopId = String(session.user.shopId);
-
     return { user: session.user };
   },
   component: () => (
-    // <RouterProvider context={{ shopId }}>
-    <Outlet />
-    // </RouterProvider>
+    <ThemeProvider>
+      <Outlet />
+    </ThemeProvider>
   ),
 });
