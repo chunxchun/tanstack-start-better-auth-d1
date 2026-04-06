@@ -21,6 +21,7 @@ export function ShopForm({
   initialData,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: ShopFormProps) {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
@@ -168,54 +169,6 @@ export function ShopForm({
             setFile={setBannerFile}
             lastUpdatedAt={initialData?.updatedAt}
           />
-          {/* <form.Field name="bannerUrl">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Banner</FieldLabel>
-                {isReadOnly ? (
-                  (() => {
-                    const bannerSrc = getVersionedImageUrl(
-                      field.state.value,
-                      initialData?.updatedAt,
-                    );
-                    return bannerSrc ? (
-                      <img
-                        src={bannerSrc}
-                        alt="shop banner"
-                        className="max-h-32 object-contain"
-                      />
-                    ) : (
-                      <FieldDescription>No banner uploaded.</FieldDescription>
-                    );
-                  })()
-                ) : (
-                  <>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      // value={field.state.value ?? ""}
-                      disabled={isReadOnly}
-                      onBlur={field.handleBlur}
-                      type="file"
-                      onChange={(e) => {
-                        const file = e.target.files ? e.target.files[0] : null;
-                        if (!file) {
-                          field.handleChange(null);
-                          setBannerFile(null);
-                          return;
-                        }
-                        field.handleChange(file.name);
-                        setBannerFile(file);
-                      }}
-                    />
-                    <FieldDescription>
-                      Optional public image URL for this shop banner.
-                    </FieldDescription>
-                  </>
-                )}
-              </Field>
-            )}
-          </form.Field> */}
         </div>
       </FieldGroup>
 

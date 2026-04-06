@@ -15,6 +15,7 @@ type DeliveryFormCreateProps = {
   initialData?: never;
   onSubmit: (values: InsertDeliveryType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & DeliveryFormBaseProps;
 
 type DeliveryFormEditProps = {
@@ -22,6 +23,7 @@ type DeliveryFormEditProps = {
   initialData: SelectDeliveryType;
   onSubmit: (values: UpdateDeliveryType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & DeliveryFormBaseProps;
 
 type DeliveryFormViewProps = {
@@ -29,6 +31,7 @@ type DeliveryFormViewProps = {
   initialData: SelectDeliveryType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof DeliveryFormBaseProps, never>>;
 
 export type DeliveryFormProps =

@@ -16,6 +16,7 @@ export default function EditInventoryDialog({
   shops,
   machines,
   foodItems,
+  defaultShopId,
 }: InventoryEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,6 +35,7 @@ export default function EditInventoryDialog({
           shops={shops}
           machines={machines}
           foodItems={foodItems}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

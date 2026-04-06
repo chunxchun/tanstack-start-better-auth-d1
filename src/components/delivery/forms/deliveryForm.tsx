@@ -23,6 +23,7 @@ export function DeliveryForm({
   machines,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: DeliveryFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -107,9 +108,10 @@ export function DeliveryForm({
           {/* shop */}
           <FormSelect
             form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
-            isReadOnly={isReadOnly}
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}

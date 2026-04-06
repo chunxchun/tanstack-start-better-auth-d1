@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { MenuForm } from "../forms/menuForm";
 import type { MenuCreateDialogProps } from "./menuDialogType";
@@ -16,14 +14,10 @@ export default function CreateMenuDialog({
   onOpenChange,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: MenuCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -37,6 +31,7 @@ export default function CreateMenuDialog({
           foodItems={foodItems}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

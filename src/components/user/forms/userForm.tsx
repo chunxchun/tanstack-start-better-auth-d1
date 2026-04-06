@@ -21,6 +21,7 @@ export function UserForm({
   shops,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: UserFormProps) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,14 +76,17 @@ export function UserForm({
       <FieldGroup className="overflow-auto mt-8 mb-8">
         <div className="flex gap-4">
           {/* shop */}
+
           <FormSelect
             form={form}
-            name="shopId"
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
+            name={"shopId"}
             label="Shop"
-            isReadOnly={isReadOnly}
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
-            valueKey={(item) => item.id}
-            labelKey={(item) => item.name}
+            valueKey={(shop: any) => shop.id}
+            labelKey={(shop: any) => shop.name}
+            required
           />
 
           {/* role */}
@@ -114,7 +118,6 @@ export function UserForm({
           isReadOnly={isReadOnly}
           description={`Optional display name`}
         />
-
 
         {/* password */}
 

@@ -21,6 +21,7 @@ type FormTextProps<TForm> = {
   label: string;
   isReadOnly: boolean;
   description?: string | null;
+  required?: boolean;
 };
 
 export default function FormNumber<TForm>({
@@ -29,12 +30,15 @@ export default function FormNumber<TForm>({
   label,
   isReadOnly,
   description = null,
+  required = false,
 }: FormTextProps<TForm>) {
   return (
     <form.Field name={name}>
       {(field: any) => (
         <Field>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name}>
+            {label} {required && <span className="text-red-500">*</span>}
+          </FieldLabel>
           <Input
             type="number"
             name={field.name}
@@ -42,6 +46,7 @@ export default function FormNumber<TForm>({
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
             disabled={isReadOnly}
+            required={required}
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

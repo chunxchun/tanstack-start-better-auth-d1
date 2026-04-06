@@ -19,11 +19,6 @@ export default function CreateFoodItemDialog({
 }: FoodItemCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogHeader className="sr-only">
         <DialogTitle>Create Food Item</DialogTitle>
       </DialogHeader>

@@ -14,14 +14,10 @@ export default function CreateShopDialog({
   onOpenChange,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: ShopCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -29,7 +25,12 @@ export default function CreateShopDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Create Shop</DialogTitle>
         </DialogHeader>
-        <ShopForm mode="create" onSubmit={onSubmit} onCancel={onCancel} />
+        <ShopForm
+          mode="create"
+          onSubmit={onSubmit}
+          onCancel={onCancel}
+          defaultShopId={defaultShopId}
+        />
       </DialogContent>
     </Dialog>
   );

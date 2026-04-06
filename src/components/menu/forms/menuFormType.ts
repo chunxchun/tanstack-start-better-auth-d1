@@ -15,6 +15,7 @@ type MenuFormCreateProps = {
     coverPhoto?: File,
   ) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & MenuFormBaseProps;
 
 type MenuFormEditProps = {
@@ -25,6 +26,7 @@ type MenuFormEditProps = {
     coverPhoto?: File,
   ) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & MenuFormBaseProps;
 
 type MenuFormViewProps = {
@@ -32,6 +34,7 @@ type MenuFormViewProps = {
   initialData: SelectMenuWithFoodItemsType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof MenuFormBaseProps, never>>;
 
 export type MenuFormProps =

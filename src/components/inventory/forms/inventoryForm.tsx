@@ -17,6 +17,7 @@ export function InventoryForm({
   foodItems,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: InventoryFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
@@ -72,12 +73,14 @@ export function InventoryForm({
           {/* shop */}
           <FormSelect
             form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
+            required
           />
 
           {/* machine */}

@@ -24,13 +24,14 @@ export function MachineForm({
   locations,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: MachineFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     defaultValues: initialData || {
       locationId: null,
-      shopId: null,
+      shopId: defaultShopId || null,
       name: "",
       description: null,
       serialNumber: "",
@@ -93,9 +94,10 @@ export function MachineForm({
 
           <FormSelect
             form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name={"shopId"}
             label="Shop"
-            isReadOnly={isReadOnly}
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(shop: any) => shop.id}
             labelKey={(shop: any) => shop.name}

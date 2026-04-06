@@ -1,19 +1,18 @@
 import { Button } from "@/components/ui/button";
-import type { SelectMachineType } from "@/db/schema";
 
-type DataTableNavigatorProps = {
+type DataTableNavigatorProps<T> = {
   limit: number;
   offset: number;
-  list: SelectMachineType[];
+  list: T[];
   updatePagination: (next: { limit: number; offset: number }) => void;
 };
 
-export default function DataTableNavigator({
+export default function DataTableNavigator<T>({
   limit,
   offset,
   list,
   updatePagination,
-}: DataTableNavigatorProps) {
+}: DataTableNavigatorProps<T>) {
   const currentPage = Math.floor(offset / limit) + 1;
   const hasPreviousPage = offset > 0;
   const hasNextPage = list.length === limit;

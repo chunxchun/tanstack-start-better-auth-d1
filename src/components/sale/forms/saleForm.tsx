@@ -24,13 +24,14 @@ export function SaleForm({
   foodItems = [],
   onSubmit,
   onCancel,
+  defaultShopId,
 }: SaleFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     defaultValues: initialData || {
       machineId: null,
       foodItemId: null,
-      shopId: null,
+      shopId: defaultShopId || null,
       saleDate: new Date().toISOString().slice(0, 10), // default to today's date
       saleTime: "12:00",
       quantity: 1,
@@ -105,12 +106,14 @@ export function SaleForm({
           {/* shop */}
           <FormSelect
             form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
+            required
           />
 
           {/* sale date */}

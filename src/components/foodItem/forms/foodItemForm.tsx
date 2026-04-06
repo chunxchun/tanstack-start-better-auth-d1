@@ -122,7 +122,7 @@ export function FoodItemForm({
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
-            description="Select the shop for this delivery."
+            description="Select the shop for this food item."
             required
           />
 

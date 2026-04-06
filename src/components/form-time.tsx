@@ -48,6 +48,7 @@ export default function FormTime<TForm>({
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.value as any)}
             disabled={isReadOnly}
+            required={required}
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

@@ -14,11 +14,13 @@ import type {
 export type DisposeEditDialogProps = DisposeFormBaseProps &
   EditDialogProps<SelectDisposeType> & {
     onSubmit: (values: UpdateDisposeType) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type DisposeCreateDialogProps = DisposeFormBaseProps &
   CreateDialogProps & {
     onSubmit: (values: InsertDisposeType) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type DisposeViewDialogProps = ViewDialogProps<SelectDisposeType>;

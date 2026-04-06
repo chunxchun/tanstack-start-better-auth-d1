@@ -15,7 +15,7 @@ export default function EditDisposeDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  initialData,
+  initialData,defaultShopId
 }: DisposeEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,6 +34,7 @@ export default function EditDisposeDialog({
           onSubmit={onSubmit}
           onCancel={onCancel}
           initialData={initialData}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

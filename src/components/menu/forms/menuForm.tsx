@@ -35,6 +35,7 @@ export function MenuForm({
   foodItems,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: MenuFormProps) {
   const shopContext = useContext(ShopContext);
   const { activeShop } = shopContext || {};

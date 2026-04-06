@@ -14,6 +14,7 @@ type DisposeFormCreateProps = {
   initialData?: never;
   onSubmit: (values: InsertDisposeType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & DisposeFormBaseProps;
 
 type DisposeFormEditProps = {
@@ -21,6 +22,7 @@ type DisposeFormEditProps = {
   initialData: SelectDisposeType;
   onSubmit: (values: UpdateDisposeType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & DisposeFormBaseProps;
 
 type DisposeFormViewProps = {
@@ -28,6 +30,7 @@ type DisposeFormViewProps = {
   initialData: SelectDisposeType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof DisposeFormBaseProps, never>>;
 
 export type DisposeFormProps =

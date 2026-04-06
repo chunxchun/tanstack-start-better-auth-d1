@@ -12,6 +12,7 @@ type LocationFormCreateProps = {
   initialData?: never;
   onSubmit: (values: InsertLocationType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & LocationFormBaseProps;
 
 type LocationFormEditProps = {
@@ -19,6 +20,7 @@ type LocationFormEditProps = {
   initialData: SelectLocationType;
   onSubmit: (values: UpdateLocationType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & LocationFormBaseProps;
 
 type LocationFormViewProps = {
@@ -26,6 +28,7 @@ type LocationFormViewProps = {
   initialData: SelectLocationType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof LocationFormBaseProps, never>>;
 
 export type LocationFormProps =

@@ -17,6 +17,7 @@ export default function CreateInventoryDialog({
   shops,
   machines,
   foodItems,
+  defaultShopId,
 }: InventoryCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -39,6 +40,8 @@ export default function CreateInventoryDialog({
           foodItems={foodItems}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
+
         />
       </DialogContent>
     </Dialog>

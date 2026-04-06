@@ -4,7 +4,6 @@ import CreateSaleDialog from "@/components/sale/dialogs/CreateSaleDialog";
 import DeleteSaleDialog from "@/components/sale/dialogs/DeleteSaleDialog";
 import EditSaleDialog from "@/components/sale/dialogs/EditSaleDialog";
 import ViewSaleDialog from "@/components/sale/dialogs/ViewSaleDialog";
-import { Button } from "@/components/ui/button";
 import type {
   InsertSaleType,
   SelectSaleType as Sale,
@@ -26,38 +25,46 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import CreateButton from "../-shared/createButton";
+import DataTableNavigator from "../-shared/data-table-navigator";
+import RouteLayout from "../-shared/routeLayout";
+import RouteHeader from "../-shared/routerHeader";
 
 export const Route = createFileRoute("/_protected/dashboard/sales/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context }) => {
+    const { user } = context;
+    const shopId = user.shopId ?? undefined;
+
     const [sales, shops, machines, foodItems] = await Promise.all([
-      listSaleFn({ data: deps }),
+      listSaleFn({ data: { ...deps, shopId } }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
-      listMachineFn({ data: { limit: 100, offset: 0 } }),
-      listFoodItemFn({ data: { limit: 100, offset: 0 } }),
+      listMachineFn({ data: { limit: 100, offset: 0, shopId } }),
+      listFoodItemFn({ data: { limit: 100, offset: 0, shopId } }),
     ]);
-    return { sales, shops, machines, foodItems };
+    return { sales, shops, machines, foodItems, user };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { sales, shops, machines, foodItems } = Route.useLoaderData();
+  const { sales, shops, machines, foodItems, user } = Route.useLoaderData();
+  const defaultShopId = user.shopId ?? undefined;
+
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
+
   const [createOpen, setCreateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const { limit, offset } = search;
-  const currentPage = Math.floor(offset / limit) + 1;
-  const hasPreviousPage = offset > 0;
-  const hasNextPage = sales.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -66,31 +73,6 @@ function RouteComponent() {
         limit: next.limit,
         offset: next.offset,
       }),
-    });
-  };
-
-  const goToPreviousPage = () => {
-    if (!hasPreviousPage) return;
-    updatePagination({
-      limit,
-      offset: Math.max(0, offset - limit),
-    });
-  };
-
-  const goToNextPage = () => {
-    if (!hasNextPage) return;
-    updatePagination({
-      limit,
-      offset: offset + limit,
-    });
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const nextLimit = Number(event.target.value);
-
-    updatePagination({
-      limit: nextLimit,
-      offset: 0,
     });
   };
 
@@ -151,65 +133,28 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="container mx-auto px-10 py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Sales</h1>
-          <CreateSaleDialog
-            open={createOpen}
-            shops={shops}
-            machines={machines}
-            foodItems={foodItems}
-            onOpenChange={setCreateOpen}
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </div>
-
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">
-            Page {currentPage}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label
-              className="text-sm text-muted-foreground"
-              htmlFor="sale-page-size"
-            >
-              Rows
-            </label>
-            <select
-              id="sale-page-size"
-              className="h-9 rounded-md border bg-background px-2 text-sm"
-              value={limit}
-              onChange={handleLimitChange}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToPreviousPage}
-              disabled={!hasPreviousPage}
-            >
-              Previous
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToNextPage}
-              disabled={!hasNextPage}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-
+      <RouteLayout>
+        <RouteHeader title="Sales" />
+        <DataTableNavigator
+          limit={limit}
+          offset={offset}
+          list={sales}
+          updatePagination={updatePagination}
+        />
         <DataTable columns={columns} data={sales} />
-      </div>
+        <CreateButton handleClick={() => setCreateOpen(true)} />
+      </RouteLayout>
+
+      <CreateSaleDialog
+        open={createOpen}
+        shops={shops}
+        machines={machines}
+        foodItems={foodItems}
+        onOpenChange={setCreateOpen}
+        onSubmit={handleCreateSubmit}
+        onCancel={() => setCreateOpen(false)}
+        defaultShopId={defaultShopId}
+      />
 
       <ViewSaleDialog
         open={viewOpen}
@@ -239,6 +184,7 @@ function RouteComponent() {
         shops={shops}
         machines={machines}
         foodItems={foodItems}
+        defaultShopId={defaultShopId}
       />
 
       <DeleteSaleDialog

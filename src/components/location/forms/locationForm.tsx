@@ -20,6 +20,7 @@ export function LocationForm({
   shops,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: LocationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -152,9 +153,10 @@ export function LocationForm({
           {/* shop */}
           <FormSelect
             form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
-            isReadOnly={isReadOnly}
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}

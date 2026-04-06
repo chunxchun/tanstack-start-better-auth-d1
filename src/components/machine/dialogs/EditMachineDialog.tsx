@@ -15,6 +15,7 @@ export default function EditMachineDialog({
   onSubmit,
   onCancel,
   initialData,
+  defaultShopId,
 }: MachineEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -32,6 +33,7 @@ export default function EditMachineDialog({
           initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

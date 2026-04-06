@@ -22,11 +22,12 @@ export function DisposeForm({
   machines,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: DisposeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm({
     defaultValues: initialData || {
-      shopId: null,
+      shopId: defaultShopId || null,
       machineId: null,
       foodItemId: null,
       disposeDate: new Date().toISOString().slice(0, 10),
@@ -77,12 +78,14 @@ export function DisposeForm({
           {/* shop */}
           <FormSelect
             form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
-            isReadOnly={isReadOnly}
+            isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
+            required
           />
 
           {/* machine */}
@@ -94,6 +97,7 @@ export function DisposeForm({
             list={machines || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
+            required
           />
 
           {/* food item */}
@@ -105,6 +109,7 @@ export function DisposeForm({
             list={foodItems || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
+            required
           />
 
           {/* dispose reason */}
@@ -116,6 +121,7 @@ export function DisposeForm({
             list={[...disposeReasonValues]}
             valueKey={(item) => item}
             labelKey={(item) => item}
+            required
           />
 
           {/* dispose date */}
@@ -124,6 +130,7 @@ export function DisposeForm({
             name="disposeDate"
             label="Dispose Date"
             isReadOnly={isReadOnly}
+            required
           />
 
           {/* dispose time */}
@@ -132,6 +139,7 @@ export function DisposeForm({
             name="disposeTime"
             label="Dispose Time"
             isReadOnly={isReadOnly}
+            required
           />
 
           {/* quantity */}
@@ -140,6 +148,7 @@ export function DisposeForm({
             name="quantity"
             label="Quantity"
             isReadOnly={isReadOnly}
+            required
           />
 
           {/* dispose reason */}
@@ -151,6 +160,7 @@ export function DisposeForm({
             list={[...disposeReasonValues]}
             valueKey={(item) => item}
             labelKey={(item) => item}
+            required
           />
         </div>
       </FieldGroup>

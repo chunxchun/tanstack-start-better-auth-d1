@@ -4,24 +4,31 @@ import { createFileRoute } from "@tanstack/react-router";
 import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";
 import RegularScheduleTab from "./-components/regular-schedule-tab";
+import { searchSchema } from "@/db/schema/commonSchema";
 
 export const Route = createFileRoute("/_protected/dashboard/schedules/")({
-  loader: async ({ context }) => {
+  validateSearch: searchSchema,
+  loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
+  loader: async ({ deps, context }) => {
+    const { user } = context;
+    const shopId = user.shopId ?? undefined;
+
     const machines = await listMachineFn({
       data: {
         limit: 100,
         offset: 0,
-        shopId: context.user.shopId ?? undefined,
+        shopId,
       },
     });
 
-    return { machines };
+    return { machines, user };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { machines } = Route.useLoaderData();
+  const { machines, user } = Route.useLoaderData();
+  const defaultShopId = user.shopId ?? undefined;
 
   return (
     <RouteLayout>

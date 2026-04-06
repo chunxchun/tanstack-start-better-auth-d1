@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { DeliveryForm } from "../forms/deliveryForm";
 import type { DeliveryCreateDialogProps } from "./deliveryDialogType";
@@ -17,14 +15,10 @@ export default function CreateDeliveryDialog({
   onOpenChange,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: DeliveryCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -39,6 +33,7 @@ export default function CreateDeliveryDialog({
           locations={locations}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

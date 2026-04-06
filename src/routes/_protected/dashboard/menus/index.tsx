@@ -31,6 +31,10 @@ import {
 } from "@tanstack/react-router";
 import { type ChangeEvent, useMemo, useState } from "react";
 import { toast } from "sonner";
+import RouteLayout from "../-shared/routeLayout";
+import RouteHeader from "../-shared/routerHeader";
+import DataTableNavigator from "../-shared/data-table-navigator";
+import CreateButton from "../-shared/createButton";
 
 export const Route = createFileRoute("/_protected/dashboard/menus/")({
   validateSearch: searchSchema,
@@ -50,42 +54,46 @@ export const Route = createFileRoute("/_protected/dashboard/menus/")({
   //   return { user };
   // },
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context }) => {
+    const { user } = context;
+    const shopId = user.shopId ?? undefined;
+
     const [menuWithFoodItems, shops, foodItems] = await Promise.all([
       // listMenuFn({ data: deps }),
-      listMenuWithFoodItemFn({ data: deps }),
+      listMenuWithFoodItemFn({ data: { ...deps, shopId } }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
-      listFoodItemFn({ data: { limit: 100, offset: 0 } }),
+      listFoodItemFn({ data: { limit: 100, offset: 0, shopId } }),
     ]);
-    return { menuWithFoodItems, shops, foodItems };
+    return { menuWithFoodItems, shops, foodItems, user };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { menuWithFoodItems, shops, foodItems } = Route.useLoaderData();
-  console.log("Loaded menu with food items:", menuWithFoodItems);
+  const { menuWithFoodItems, shops, foodItems, user } = Route.useLoaderData();
+  const defaultShopId = user.shopId ?? undefined;
+
+  // console.log("Loaded menu with food items:", menuWithFoodItems);
   const constructedMenus = constructMenuWithFoodItem(
     menuWithFoodItems as queryMenuWithFoodItemType[],
   );
-  console.log(
-    "Constructed menus with food items:",
-    JSON.stringify(constructedMenus),
-  );
+  // console.log(
+  //   "Constructed menus with food items:",
+  //   JSON.stringify(constructedMenus),
+  // );
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
+
   const [createOpen, setCreateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [selectedMenu, setSelectedMenu] =
     useState<SelectMenuWithFoodItemsType | null>(null);
 
   const { limit, offset } = search;
-  const currentPage = Math.floor(offset / limit) + 1;
-  const hasPreviousPage = offset > 0;
-  const hasNextPage = menuWithFoodItems.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -94,33 +102,6 @@ function RouteComponent() {
         limit: next.limit,
         offset: next.offset,
       }),
-    });
-  };
-
-  const goToPreviousPage = () => {
-    if (!hasPreviousPage) return;
-
-    updatePagination({
-      limit,
-      offset: Math.max(0, offset - limit),
-    });
-  };
-
-  const goToNextPage = () => {
-    if (!hasNextPage) return;
-
-    updatePagination({
-      limit,
-      offset: offset + limit,
-    });
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const nextLimit = Number(event.target.value);
-
-    updatePagination({
-      limit: nextLimit,
-      offset: 0,
     });
   };
 
@@ -198,75 +179,27 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="container mx-auto px-10 py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Menu</h1>
-          <CreateMenuDialog
-            open={createOpen}
-            shops={shops}
-            foodItems={foodItems}
-            onOpenChange={setCreateOpen}
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </div>
-
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">
-            Page {currentPage}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label
-              className="text-sm text-muted-foreground"
-              htmlFor="menu-page-size"
-            >
-              Rows
-            </label>
-            <select
-              id="menu-page-size"
-              className="h-9 rounded-md border bg-background px-2 text-sm"
-              value={limit}
-              onChange={handleLimitChange}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToPreviousPage}
-              disabled={!hasPreviousPage}
-            >
-              Previous
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToNextPage}
-              disabled={!hasNextPage}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-
-        {/* <DataTable columns={columns} data={menus} /> */}
+      <RouteLayout>
+        <RouteHeader title="Menus" />
+        <DataTableNavigator
+          limit={limit}
+          offset={offset}
+          list={menuWithFoodItems}
+          updatePagination={updatePagination}
+        />
         <DataTable columns={columns} data={constructedMenus} />
-        {/* <p>Menu</p> */}
-        {/* {menus.map((map) => (
-          <pre>{JSON.stringify(map, null, 2)} </pre>
-        ))} */}
-        {/* <p>Menu with Food Item</p>
-        {menuWithFoodItems.map((map) => (
-          <pre>{JSON.stringify(map, null, 2)} </pre>
-        ))} */}
-        <SortableList />
-      </div>
+        <CreateButton handleClick={() => setCreateOpen(true)} />
+      </RouteLayout>
 
+      <CreateMenuDialog
+        open={createOpen}
+        shops={shops}
+        foodItems={foodItems}
+        onOpenChange={setCreateOpen}
+        onSubmit={handleCreateSubmit}
+        onCancel={() => setCreateOpen(false)}
+        defaultShopId={defaultShopId}
+      />
       <ViewMenuDialog
         open={viewOpen}
         onOpenChange={(open) => {
@@ -294,6 +227,7 @@ function RouteComponent() {
           setSelectedMenu(null);
         }}
         initialData={selectedMenu as SelectMenuWithFoodItemsType}
+        defaultShopId={defaultShopId}
       />
 
       <DeleteMenuDialog

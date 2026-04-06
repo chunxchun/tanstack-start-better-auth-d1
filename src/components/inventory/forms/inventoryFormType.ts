@@ -14,12 +14,15 @@ type InventoryFormCreateProps = {
   initialData?: never;
   onSubmit: (values: InsertInventoryType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & InventoryFormBaseProps;
+
 type InventoryFormEditProps = {
   mode: "edit";
   initialData: SelectInventoryType;
   onSubmit: (values: UpdateInventoryType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & InventoryFormBaseProps;
 
 type InventoryFormViewProps = {
@@ -27,6 +30,7 @@ type InventoryFormViewProps = {
   initialData: SelectInventoryType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof InventoryFormBaseProps, never>>;
 
 export type InventoryFormProps =

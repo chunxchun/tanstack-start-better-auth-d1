@@ -20,6 +20,7 @@ export type MenuEditDialogProps = MenuFormBaseProps &
       values: UpdateMenuWithFoodItemsType,
       coverPhoto?: File,
     ) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type MenuCreateDialogProps = MenuFormBaseProps &
@@ -28,6 +29,7 @@ export type MenuCreateDialogProps = MenuFormBaseProps &
       values: InsertMenuWithFoodItemsType,
       coverPhoto?: File,
     ) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type MenuViewDialogProps = ViewDialogProps<SelectMenuWithFoodItemsType>;

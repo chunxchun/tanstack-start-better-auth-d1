@@ -13,7 +13,7 @@ export default function EditUserDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  initialData,
+  initialData,defaultShopId,
 }: UserEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -30,6 +30,7 @@ export default function EditUserDialog({
           initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

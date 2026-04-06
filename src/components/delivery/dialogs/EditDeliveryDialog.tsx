@@ -16,6 +16,7 @@ export default function EditDeliveryDialog({
   onSubmit,
   onCancel,
   initialData,
+  defaultShopId,
 }: DeliveryEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -34,6 +35,7 @@ export default function EditDeliveryDialog({
           initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

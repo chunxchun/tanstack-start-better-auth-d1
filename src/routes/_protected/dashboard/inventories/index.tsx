@@ -28,39 +28,48 @@ import { searchSchema } from "@/db/schema/commonSchema";
 import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
 import { listMachineFn } from "@/utils/machine/machine.function";
 import { listShopFn } from "@/utils/shop/shop.function";
+import RouteLayout from "../-shared/routeLayout";
+import RouteHeader from "../-shared/routerHeader";
+import DataTableNavigator from "../-shared/data-table-navigator";
+import CreateButton from "../-shared/createButton";
 
 export const Route = createFileRoute("/_protected/dashboard/inventories/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context }) => {
+    const { user } = context;
+    const shopId = user.shopId ?? undefined;
+
     const [inventories, shops, foodItems, machines] = await Promise.all([
-      listInventoryFn({ data: deps }),
+      listInventoryFn({ data: { ...deps, shopId } }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
-      listFoodItemFn({ data: { limit: 100, offset: 0 } }),
-      listMachineFn({ data: { limit: 100, offset: 0 } }),
+      listFoodItemFn({ data: { limit: 100, offset: 0, shopId } }),
+      listMachineFn({ data: { limit: 100, offset: 0, shopId } }),
     ]);
-    return { inventories, shops, foodItems, machines };
+    return { inventories, shops, foodItems, machines, user };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { inventories, shops, foodItems, machines } = Route.useLoaderData();
+  const { inventories, shops, foodItems, machines, user } =
+    Route.useLoaderData();
+  const defaultShopId = user.shopId ?? undefined;
+
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
+
   const [createOpen, setCreateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
   const [selectedInventory, setSelectedInventory] = useState<Inventory | null>(
     null,
   );
 
   const { limit, offset } = search;
-  const currentPage = Math.floor(offset / limit) + 1;
-  const hasPreviousPage = offset > 0;
-  const hasNextPage = inventories.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -69,31 +78,6 @@ function RouteComponent() {
         limit: next.limit,
         offset: next.offset,
       }),
-    });
-  };
-
-  const goToPreviousPage = () => {
-    if (!hasPreviousPage) return;
-    updatePagination({
-      limit,
-      offset: Math.max(0, offset - limit),
-    });
-  };
-
-  const goToNextPage = () => {
-    if (!hasNextPage) return;
-    updatePagination({
-      limit,
-      offset: offset + limit,
-    });
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const nextLimit = Number(event.target.value);
-
-    updatePagination({
-      limit: nextLimit,
-      offset: 0,
     });
   };
 
@@ -155,65 +139,29 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="container mx-auto px-10 py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Inventory</h1>
-          <CreateInventoryDialog
-            open={createOpen}
-            onOpenChange={setCreateOpen}
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-            shops={shops}
-            foodItems={foodItems}
-            machines={machines}
-          />
-        </div>
-
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">
-            Page {currentPage}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label
-              className="text-sm text-muted-foreground"
-              htmlFor="inventory-page-size"
-            >
-              Rows
-            </label>
-            <select
-              id="inventory-page-size"
-              className="h-9 rounded-md border bg-background px-2 text-sm"
-              value={limit}
-              onChange={handleLimitChange}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToPreviousPage}
-              disabled={!hasPreviousPage}
-            >
-              Previous
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToNextPage}
-              disabled={!hasNextPage}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
+      <RouteLayout>
+        <RouteHeader title="Inventories" />
+        <DataTableNavigator
+          limit={limit}
+          offset={offset}
+          list={inventories}
+          updatePagination={updatePagination}
+        />
 
         <DataTable columns={columns} data={inventories} />
-      </div>
+        <CreateButton handleClick={() => setCreateOpen(true)} />
+      </RouteLayout>
+
+      <CreateInventoryDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onSubmit={handleCreateSubmit}
+        onCancel={() => setCreateOpen(false)}
+        shops={shops}
+        foodItems={foodItems}
+        machines={machines}
+        defaultShopId={defaultShopId}
+      />
 
       <ViewInventoryDialog
         open={viewOpen}
@@ -243,6 +191,7 @@ function RouteComponent() {
         shops={shops}
         foodItems={foodItems}
         machines={machines}
+        defaultShopId={defaultShopId}
       />
 
       <DeleteInventoryDialog

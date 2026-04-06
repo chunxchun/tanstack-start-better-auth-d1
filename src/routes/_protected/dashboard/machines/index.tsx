@@ -28,26 +28,31 @@ import ViewMachineDialog from "@/components/machine/dialogs/ViewMachineDialog";
 import { searchSchema } from "@/db/schema/commonSchema";
 import { toast } from "sonner";
 import CreateButton from "../-shared/createButton";
+import DataTableNavigator from "../-shared/data-table-navigator";
 import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";
-import DataTableNavigator from "./-components/data-table-navigator";
 
 export const Route = createFileRoute("/_protected/dashboard/machines/")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ limit: search.limit, offset: search.offset }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context }) => {
+    const { user } = context;
+    const shopId = user.shopId ?? undefined;
+
     const [machines, locations, shops] = await Promise.all([
-      listMachineFn({ data: deps }),
-      listLocationFn({ data: { limit: 100, offset: 0 } }),
+      listMachineFn({ data: { ...deps, shopId } }),
+      listLocationFn({ data: { limit: 100, offset: 0, shopId } }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
     ]);
-    return { machines, locations, shops };
+    return { machines, locations, shops, user };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { machines, locations, shops } = Route.useLoaderData();
+  const { machines, locations, shops, user } = Route.useLoaderData();
+  const defaultShopId = user.shopId ?? undefined;
+
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -155,14 +160,12 @@ function RouteComponent() {
     <>
       <RouteLayout>
         <RouteHeader title="Machines" />
-
         <DataTableNavigator
           limit={limit}
           offset={offset}
           list={machines}
           updatePagination={updatePagination}
         />
-
         <DataTable columns={columns} data={machines as SelectMachineType[]} />
         <CreateButton handleClick={() => setCreateOpen(true)} />
       </RouteLayout>
@@ -174,6 +177,7 @@ function RouteComponent() {
         onOpenChange={setCreateOpen}
         onSubmit={handleCreateSubmit}
         onCancel={() => setCreateOpen(false)}
+        defaultShopId={defaultShopId}
       />
 
       <ViewMachineDialog
@@ -203,6 +207,7 @@ function RouteComponent() {
         shops={shops}
         locations={locations}
         initialData={selectedMachine as SelectMachineType}
+        defaultShopId={defaultShopId}
       />
 
       <DeleteMachineDialog

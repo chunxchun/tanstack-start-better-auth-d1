@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { LocationForm } from "../forms/locationForm";
 import type { LocationCreateDialogProps } from "./locationDialogType";
@@ -15,14 +13,10 @@ export default function CreateLocationDialog({
   onOpenChange,
   onSubmit,
   onCancel,
+  defaultShopId,
 }: LocationCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -35,6 +29,7 @@ export default function CreateLocationDialog({
           shops={shops}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

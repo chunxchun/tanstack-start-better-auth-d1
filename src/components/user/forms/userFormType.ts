@@ -1,5 +1,4 @@
 import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
-import type { SelectShopType } from "@/db/schema";
 import type {
   InsertUserType,
   SelectUserType,
@@ -13,6 +12,7 @@ type UserFormCreateProps = {
   initialData?: never;
   onSubmit: (values: InsertUserType, image?: File) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & UserFormBaseProps;
 
 type UserFormEditProps = {
@@ -20,6 +20,7 @@ type UserFormEditProps = {
   initialData: SelectUserType;
   onSubmit: (values: UpdateUserType, image?: File) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & UserFormBaseProps;
 
 type UserFormViewProps = {
@@ -27,6 +28,7 @@ type UserFormViewProps = {
   initialData: SelectUserType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof UserFormBaseProps, never>>;
 
 export type UserFormProps =

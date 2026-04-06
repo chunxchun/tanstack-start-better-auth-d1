@@ -15,6 +15,7 @@ type ShopFormCreateProps = {
     logoFile?: File,
   ) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 };
 
 type ShopFormEditProps = {
@@ -26,6 +27,7 @@ type ShopFormEditProps = {
     logoFile?: File,
   ) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 };
 
 type ShopFormViewProps = {
@@ -33,6 +35,7 @@ type ShopFormViewProps = {
   initialData: SelectShopType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 };
 
 export type ShopFormProps =

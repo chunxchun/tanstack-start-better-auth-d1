@@ -17,6 +17,7 @@ export type ShopEditDialogProps = EditDialogProps<SelectShopType> & {
     bannerFile?: File,
     logoFile?: File,
   ) => Promise<void>;
+  defaultShopId?: number;
 };
 
 export type ShopCreateDialogProps = CreateDialogProps & {
@@ -25,6 +26,7 @@ export type ShopCreateDialogProps = CreateDialogProps & {
     bannerFile?: File,
     logoFile?: File,
   ) => Promise<void>;
+  defaultShopId?: number;
 };
 
 export type ShopViewDialogProps = ViewDialogProps<SelectShopType>;

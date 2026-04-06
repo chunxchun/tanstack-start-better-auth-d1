@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { DisposeForm } from "../forms/disposeForm";
 import type { DisposeCreateDialogProps } from "./disposeDialogType";
@@ -16,15 +14,10 @@ export default function CreateDisposeDialog({
   foodItems,
   onOpenChange,
   onSubmit,
-  onCancel,
+  onCancel,defaultShopId
 }: DisposeCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
@@ -39,6 +32,7 @@ export default function CreateDisposeDialog({
           foodItems={foodItems}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

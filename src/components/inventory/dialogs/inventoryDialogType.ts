@@ -14,11 +14,13 @@ import type { InventoryFormBaseProps } from "../forms/inventoryFormType";
 export type InventoryEditDialogProps = InventoryFormBaseProps &
   EditDialogProps<SelectInventoryType> & {
     onSubmit: (values: UpdateInventoryType) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type InventoryCreateDialogProps = InventoryFormBaseProps &
   CreateDialogProps & {
     onSubmit: (values: InsertInventoryType) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type InventoryViewDialogProps = ViewDialogProps<SelectInventoryType>;

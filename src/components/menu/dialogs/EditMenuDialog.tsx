@@ -15,6 +15,7 @@ export default function EditMenuDialog({
   onSubmit,
   onCancel,
   initialData,
+  defaultShopId,
 }: MenuEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -32,6 +33,7 @@ export default function EditMenuDialog({
           initialData={initialData}
           onSubmit={onSubmit}
           onCancel={onCancel}
+          defaultShopId={defaultShopId}
         />
       </DialogContent>
     </Dialog>

@@ -14,11 +14,13 @@ import type { MachineFormBaseProps } from "../forms/machineFormType";
 export type MachineEditDialogProps = MachineFormBaseProps &
   EditDialogProps<SelectMachineType> & {
     onSubmit: (values: UpdateMachineType) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type MachineCreateDialogProps = MachineFormBaseProps &
   CreateDialogProps & {
     onSubmit: (values: InsertMachineType) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type MachineViewDialogProps = ViewDialogProps<SelectMachineType>;

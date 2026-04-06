@@ -5,13 +5,16 @@ import type {
   UpdateSaleType,
 } from "@/db/schema";
 
-export type SaleFormBaseProps = FormDataDependency<"shops" | "machines" | "foodItems">;
+export type SaleFormBaseProps = FormDataDependency<
+  "shops" | "machines" | "foodItems"
+>;
 
 type SaleFormCreateProps = {
   mode: "create";
   initialData?: never;
   onSubmit: (values: InsertSaleType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & SaleFormBaseProps;
 
 type SaleFormEditProps = {
@@ -19,6 +22,7 @@ type SaleFormEditProps = {
   initialData: SelectSaleType;
   onSubmit: (values: UpdateSaleType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & SaleFormBaseProps;
 
 type SaleFormViewProps = {
@@ -26,6 +30,7 @@ type SaleFormViewProps = {
   initialData: SelectSaleType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof SaleFormBaseProps, never>>;
 
 export type SaleFormProps =

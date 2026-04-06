@@ -14,11 +14,13 @@ import type { UserFormBaseProps } from "../forms/userFormType";
 export type UserEditDialogProps = UserFormBaseProps &
   EditDialogProps<SelectUserType> & {
     onSubmit: (values: UpdateUserType, image?: File) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type UserCreateDialogProps = UserFormBaseProps &
   CreateDialogProps & {
     onSubmit: (values: InsertUserType, image?: File) => Promise<void>;
+    defaultShopId?: number;
   };
 
 export type UserViewDialogProps = ViewDialogProps<SelectUserType>;

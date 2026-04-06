@@ -12,6 +12,7 @@ type MachineFormCreateProps = {
   initialData?: never;
   onSubmit: (values: InsertMachineType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & MachineFormBaseProps;
 
 type MachineFormEditProps = {
@@ -19,6 +20,7 @@ type MachineFormEditProps = {
   initialData: SelectMachineType;
   onSubmit: (values: UpdateMachineType) => Promise<void>;
   onCancel: () => void;
+  defaultShopId?: number;
 } & MachineFormBaseProps;
 
 type MachineFormViewProps = {
@@ -26,6 +28,7 @@ type MachineFormViewProps = {
   initialData: SelectMachineType;
   onSubmit?: never;
   onCancel: () => void;
+  defaultShopId?: never;
 } & Partial<Record<keyof MachineFormBaseProps, never>>;
 
 export type MachineFormProps =
