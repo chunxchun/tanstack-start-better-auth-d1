@@ -36,13 +36,15 @@ export function MenuForm({
   onSubmit,
   onCancel,
 }: MenuFormProps) {
-  const activeShop = useContext(ShopContext);
+  const shopContext = useContext(ShopContext);
+  const { activeShop } = shopContext || {};
   const initialSelectedFoodItems = initialData?.menuFoodItems || [];
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFoodItems, setSelectedFoodItems] = useState<
     MenuFoodItemType[]
   >(initialSelectedFoodItems);
-  console.log("Initial selected food items:", initialSelectedFoodItems);
+
+  // console.log("Initial selected food items:", initialSelectedFoodItems);
   const form = useForm({
     defaultValues: initialData || {
       name: null,
@@ -195,7 +197,6 @@ export function MenuForm({
               </MultiSelect>
             )}
           </Field>
-
 
           {/* date */}
           <FormDate

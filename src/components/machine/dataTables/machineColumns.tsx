@@ -1,7 +1,6 @@
-import type { SelectMachineType as Machine } from "@/db/schema";
+import type { SelectLocationType, SelectMachineType } from "@/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,17 +13,19 @@ import {
 
 type MachineColumnsOptions = {
   rowNumberOffset?: number;
-  onView: (machine: Machine) => void;
-  onEdit: (machine: Machine) => void;
-  onDelete: (machine: Machine) => void;
+  locations?: SelectLocationType[];
+  onView: (machine: SelectMachineType) => void;
+  onEdit: (machine: SelectMachineType) => void;
+  onDelete: (machine: SelectMachineType) => void;
 };
 
 export const getMachineColumns = ({
   rowNumberOffset = 0,
+  locations = [],
   onView,
   onEdit,
   onDelete,
-}: MachineColumnsOptions): ColumnDef<Machine>[] => [
+}: MachineColumnsOptions): ColumnDef<SelectMachineType>[] => [
   {
     id: "rowNumber",
     header: "#",
@@ -54,14 +55,23 @@ export const getMachineColumns = ({
     accessorKey: "mode",
     header: "Mode",
   },
-  {
-    accessorKey: "dayEndAutoReset",
-    header: "Day End Auto Reset",
-    cell: ({ row }) => (row.original.dayEndStockAutoReset ? "Yes" : "No"),
-  },
+  // {
+  //   accessorKey: "dayEndAutoReset",
+  //   header: "Day End Auto Reset",
+  //   cell: ({ row }) => (row.original.dayEndStockAutoReset ? "Yes" : "No"),
+  // },
   {
     accessorKey: "locationId",
-    header: "Location ID",
+    header: "Location",
+    cell: ({ row }) => {
+      const locationId = row.original.locationId;
+      if (!locationId) {
+        return "-";
+      }
+
+      const location = locations.find((item) => item.id === locationId);
+      return location?.name ?? `Unknown (${locationId})`;
+    },
   },
   {
     id: "actions",

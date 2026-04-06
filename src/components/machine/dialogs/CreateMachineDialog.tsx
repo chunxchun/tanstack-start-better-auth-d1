@@ -19,11 +19,11 @@ export default function CreateMachineDialog({
 }: MachineCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
+      {/* <DialogTrigger asChild>
         <Button variant="default">
           <span>+</span>Create
         </Button>
-      </DialogTrigger>
+      </DialogTrigger> */}
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}

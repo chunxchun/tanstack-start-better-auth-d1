@@ -1,17 +1,11 @@
 import { getMachineColumns } from "@/components/machine/dataTables/machineColumns";
 import { DataTable } from "@/components/machine/dataTables/machineDataTable";
-import { Button } from "@/components/ui/button";
 import type {
-  InsertLocationType,
   InsertMachineType,
-  SelectMachineType as Machine,
   SelectMachineType,
   UpdateMachineType,
 } from "@/db/schema";
-import {
-  createLocationFn,
-  listLocationFn,
-} from "@/utils/location/location.function";
+import { listLocationFn } from "@/utils/location/location.function";
 import {
   createMachineFn,
   deleteMachineByIdFn,
@@ -24,14 +18,19 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import CreateMachineDialog from "@/components/machine/dialogs/CreateMachineDialog";
+import DeleteMachineDialog from "@/components/machine/dialogs/DeleteMachineDialog";
 import EditMachineDialog from "@/components/machine/dialogs/EditMachineDialog";
 import ViewMachineDialog from "@/components/machine/dialogs/ViewMachineDialog";
-import DeleteMachineDialog from "@/components/machine/dialogs/DeleteMachineDialog";
+
 import { searchSchema } from "@/db/schema/commonSchema";
 import { toast } from "sonner";
+import CreateButton from "../-shared/createButton";
+import RouteLayout from "../-shared/routeLayout";
+import RouteHeader from "../-shared/routerHeader";
+import DataTableNavigator from "./-components/data-table-navigator";
 
 export const Route = createFileRoute("/_protected/dashboard/machines/")({
   validateSearch: searchSchema,
@@ -52,17 +51,16 @@ function RouteComponent() {
   const search = Route.useSearch();
   const router = useRouter();
   const navigate = useNavigate({ from: Route.fullPath });
+
   const [createOpen, setCreateOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [createLocationOpen, setCreateLocationOpen] = useState(false);
-  const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
+
+  const [selectedMachine, setSelectedMachine] =
+    useState<SelectMachineType | null>(null);
 
   const { limit, offset } = search;
-  const currentPage = Math.floor(offset / limit) + 1;
-  const hasPreviousPage = offset > 0;
-  const hasNextPage = machines.length === limit;
 
   const updatePagination = (next: { limit: number; offset: number }) => {
     navigate({
@@ -74,36 +72,10 @@ function RouteComponent() {
     });
   };
 
-  const goToPreviousPage = () => {
-    if (!hasPreviousPage) return;
-
-    updatePagination({
-      limit,
-      offset: Math.max(0, offset - limit),
-    });
-  };
-
-  const goToNextPage = () => {
-    if (!hasNextPage) return;
-
-    updatePagination({
-      limit,
-      offset: offset + limit,
-    });
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const nextLimit = Number(event.target.value);
-
-    updatePagination({
-      limit: nextLimit,
-      offset: 0,
-    });
-  };
-
   const columns = useMemo(
     () =>
       getMachineColumns({
+        locations,
         onView: (machine) => {
           setSelectedMachine(machine);
           setViewOpen(true);
@@ -117,7 +89,7 @@ function RouteComponent() {
           setDeleteOpen(true);
         },
       }),
-    [],
+    [locations],
   );
 
   const handleCreateSubmit = async (values: InsertMachineType) => {
@@ -163,19 +135,6 @@ function RouteComponent() {
     }
   };
 
-  // const handleCreateLocationSubmit = async (values: InsertLocationType) => {
-  //   try {
-  //     await createLocationFn({ data: values });
-  //     toast.success("Location created successfully");
-  //   } catch (error) {
-  //     console.error("Failed to create location:", error);
-  //     toast.error("Failed to create location");
-  //   } finally {
-  //     setCreateLocationOpen(false);
-  //     await router.invalidate();
-  //   }
-  // };
-
   const handleDeleteConfirm = async () => {
     if (!selectedMachine) return;
 
@@ -194,64 +153,28 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="container mx-auto px-10 py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Machines</h1>
-          <CreateMachineDialog
-            open={createOpen}
-            shops={shops}
-            locations={locations}
-            onOpenChange={setCreateOpen}
-            onSubmit={handleCreateSubmit}
-            onCancel={() => setCreateOpen(false)}
-          />
-        </div>
+      <RouteLayout>
+        <RouteHeader title="Machines" />
 
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm text-muted-foreground">
-            Page {currentPage}
-          </div>
+        <DataTableNavigator
+          limit={limit}
+          offset={offset}
+          list={machines}
+          updatePagination={updatePagination}
+        />
 
-          <div className="flex items-center gap-2">
-            <label
-              className="text-sm text-muted-foreground"
-              htmlFor="machine-page-size"
-            >
-              Rows
-            </label>
-            <select
-              id="machine-page-size"
-              className="h-9 rounded-md border bg-background px-2 text-sm"
-              value={limit}
-              onChange={handleLimitChange}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
+        <DataTable columns={columns} data={machines as SelectMachineType[]} />
+        <CreateButton handleClick={() => setCreateOpen(true)} />
+      </RouteLayout>
 
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToPreviousPage}
-              disabled={!hasPreviousPage}
-            >
-              Previous
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={goToNextPage}
-              disabled={!hasNextPage}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-
-        <DataTable columns={columns} data={machines as Machine[]} />
-      </div>
+      <CreateMachineDialog
+        open={createOpen}
+        shops={shops}
+        locations={locations}
+        onOpenChange={setCreateOpen}
+        onSubmit={handleCreateSubmit}
+        onCancel={() => setCreateOpen(false)}
+      />
 
       <ViewMachineDialog
         open={viewOpen}
