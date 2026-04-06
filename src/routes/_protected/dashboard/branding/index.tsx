@@ -94,7 +94,6 @@ function RouteComponent() {
             </button>
           );
         })}
-        <Button>Test</Button>
       </div>
     </div>
   );
