@@ -1,10 +1,21 @@
 import { insertSaleSchema, updateSaleSchema } from "@/db/schema/saleTable";
 import { createServerFn } from "@tanstack/react-start";
-import { idSchema, paginationSchema } from "../sharedSchema";
+import {
+  dateMachineIdSchema,
+  dateRangeMachineIdSchema,
+  dateRangeShopIdSchema,
+  dateShopIdSchema,
+  idSchema,
+  paginationSchema,
+} from "../sharedSchema";
 import {
   createSaleHandler,
   deleteSaleByIdHandler,
   fetchSaleByIdHandler,
+  listSaleByDateByMachineIdHandler,
+  listSaleByDateByShopIdHandler,
+  listSaleByDateRangeByMachineIdHandler,
+  listSaleByDateRangeByShopIdHandler,
   listSaleHandler,
   updateSaleHandlerById,
 } from "./sale.handler";
@@ -14,7 +25,38 @@ export const listSaleFn = createServerFn({ method: "GET" })
   .handler(async ({ data }) =>
     listSaleHandler(data.limit, data.offset, data.shopId),
   );
+export const listSaleByDateByShopIdFn = createServerFn({ method: "GET" })
+  .inputValidator(dateShopIdSchema)
+  .handler(async ({ data }) =>
+    listSaleByDateByShopIdHandler(data.date, data.shopId),
+  );
 
+export const listSaleByDateByMachineIdFn = createServerFn({ method: "GET" })
+  .inputValidator(dateMachineIdSchema)
+  .handler(async ({ data }) =>
+    listSaleByDateByMachineIdHandler(data.date, data.machineId),
+  );
+
+export const listSaleByDateRangeByShopIdFn = createServerFn({ method: "GET" })
+  .inputValidator(dateRangeShopIdSchema)
+  .handler(async ({ data }) =>
+    listSaleByDateRangeByShopIdHandler(
+      data.startDate,
+      data.endDate,
+      data.shopId,
+    ),
+  );
+export const listSaleByDateRangeByMachineIdFn = createServerFn({
+  method: "GET",
+})
+  .inputValidator(dateRangeMachineIdSchema)
+  .handler(async ({ data }) =>
+    listSaleByDateRangeByMachineIdHandler(
+      data.startDate,
+      data.endDate,
+      data.machineId,
+    ),
+  );
 export const createSaleFn = createServerFn({ method: "POST" })
   .inputValidator(insertSaleSchema)
   .handler(async ({ data }) => createSaleHandler(data));

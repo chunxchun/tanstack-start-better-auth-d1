@@ -51,6 +51,7 @@ import { Route as ProtectedDashboardFoodItemsIndexRouteImport } from './routes/_
 import { Route as ProtectedDashboardFaqsIndexRouteImport } from './routes/_protected/dashboard/faqs/index'
 import { Route as ProtectedDashboardDisposesIndexRouteImport } from './routes/_protected/dashboard/disposes/index'
 import { Route as ProtectedDashboardDeliveriesIndexRouteImport } from './routes/_protected/dashboard/deliveries/index'
+import { Route as ProtectedDashboardDailySalesIndexRouteImport } from './routes/_protected/dashboard/daily-sales/index'
 import { Route as ProtectedDashboardBrandingIndexRouteImport } from './routes/_protected/dashboard/branding/index'
 import { Route as ProtectedDashboardAdminOnlyIndexRouteImport } from './routes/_protected/dashboard/admin-only/index'
 
@@ -275,6 +276,12 @@ const ProtectedDashboardDeliveriesIndexRoute =
     path: '/deliveries/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardDailySalesIndexRoute =
+  ProtectedDashboardDailySalesIndexRouteImport.update({
+    id: '/daily-sales/',
+    path: '/daily-sales/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardBrandingIndexRoute =
   ProtectedDashboardBrandingIndexRouteImport.update({
     id: '/branding/',
@@ -320,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/api/shop/': typeof ApiShopIndexRoute
   '/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
   '/dashboard/branding/': typeof ProtectedDashboardBrandingIndexRoute
+  '/dashboard/daily-sales/': typeof ProtectedDashboardDailySalesIndexRoute
   '/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
   '/dashboard/faqs/': typeof ProtectedDashboardFaqsIndexRoute
@@ -365,6 +373,7 @@ export interface FileRoutesByTo {
   '/api/shop': typeof ApiShopIndexRoute
   '/dashboard/admin-only': typeof ProtectedDashboardAdminOnlyIndexRoute
   '/dashboard/branding': typeof ProtectedDashboardBrandingIndexRoute
+  '/dashboard/daily-sales': typeof ProtectedDashboardDailySalesIndexRoute
   '/dashboard/deliveries': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes': typeof ProtectedDashboardDisposesIndexRoute
   '/dashboard/faqs': typeof ProtectedDashboardFaqsIndexRoute
@@ -412,6 +421,7 @@ export interface FileRoutesById {
   '/api/shop/': typeof ApiShopIndexRoute
   '/_protected/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
   '/_protected/dashboard/branding/': typeof ProtectedDashboardBrandingIndexRoute
+  '/_protected/dashboard/daily-sales/': typeof ProtectedDashboardDailySalesIndexRoute
   '/_protected/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/_protected/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
   '/_protected/dashboard/faqs/': typeof ProtectedDashboardFaqsIndexRoute
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/api/shop/'
     | '/dashboard/admin-only/'
     | '/dashboard/branding/'
+    | '/dashboard/daily-sales/'
     | '/dashboard/deliveries/'
     | '/dashboard/disposes/'
     | '/dashboard/faqs/'
@@ -504,6 +515,7 @@ export interface FileRouteTypes {
     | '/api/shop'
     | '/dashboard/admin-only'
     | '/dashboard/branding'
+    | '/dashboard/daily-sales'
     | '/dashboard/deliveries'
     | '/dashboard/disposes'
     | '/dashboard/faqs'
@@ -550,6 +562,7 @@ export interface FileRouteTypes {
     | '/api/shop/'
     | '/_protected/dashboard/admin-only/'
     | '/_protected/dashboard/branding/'
+    | '/_protected/dashboard/daily-sales/'
     | '/_protected/dashboard/deliveries/'
     | '/_protected/dashboard/disposes/'
     | '/_protected/dashboard/faqs/'
@@ -891,6 +904,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardDeliveriesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/daily-sales/': {
+      id: '/_protected/dashboard/daily-sales/'
+      path: '/daily-sales'
+      fullPath: '/dashboard/daily-sales/'
+      preLoaderRoute: typeof ProtectedDashboardDailySalesIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/branding/': {
       id: '/_protected/dashboard/branding/'
       path: '/branding'
@@ -911,6 +931,7 @@ declare module '@tanstack/react-router' {
 interface ProtectedDashboardRouteChildren {
   ProtectedDashboardAdminOnlyIndexRoute: typeof ProtectedDashboardAdminOnlyIndexRoute
   ProtectedDashboardBrandingIndexRoute: typeof ProtectedDashboardBrandingIndexRoute
+  ProtectedDashboardDailySalesIndexRoute: typeof ProtectedDashboardDailySalesIndexRoute
   ProtectedDashboardDeliveriesIndexRoute: typeof ProtectedDashboardDeliveriesIndexRoute
   ProtectedDashboardDisposesIndexRoute: typeof ProtectedDashboardDisposesIndexRoute
   ProtectedDashboardFaqsIndexRoute: typeof ProtectedDashboardFaqsIndexRoute
@@ -928,6 +949,8 @@ interface ProtectedDashboardRouteChildren {
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardAdminOnlyIndexRoute: ProtectedDashboardAdminOnlyIndexRoute,
   ProtectedDashboardBrandingIndexRoute: ProtectedDashboardBrandingIndexRoute,
+  ProtectedDashboardDailySalesIndexRoute:
+    ProtectedDashboardDailySalesIndexRoute,
   ProtectedDashboardDeliveriesIndexRoute:
     ProtectedDashboardDeliveriesIndexRoute,
   ProtectedDashboardDisposesIndexRoute: ProtectedDashboardDisposesIndexRoute,

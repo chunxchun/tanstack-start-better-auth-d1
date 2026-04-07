@@ -4,7 +4,7 @@ import {
   type InsertSaleType,
   type UpdateSaleType,
 } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq, gte, lte } from "drizzle-orm";
 
 export const listSaleHandler = async (
   limit: number = 10,
@@ -21,6 +21,94 @@ export const listSaleHandler = async (
     return result;
   } catch (error) {
     console.error("Error listing sales:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
+export const listSaleByDateByShopIdHandler = async (
+  date: string,
+  shopId: number,
+) => {
+  try {
+    const result = await db
+      .select()
+      .from(salesTable)
+      .where(
+        and(
+          eq(salesTable.saleDate, date),
+          eq(salesTable.shopId, shopId) 
+        ),
+      );
+    return result;
+  } catch (error) {
+    console.error("Error listing sales by date and shopId:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
+export const listSaleByDateByMachineIdHandler = async (
+  date: string,
+  machineId: number,
+) => {
+  try {
+    const result = await db
+      .select()
+      .from(salesTable)
+      .where(
+        and(
+          eq(salesTable.saleDate, date),
+          eq(salesTable.machineId, machineId)  
+        ),
+      );
+    return result;
+  } catch (error) {
+    console.error("Error listing sales by date and machineId:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
+export const listSaleByDateRangeByShopIdHandler = async (
+  startDate: string,
+  endDate: string,
+  shopId: number,
+) => {
+  try {
+    const result = await db
+      .select()
+      .from(salesTable)
+      .where(
+        and(
+          eq(salesTable.shopId, shopId),
+          gte(salesTable.saleDate, startDate),
+          lte(salesTable.saleDate, endDate),
+        ),
+      );
+    return result;
+  } catch (error) {
+    console.error("Error listing sales by date range and shopId:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
+export const listSaleByDateRangeByMachineIdHandler = async (
+  startDate: string,
+  endDate: string,
+  machineId: number,
+) => {      
+  try {
+    const result = await db
+      .select()
+      .from(salesTable)
+      .where(
+        and(
+          eq(salesTable.machineId, machineId),
+          gte(salesTable.saleDate, startDate),
+          lte(salesTable.saleDate, endDate),
+        ),
+      );
+    return result;
+  } catch (error) {
+    console.error("Error listing sales by date range and machineId:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 };

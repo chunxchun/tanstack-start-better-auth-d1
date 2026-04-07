@@ -4,7 +4,6 @@ import CreateLocationDialog from "@/components/location/dialogs/CreateLocationDi
 import DeleteLocationDialog from "@/components/location/dialogs/DeleteLocationDialog";
 import EditLocationDialog from "@/components/location/dialogs/EditLocationDialog";
 import ViewLocationDialog from "@/components/location/dialogs/ViewLocationDialog";
-import { Button } from "@/components/ui/button";
 import type {
   InsertLocationType,
   SelectLocationType,
@@ -23,12 +22,12 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import RouteHeader from "../-shared/routerHeader";
+import CreateButton from "../-shared/createButton";
 import DataTableNavigator from "../-shared/data-table-navigator";
 import RouteLayout from "../-shared/routeLayout";
-import CreateButton from "../-shared/createButton";
+import RouteHeader from "../-shared/routerHeader";
 
 export const Route = createFileRoute("/_protected/dashboard/locations/")({
   validateSearch: searchSchema,
@@ -170,6 +169,7 @@ function RouteComponent() {
         onCancel={() => setCreateOpen(false)}
         defaultShopId={defaultShopId}
       />
+      
       <ViewLocationDialog
         open={viewOpen}
         onOpenChange={(open) => {
