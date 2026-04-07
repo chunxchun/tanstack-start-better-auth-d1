@@ -69,7 +69,7 @@ const data = {
           url: "/dashboard/schedules",
           canAccess: ["admin", "manager"],
         },
-       ],
+      ],
     },
     {
       title: "Products",
@@ -118,7 +118,12 @@ const data = {
         {
           title: "Daily Sales",
           url: "/dashboard/daily-sales",
-          canAccess: ["admin", "manager"],
+          canAccess: ["admin", "manager", "staff"],
+        },
+        {
+          title: "WeeklySales",
+          url: "/dashboard/weekly-sales",
+          canAccess: ["admin", "manager", "staff"],
         },
       ],
     },
@@ -168,7 +173,7 @@ const data = {
     {
       name: "Live Chat",
       url: "https://wa.me/+85253487126",
-      icon: <LifeBuoy />
+      icon: <LifeBuoy />,
     },
     {
       name: "FAQs",
@@ -200,10 +205,12 @@ export function AppSidebar({
       return [];
     }
 
-    return [{
-      ...section,
-      items: filteredItems,
-    }];
+    return [
+      {
+        ...section,
+        items: filteredItems,
+      },
+    ];
   });
 
   return (
@@ -215,7 +222,7 @@ export function AppSidebar({
             activeShop={activeShop}
             setActiveShop={setActiveShop}
           />
-        )}  
+        )}
       </SidebarHeader>
       <SidebarContent>
         <div className="flex min-h-full flex-1 flex-col justify-between">

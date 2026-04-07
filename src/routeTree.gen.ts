@@ -39,6 +39,7 @@ import { Route as ApiFoodItemIdRouteImport } from './routes/api/foodItem/$id'
 import { Route as ApiDisposeIdRouteImport } from './routes/api/dispose/$id'
 import { Route as ApiDeliveryIdRouteImport } from './routes/api/delivery/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ProtectedDashboardWeeklySalesIndexRouteImport } from './routes/_protected/dashboard/weekly-sales/index'
 import { Route as ProtectedDashboardUsersIndexRouteImport } from './routes/_protected/dashboard/users/index'
 import { Route as ProtectedDashboardShopsIndexRouteImport } from './routes/_protected/dashboard/shops/index'
 import { Route as ProtectedDashboardSchedulesIndexRouteImport } from './routes/_protected/dashboard/schedules/index'
@@ -204,6 +205,12 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedDashboardWeeklySalesIndexRoute =
+  ProtectedDashboardWeeklySalesIndexRouteImport.update({
+    id: '/weekly-sales/',
+    path: '/weekly-sales/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardUsersIndexRoute =
   ProtectedDashboardUsersIndexRouteImport.update({
     id: '/users/',
@@ -340,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/schedules/': typeof ProtectedDashboardSchedulesIndexRoute
   '/dashboard/shops/': typeof ProtectedDashboardShopsIndexRoute
   '/dashboard/users/': typeof ProtectedDashboardUsersIndexRoute
+  '/dashboard/weekly-sales/': typeof ProtectedDashboardWeeklySalesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -386,6 +394,7 @@ export interface FileRoutesByTo {
   '/dashboard/schedules': typeof ProtectedDashboardSchedulesIndexRoute
   '/dashboard/shops': typeof ProtectedDashboardShopsIndexRoute
   '/dashboard/users': typeof ProtectedDashboardUsersIndexRoute
+  '/dashboard/weekly-sales': typeof ProtectedDashboardWeeklySalesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -434,6 +443,7 @@ export interface FileRoutesById {
   '/_protected/dashboard/schedules/': typeof ProtectedDashboardSchedulesIndexRoute
   '/_protected/dashboard/shops/': typeof ProtectedDashboardShopsIndexRoute
   '/_protected/dashboard/users/': typeof ProtectedDashboardUsersIndexRoute
+  '/_protected/dashboard/weekly-sales/': typeof ProtectedDashboardWeeklySalesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -482,6 +492,7 @@ export interface FileRouteTypes {
     | '/dashboard/schedules/'
     | '/dashboard/shops/'
     | '/dashboard/users/'
+    | '/dashboard/weekly-sales/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -528,6 +539,7 @@ export interface FileRouteTypes {
     | '/dashboard/schedules'
     | '/dashboard/shops'
     | '/dashboard/users'
+    | '/dashboard/weekly-sales'
   id:
     | '__root__'
     | '/'
@@ -575,6 +587,7 @@ export interface FileRouteTypes {
     | '/_protected/dashboard/schedules/'
     | '/_protected/dashboard/shops/'
     | '/_protected/dashboard/users/'
+    | '/_protected/dashboard/weekly-sales/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -820,6 +833,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/dashboard/weekly-sales/': {
+      id: '/_protected/dashboard/weekly-sales/'
+      path: '/weekly-sales'
+      fullPath: '/dashboard/weekly-sales/'
+      preLoaderRoute: typeof ProtectedDashboardWeeklySalesIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/users/': {
       id: '/_protected/dashboard/users/'
       path: '/users'
@@ -944,6 +964,7 @@ interface ProtectedDashboardRouteChildren {
   ProtectedDashboardSchedulesIndexRoute: typeof ProtectedDashboardSchedulesIndexRoute
   ProtectedDashboardShopsIndexRoute: typeof ProtectedDashboardShopsIndexRoute
   ProtectedDashboardUsersIndexRoute: typeof ProtectedDashboardUsersIndexRoute
+  ProtectedDashboardWeeklySalesIndexRoute: typeof ProtectedDashboardWeeklySalesIndexRoute
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
@@ -965,6 +986,8 @@ const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardSchedulesIndexRoute: ProtectedDashboardSchedulesIndexRoute,
   ProtectedDashboardShopsIndexRoute: ProtectedDashboardShopsIndexRoute,
   ProtectedDashboardUsersIndexRoute: ProtectedDashboardUsersIndexRoute,
+  ProtectedDashboardWeeklySalesIndexRoute:
+    ProtectedDashboardWeeklySalesIndexRoute,
 }
 
 const ProtectedDashboardRouteWithChildren =

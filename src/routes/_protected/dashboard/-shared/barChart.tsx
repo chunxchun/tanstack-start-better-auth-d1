@@ -56,7 +56,39 @@ export default function BarChartComponent({
               tickMargin={10}
               axisLine={false}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  formatter={(value, name, item) => {
+                    const formattedValue =
+                      dataKey === "revenue"
+                        ? typeof value === "number"
+                          ? `$${value.toLocaleString()}`
+                          : `$${String(value)}`
+                        : typeof value === "number"
+                          ? value.toLocaleString()
+                          : String(value);
+                    const indicatorColor = item.payload?.fill ?? item.color;
+
+                    return (
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="h-2.5 w-2.5 shrink-0 rounded-xs"
+                            style={{ backgroundColor: indicatorColor }}
+                          />
+                          <span className="text-muted-foreground">{String(name)}</span>
+                        </div>
+                        <span className="font-mono font-medium text-foreground tabular-nums">
+                          {formattedValue}
+                        </span>
+                      </div>
+                    );
+                  }}
+                />
+              }
+            />
             <Bar
               dataKey={dataKey}
               fill={chartConfig[dataKey].color}

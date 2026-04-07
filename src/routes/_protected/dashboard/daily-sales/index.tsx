@@ -3,12 +3,10 @@ import { listSaleByDateByShopIdFn } from "@/utils/sale/sale.function";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
+import BarChartComponent from "../-shared/barChart";
+import PieChartComponent from "../-shared/pieChart";
 import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";
-import { Item } from "@/components/ui/item";
-import BarChartComponent from "../-shared/barChart";
-import { PieChart } from "lucide-react";
-import PieChartComponent from "../-shared/pieChart";
 
 export const Route = createFileRoute("/_protected/dashboard/daily-sales/")({
   validateSearch: searchSchema,
@@ -49,16 +47,14 @@ function RouteComponent() {
     <>
       <RouteLayout>
         <RouteHeader title="Daily Sales" />
-        {/* Render yesterdaySales data here */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* <Item> */}
-          <BarChartComponent data={data} dataKey="qty"/>
-         <BarChartComponent data={data} dataKey="revenue"/>
-           
-          {/* </Item> */}
-          <PieChartComponent data={data} dataKey="qty"/>
-          <PieChartComponent data={data} dataKey="revenue"/>
-          <Item></Item>
+          {/* bar chart */}
+          <BarChartComponent data={data} dataKey="qty" />
+          <BarChartComponent data={data} dataKey="revenue" />
+
+          {/* pie chart */}
+          <PieChartComponent data={data} dataKey="qty" />
+          <PieChartComponent data={data} dataKey="revenue" />
         </div>
       </RouteLayout>
     </>
