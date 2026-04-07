@@ -52,21 +52,20 @@ export const getFoodItemColumns = ({
       );
     },
   },
-  { accessorKey: "shopId", header: "Shop" 
-    
-  },
+  // { accessorKey: "shopId", header: "Shop" },
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "category",
-    header: "Category",
-  },
-  {
     accessorKey: "price",
     header: "Price",
   },
+  {
+    accessorKey: "category",
+    header: "Category",
+  },
+
   {
     accessorKey: "currency",
     header: "Currency",

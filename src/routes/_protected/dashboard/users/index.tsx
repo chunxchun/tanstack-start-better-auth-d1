@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_protected/dashboard/users/")({
     const shopId = user.shopId ?? undefined;
 
     const [users, shops] = await Promise.all([
-      listUserFn({ data: deps }),
+      listUserFn({ data: { ...deps, shopId } }),
       listShopFn({ data: { limit: 100, offset: 0 } }),
     ]);
     return { users, shops, user };
@@ -76,6 +76,7 @@ function RouteComponent() {
     () =>
       getUserColumns({
         rowNumberOffset: offset,
+        shops,
         onView: (user) => {
           setSelectedUser(user);
           setViewOpen(true);
@@ -89,13 +90,13 @@ function RouteComponent() {
           setDeleteOpen(true);
         },
       }),
-    [offset],
+    [offset, shops],
   );
 
   const handleCreateSubmit = async (
     values: InsertUserType,
     image: File | null = null,
-    shopId: string | number | null = null,
+    shopId: number | null = null,
   ) => {
     try {
       await userHandleCreateSubmit(values, image, shopId);
@@ -113,12 +114,13 @@ function RouteComponent() {
   const handleEditSubmit = async (
     values: UpdateUserType,
     image: File | null = null,
-    shopId: string | number | null = null,
+    shopId: number | null = null,
   ) => {
     if (!selectedUser) return;
 
     try {
-      await userHandleUpdateSubmit(values, image, shopId);
+      const updatedUser = {...values, shopId: shopId ?? Number(values.shopId)};
+      await userHandleUpdateSubmit(updatedUser, image, shopId);
       setSelectedUser(null);
       toast.success("User updated successfully");
     } catch (error) {
@@ -171,6 +173,7 @@ function RouteComponent() {
 
       <ViewUserDialog
         open={viewOpen}
+        shops={shops}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedUser(null);

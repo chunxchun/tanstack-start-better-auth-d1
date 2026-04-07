@@ -40,62 +40,66 @@ export default function FormSelect<TForm>({
   setFile,
   lastUpdatedAt,
 }: FormSelectProps<TForm>) {
-  const imageUrl = getVersionedImageUrl(
-    form.getFieldValue("imageUrl") as string,
-    lastUpdatedAt,
-  );
-
   return (
     <form.Field name={name}>
       {(field) => (
-        <Field>
-          <FieldLabel htmlFor={field.name}>
-            {label} {required && <span className="text-red-500">*</span>}
-          </FieldLabel>
-          {isReadOnly ? (
-            field.state.value ? (
-              <img
-                src={imageUrl}
-                alt={label}
-                className="max-h-32 object-contain"
-              />
-            ) : (
-              <FieldDescription>
-                No {label.toLowerCase()} uploaded.
-              </FieldDescription>
-            )
-          ) : (
-            // edit or create
-            <>
-              {lastUpdatedAt ? (
-                <img
-                  src={imageUrl}
-                  alt={label}
-                  className="max-h-32 object-contain"
-                />
-              ) : null}
-              <Input
-                type="file"
-                name={field.name}
-                disabled={isReadOnly}
-                onBlur={field.handleBlur}
-                onChange={(e) => {
-                  const file = e.target.files ? e.target.files[0] : null;
-                  if (!file) {
-                    // field.handleChange(null);
-                    setFile(null);
-                    return;
-                  }
-                  // field.handleChange(file.name);
-                  setFile(file);
-                }}
-              />
-              {description && (
-                <FieldDescription>{description}</FieldDescription>
+        (() => {
+          const imageUrl = getVersionedImageUrl(
+            field.state.value as string | null | undefined,
+            lastUpdatedAt,
+          );
+
+          return (
+            <Field>
+              <FieldLabel htmlFor={field.name}>
+                {label} {required && <span className="text-red-500">*</span>}
+              </FieldLabel>
+              {isReadOnly ? (
+                imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={label}
+                    className="max-h-32 object-contain"
+                  />
+                ) : (
+                  <FieldDescription>
+                    No {label.toLowerCase()} uploaded.
+                  </FieldDescription>
+                )
+              ) : (
+                // edit or create
+                <>
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={label}
+                      className="min-h-32 max-h-32 object-contain"
+                    />
+                  ) : null}
+                  <Input
+                    type="file"
+                    name={field.name}
+                    disabled={isReadOnly}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if (!file) {
+                        // field.handleChange(null);
+                        setFile(null);
+                        return;
+                      }
+                      // field.handleChange(file.name);
+                      setFile(file);
+                    }}
+                  />
+                  {description && (
+                    <FieldDescription>{description}</FieldDescription>
+                  )}
+                </>
               )}
-            </>
-          )}
-        </Field>
+            </Field>
+          );
+        })()
       )}
     </form.Field>
   );

@@ -12,6 +12,7 @@ export default function ViewUserDialog({
   onOpenChange,
   onCancel,
   initialData,
+  shops,
 }: UserViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -24,7 +25,7 @@ export default function ViewUserDialog({
         </DialogHeader>
         <UserForm
           mode="view"
-          shops={undefined}
+          shops={shops}
           onSubmit={undefined}
           initialData={initialData}
           onCancel={onCancel}

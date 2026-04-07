@@ -47,6 +47,8 @@ import { Route as ProtectedDashboardSalesIndexRouteImport } from './routes/_prot
 import { Route as ProtectedDashboardMenusIndexRouteImport } from './routes/_protected/dashboard/menus/index'
 import { Route as ProtectedDashboardMachinesIndexRouteImport } from './routes/_protected/dashboard/machines/index'
 import { Route as ProtectedDashboardLocationsIndexRouteImport } from './routes/_protected/dashboard/locations/index'
+import { Route as ProtectedDashboardLayoutIndexRouteImport } from './routes/_protected/dashboard/layout/index'
+import { Route as ProtectedDashboardLanguageIndexRouteImport } from './routes/_protected/dashboard/language/index'
 import { Route as ProtectedDashboardInventoriesIndexRouteImport } from './routes/_protected/dashboard/inventories/index'
 import { Route as ProtectedDashboardFoodItemsIndexRouteImport } from './routes/_protected/dashboard/food-items/index'
 import { Route as ProtectedDashboardFaqsIndexRouteImport } from './routes/_protected/dashboard/faqs/index'
@@ -253,6 +255,18 @@ const ProtectedDashboardLocationsIndexRoute =
     path: '/locations/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardLayoutIndexRoute =
+  ProtectedDashboardLayoutIndexRouteImport.update({
+    id: '/layout/',
+    path: '/layout/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardLanguageIndexRoute =
+  ProtectedDashboardLanguageIndexRouteImport.update({
+    id: '/language/',
+    path: '/language/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardInventoriesIndexRoute =
   ProtectedDashboardInventoriesIndexRouteImport.update({
     id: '/inventories/',
@@ -340,6 +354,8 @@ export interface FileRoutesByFullPath {
   '/dashboard/faqs/': typeof ProtectedDashboardFaqsIndexRoute
   '/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
   '/dashboard/inventories/': typeof ProtectedDashboardInventoriesIndexRoute
+  '/dashboard/language/': typeof ProtectedDashboardLanguageIndexRoute
+  '/dashboard/layout/': typeof ProtectedDashboardLayoutIndexRoute
   '/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
   '/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
   '/dashboard/menus/': typeof ProtectedDashboardMenusIndexRoute
@@ -387,6 +403,8 @@ export interface FileRoutesByTo {
   '/dashboard/faqs': typeof ProtectedDashboardFaqsIndexRoute
   '/dashboard/food-items': typeof ProtectedDashboardFoodItemsIndexRoute
   '/dashboard/inventories': typeof ProtectedDashboardInventoriesIndexRoute
+  '/dashboard/language': typeof ProtectedDashboardLanguageIndexRoute
+  '/dashboard/layout': typeof ProtectedDashboardLayoutIndexRoute
   '/dashboard/locations': typeof ProtectedDashboardLocationsIndexRoute
   '/dashboard/machines': typeof ProtectedDashboardMachinesIndexRoute
   '/dashboard/menus': typeof ProtectedDashboardMenusIndexRoute
@@ -436,6 +454,8 @@ export interface FileRoutesById {
   '/_protected/dashboard/faqs/': typeof ProtectedDashboardFaqsIndexRoute
   '/_protected/dashboard/food-items/': typeof ProtectedDashboardFoodItemsIndexRoute
   '/_protected/dashboard/inventories/': typeof ProtectedDashboardInventoriesIndexRoute
+  '/_protected/dashboard/language/': typeof ProtectedDashboardLanguageIndexRoute
+  '/_protected/dashboard/layout/': typeof ProtectedDashboardLayoutIndexRoute
   '/_protected/dashboard/locations/': typeof ProtectedDashboardLocationsIndexRoute
   '/_protected/dashboard/machines/': typeof ProtectedDashboardMachinesIndexRoute
   '/_protected/dashboard/menus/': typeof ProtectedDashboardMenusIndexRoute
@@ -485,6 +505,8 @@ export interface FileRouteTypes {
     | '/dashboard/faqs/'
     | '/dashboard/food-items/'
     | '/dashboard/inventories/'
+    | '/dashboard/language/'
+    | '/dashboard/layout/'
     | '/dashboard/locations/'
     | '/dashboard/machines/'
     | '/dashboard/menus/'
@@ -532,6 +554,8 @@ export interface FileRouteTypes {
     | '/dashboard/faqs'
     | '/dashboard/food-items'
     | '/dashboard/inventories'
+    | '/dashboard/language'
+    | '/dashboard/layout'
     | '/dashboard/locations'
     | '/dashboard/machines'
     | '/dashboard/menus'
@@ -580,6 +604,8 @@ export interface FileRouteTypes {
     | '/_protected/dashboard/faqs/'
     | '/_protected/dashboard/food-items/'
     | '/_protected/dashboard/inventories/'
+    | '/_protected/dashboard/language/'
+    | '/_protected/dashboard/layout/'
     | '/_protected/dashboard/locations/'
     | '/_protected/dashboard/machines/'
     | '/_protected/dashboard/menus/'
@@ -889,6 +915,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardLocationsIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/layout/': {
+      id: '/_protected/dashboard/layout/'
+      path: '/layout'
+      fullPath: '/dashboard/layout/'
+      preLoaderRoute: typeof ProtectedDashboardLayoutIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/language/': {
+      id: '/_protected/dashboard/language/'
+      path: '/language'
+      fullPath: '/dashboard/language/'
+      preLoaderRoute: typeof ProtectedDashboardLanguageIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/inventories/': {
       id: '/_protected/dashboard/inventories/'
       path: '/inventories'
@@ -957,6 +997,8 @@ interface ProtectedDashboardRouteChildren {
   ProtectedDashboardFaqsIndexRoute: typeof ProtectedDashboardFaqsIndexRoute
   ProtectedDashboardFoodItemsIndexRoute: typeof ProtectedDashboardFoodItemsIndexRoute
   ProtectedDashboardInventoriesIndexRoute: typeof ProtectedDashboardInventoriesIndexRoute
+  ProtectedDashboardLanguageIndexRoute: typeof ProtectedDashboardLanguageIndexRoute
+  ProtectedDashboardLayoutIndexRoute: typeof ProtectedDashboardLayoutIndexRoute
   ProtectedDashboardLocationsIndexRoute: typeof ProtectedDashboardLocationsIndexRoute
   ProtectedDashboardMachinesIndexRoute: typeof ProtectedDashboardMachinesIndexRoute
   ProtectedDashboardMenusIndexRoute: typeof ProtectedDashboardMenusIndexRoute
@@ -979,6 +1021,8 @@ const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardFoodItemsIndexRoute: ProtectedDashboardFoodItemsIndexRoute,
   ProtectedDashboardInventoriesIndexRoute:
     ProtectedDashboardInventoriesIndexRoute,
+  ProtectedDashboardLanguageIndexRoute: ProtectedDashboardLanguageIndexRoute,
+  ProtectedDashboardLayoutIndexRoute: ProtectedDashboardLayoutIndexRoute,
   ProtectedDashboardLocationsIndexRoute: ProtectedDashboardLocationsIndexRoute,
   ProtectedDashboardMachinesIndexRoute: ProtectedDashboardMachinesIndexRoute,
   ProtectedDashboardMenusIndexRoute: ProtectedDashboardMenusIndexRoute,

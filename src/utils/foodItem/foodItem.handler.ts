@@ -25,6 +25,19 @@ export const listFoodItemHandler = async (
   }
 };
 
+export const listFoodItemByShopIdHandler = async (shopId: number) => {
+  try {
+    const result = await db
+      .select()
+      .from(foodItemsTable)
+      .where(eq(foodItemsTable.shopId, shopId));
+    return result;
+  } catch (error) {
+    console.error("Error listing food items by shop id:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
 export const fetchFoodItemByIdHandler = async (id: number) => {
   try {
     const result = await db

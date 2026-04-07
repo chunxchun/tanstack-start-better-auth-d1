@@ -8,10 +8,12 @@ import { FieldGroup } from "@/components/ui/field";
 import {
   disposeReasonValues,
   type InsertDisposeType,
+  type SelectFoodItemType,
   type UpdateDisposeType,
 } from "@/db/schema";
+import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
 import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DisposeFormProps } from "./disposeFormType";
 
 export function DisposeForm({
@@ -25,6 +27,9 @@ export function DisposeForm({
   defaultShopId,
 }: DisposeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [dynamicFoodItems, setDynamicFoodItems] = useState<SelectFoodItemType[]>(foodItems ?? []);
+  const initialShopId = useRef(defaultShopId ?? initialData?.shopId ?? null);
+
   const form = useForm({
     defaultValues: initialData || {
       shopId: defaultShopId || null,
@@ -58,6 +63,25 @@ export function DisposeForm({
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
 
+  const [selectedShopId, setSelectedShopId] = useState<number | null>(
+    defaultShopId ?? initialData?.shopId ?? null,
+  );
+
+  useEffect(() => {
+    if (selectedShopId === initialShopId.current) return;
+
+    if (selectedShopId == null) {
+      setDynamicFoodItems([]);
+      return;
+    }
+
+    listFoodItemFn({ data: { limit: 100, offset: 0, shopId: selectedShopId } })
+      .then((items) => setDynamicFoodItems(items))
+      .catch(console.error);
+
+    form.setFieldValue("foodItemId", null as any);
+  }, [selectedShopId]);
+
   return (
     <form
       onSubmit={(e) => {
@@ -86,6 +110,7 @@ export function DisposeForm({
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
             required
+            onValueChange={(val) => setSelectedShopId(Number(val) || null)}
           />
 
           {/* machine */}
@@ -106,7 +131,7 @@ export function DisposeForm({
             name="foodItemId"
             label="Food Item"
             isReadOnly={isReadOnly}
-            list={foodItems || []}
+            list={dynamicFoodItems}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
             required

@@ -45,6 +45,9 @@ export default function FormText<TForm>({
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={isReadOnly}
+            className={
+              isReadOnly ? "disabled:bg-white disabled:opacity-100" : undefined
+            }
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

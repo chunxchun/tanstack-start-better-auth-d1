@@ -29,7 +29,7 @@ type UserFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof UserFormBaseProps, never>>;
+} & Partial<UserFormBaseProps>;
 
 export type UserFormProps =
   | UserFormViewProps

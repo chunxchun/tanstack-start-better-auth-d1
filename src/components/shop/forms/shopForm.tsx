@@ -2,15 +2,8 @@ import FormFooter from "@/components/form-footer";
 import FormHeader from "@/components/form-header";
 import FormImage from "@/components/form-image";
 import FormText from "@/components/form-text";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { FieldGroup } from "@/components/ui/field";
 import type { InsertShopType, UpdateShopType } from "@/db/schema";
-import { getVersionedImageUrl } from "@/lib/utils";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -110,7 +103,7 @@ export function ShopForm({
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <form.Field name="logoUrl">
+          {/* <form.Field name="logoUrl">
             {(field) => (
               <Field>
                 <FieldLabel htmlFor={field.name}>Logo</FieldLabel>
@@ -157,15 +150,24 @@ export function ShopForm({
                 )}
               </Field>
             )}
-          </form.Field>
+          </form.Field> */}
+
+          <FormImage
+            form={form}
+            name="logoUrl"
+            label="Logo"
+            isReadOnly={isReadOnly}
+            description="Suggest dimensions for the shop logo: 640 x 640px. Accept .jpg, .png files. Maximum file size: 2MB."
+            setFile={setLogoFile}
+            lastUpdatedAt={initialData?.updatedAt}
+          />
 
           <FormImage
             form={form}
             name="bannerUrl"
             label="Banner"
             isReadOnly={isReadOnly}
-            description="Optional public image URL for this shop banner."
-            // file={bannerFile}
+            description="Suggest dimensions for the shop banner: 1440 x 240px. Accept .jpg, .png files. Maximum file size: 5MB."
             setFile={setBannerFile}
             lastUpdatedAt={initialData?.updatedAt}
           />

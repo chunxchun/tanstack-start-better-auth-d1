@@ -71,7 +71,7 @@ export default function RegularScheduleTab({
       setSubmitError(null);
 
       if (!value.machineId) {
-        setSubmitError("Please select a machine first.");
+        setSubmitError("Please select a machine.");
         return;
       }
 

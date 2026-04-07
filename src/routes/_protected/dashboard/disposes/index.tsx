@@ -98,7 +98,13 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertDisposeType) => {
     try {
-      await createDisposeFn({ data: values });
+      const dispose = {
+        ...values,
+        shopId: Number(values.shopId),
+        machineId: Number(values.machineId),
+        foodItemId: Number(values.foodItemId),
+      };
+      await createDisposeFn({ data: dispose });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -110,6 +116,12 @@ function RouteComponent() {
     if (!selectedDispose) return;
 
     try {
+      const dispose = {
+        ...values,
+        shopId: Number(values.shopId),
+        machineId: Number(values.machineId),
+        foodItemId: Number(values.foodItemId),
+      };
       await updateDisposeByIdFn({ data: values });
       setEditOpen(false);
       setSelectedDispose(null);

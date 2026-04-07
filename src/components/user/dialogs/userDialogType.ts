@@ -23,6 +23,7 @@ export type UserCreateDialogProps = UserFormBaseProps &
     defaultShopId?: number;
   };
 
-export type UserViewDialogProps = ViewDialogProps<SelectUserType>;
+export type UserViewDialogProps = ViewDialogProps<SelectUserType> &
+  Partial<UserFormBaseProps>;
 
 export type UserDeleteDialogProps = DeleteDialogProps<SelectUserType>;

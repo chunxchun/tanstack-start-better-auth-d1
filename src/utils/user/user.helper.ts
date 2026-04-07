@@ -5,7 +5,7 @@ import { createUserFn, updateUserByIdFn } from "./user.function";
 const getUserImageUrl = async (
   image: File,
   userId: string,
-  shopId?: string | number | null,
+  shopId?: number | null,
 ) => {
   if (!image) return null;
   const folder = shopId
@@ -17,7 +17,7 @@ const getUserImageUrl = async (
 export const userHandleCreateSubmit = async (
   values: InsertUserType,
   image: File | null = null,
-  shopId: string | number | null = null,
+  shopId: number | null = null,
 ) => {
   try {
     const result = await createUserFn({ data: values });
@@ -50,7 +50,7 @@ export const userHandleCreateSubmit = async (
 export const userHandleUpdateSubmit = async (
   values: UpdateUserType,
   image: File | null = null,
-  shopId: string | number | null = null,
+  shopId: number | null = null,
 ) => {
   try {
     if (image) {

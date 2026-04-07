@@ -5,6 +5,7 @@ import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";
 import RegularScheduleTab from "./-components/regular-schedule-tab";
 import { searchSchema } from "@/db/schema/commonSchema";
+import SpecialScheduleTab from "./-components/special-schedule-tab";
 
 export const Route = createFileRoute("/_protected/dashboard/schedules/")({
   validateSearch: searchSchema,
@@ -33,7 +34,7 @@ function RouteComponent() {
   return (
     <RouteLayout>
       <RouteHeader title="Machine Schedules" />
-      <Tabs defaultValue="regularSchedule" className="w-1/2 mx-auto">
+      <Tabs defaultValue="regularSchedule" className="w-full mx-auto">
         <TabsList className="w-full">
           <TabsTrigger value="regularSchedule">Regular Schedule</TabsTrigger>
           <TabsTrigger value="specialSchedule">Special Schedule</TabsTrigger>
@@ -42,7 +43,7 @@ function RouteComponent() {
           <RegularScheduleTab machines={machines} />
         </TabsContent>
         <TabsContent value="specialSchedule">
-          Special schedule content
+         <SpecialScheduleTab machines={machines} />
         </TabsContent>
       </Tabs>
     </RouteLayout>

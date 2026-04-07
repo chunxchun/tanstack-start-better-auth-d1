@@ -7,12 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { SelectShopType } from "@/db/schema";
 import type { SelectUserType as User } from "@/db/schema/authSchema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 type UserColumnsOptions = {
   rowNumberOffset?: number;
+  shops?: SelectShopType[];
   onView: (user: User) => void;
   onEdit: (user: User) => void;
   onDelete: (user: User) => void;
@@ -20,10 +22,14 @@ type UserColumnsOptions = {
 
 export const getUserColumns = ({
   rowNumberOffset = 0,
+  shops = [],
   onView,
   onEdit,
   onDelete,
-}: UserColumnsOptions): ColumnDef<User>[] => [
+}: UserColumnsOptions): ColumnDef<User>[] => {
+  const shopNameById = new Map(shops.map((shop) => [shop.id, shop.name]));
+
+  return [
   {
     id: "rowNumber",
     header: "#",
@@ -38,7 +44,11 @@ export const getUserColumns = ({
     header: "Shop",
     cell: ({ getValue }) => {
       const shopId = getValue() as number | null;
-      return shopId ?? <span>-</span>;
+      if (shopId == null) {
+        return <span>-</span>;
+      }
+
+      return shopNameById.get(shopId) ?? String(shopId);
     },
   },
   {
@@ -87,4 +97,5 @@ export const getUserColumns = ({
       );
     },
   },
-];
+  ];
+};

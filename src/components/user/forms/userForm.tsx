@@ -73,7 +73,7 @@ export function UserForm({
         isCreate={isCreate}
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8">
+      <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
         <div className="flex gap-4">
           {/* shop */}
 

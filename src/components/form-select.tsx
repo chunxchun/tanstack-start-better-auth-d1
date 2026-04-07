@@ -37,6 +37,7 @@ type FormSelectProps<T, TForm> = {
   description?: string | null;
   required?: boolean;
   initialValue?: string | undefined;
+  onValueChange?: (value: string) => void;
 };
 
 export default function FormSelect<T, TForm>({
@@ -50,6 +51,7 @@ export default function FormSelect<T, TForm>({
   description = null,
   required = false,
   initialValue = undefined,
+  onValueChange,
 }: FormSelectProps<T, TForm>) {
   return (
     <form.Field name={name}>
@@ -69,7 +71,10 @@ export default function FormSelect<T, TForm>({
             // defaultValue={`234`}
             value={initialValue ?? String(field.state.value)}
             disabled={isReadOnly}
-            onValueChange={(e) => field.handleChange(e)}
+            onValueChange={(e) => {
+              field.handleChange(e);
+              onValueChange?.(e);
+            }}
           >
             <SelectTrigger
               onBlur={field.handleBlur}

@@ -43,3 +43,7 @@ export type ExistingScheduleMeta = {
 export type RegularScheduleTabProps = {
   machines: SelectMachineType[];
 };
+
+export type SpecialScheduleTabProps = {
+  machines: SelectMachineType[];
+};
