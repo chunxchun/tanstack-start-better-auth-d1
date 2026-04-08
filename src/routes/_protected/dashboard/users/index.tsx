@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { getUserColumns } from "@/components/user/dataTables/userColumns";
 import { DataTable } from "@/components/user/dataTables/userDataTable";
 import CreateUserDialog from "@/components/user/dialogs/CreateUserDialog";
@@ -22,7 +21,7 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";

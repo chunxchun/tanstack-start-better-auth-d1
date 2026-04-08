@@ -29,7 +29,7 @@ type UserFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<UserFormBaseProps>;
+} & UserFormBaseProps;
 
 export type UserFormProps =
   | UserFormViewProps

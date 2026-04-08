@@ -41,6 +41,7 @@ import { Route as ApiDeliveryIdRouteImport } from './routes/api/delivery/$id'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ProtectedDashboardWeeklySalesIndexRouteImport } from './routes/_protected/dashboard/weekly-sales/index'
 import { Route as ProtectedDashboardUsersIndexRouteImport } from './routes/_protected/dashboard/users/index'
+import { Route as ProtectedDashboardUserGuideIndexRouteImport } from './routes/_protected/dashboard/user-guide/index'
 import { Route as ProtectedDashboardShopsIndexRouteImport } from './routes/_protected/dashboard/shops/index'
 import { Route as ProtectedDashboardSchedulesIndexRouteImport } from './routes/_protected/dashboard/schedules/index'
 import { Route as ProtectedDashboardSalesIndexRouteImport } from './routes/_protected/dashboard/sales/index'
@@ -55,7 +56,9 @@ import { Route as ProtectedDashboardFaqsIndexRouteImport } from './routes/_prote
 import { Route as ProtectedDashboardDisposesIndexRouteImport } from './routes/_protected/dashboard/disposes/index'
 import { Route as ProtectedDashboardDeliveriesIndexRouteImport } from './routes/_protected/dashboard/deliveries/index'
 import { Route as ProtectedDashboardDailySalesIndexRouteImport } from './routes/_protected/dashboard/daily-sales/index'
+import { Route as ProtectedDashboardChangelogIndexRouteImport } from './routes/_protected/dashboard/changelog/index'
 import { Route as ProtectedDashboardBrandingIndexRouteImport } from './routes/_protected/dashboard/branding/index'
+import { Route as ProtectedDashboardApiDocIndexRouteImport } from './routes/_protected/dashboard/api-doc/index'
 import { Route as ProtectedDashboardAdminOnlyIndexRouteImport } from './routes/_protected/dashboard/admin-only/index'
 
 const SignupRoute = SignupRouteImport.update({
@@ -219,6 +222,12 @@ const ProtectedDashboardUsersIndexRoute =
     path: '/users/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardUserGuideIndexRoute =
+  ProtectedDashboardUserGuideIndexRouteImport.update({
+    id: '/user-guide/',
+    path: '/user-guide/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardShopsIndexRoute =
   ProtectedDashboardShopsIndexRouteImport.update({
     id: '/shops/',
@@ -303,10 +312,22 @@ const ProtectedDashboardDailySalesIndexRoute =
     path: '/daily-sales/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
+const ProtectedDashboardChangelogIndexRoute =
+  ProtectedDashboardChangelogIndexRouteImport.update({
+    id: '/changelog/',
+    path: '/changelog/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
 const ProtectedDashboardBrandingIndexRoute =
   ProtectedDashboardBrandingIndexRouteImport.update({
     id: '/branding/',
     path: '/branding/',
+    getParentRoute: () => ProtectedDashboardRoute,
+  } as any)
+const ProtectedDashboardApiDocIndexRoute =
+  ProtectedDashboardApiDocIndexRouteImport.update({
+    id: '/api-doc/',
+    path: '/api-doc/',
     getParentRoute: () => ProtectedDashboardRoute,
   } as any)
 const ProtectedDashboardAdminOnlyIndexRoute =
@@ -347,7 +368,9 @@ export interface FileRoutesByFullPath {
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
+  '/dashboard/api-doc/': typeof ProtectedDashboardApiDocIndexRoute
   '/dashboard/branding/': typeof ProtectedDashboardBrandingIndexRoute
+  '/dashboard/changelog/': typeof ProtectedDashboardChangelogIndexRoute
   '/dashboard/daily-sales/': typeof ProtectedDashboardDailySalesIndexRoute
   '/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
@@ -362,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/sales/': typeof ProtectedDashboardSalesIndexRoute
   '/dashboard/schedules/': typeof ProtectedDashboardSchedulesIndexRoute
   '/dashboard/shops/': typeof ProtectedDashboardShopsIndexRoute
+  '/dashboard/user-guide/': typeof ProtectedDashboardUserGuideIndexRoute
   '/dashboard/users/': typeof ProtectedDashboardUsersIndexRoute
   '/dashboard/weekly-sales/': typeof ProtectedDashboardWeeklySalesIndexRoute
 }
@@ -396,7 +420,9 @@ export interface FileRoutesByTo {
   '/api/sale': typeof ApiSaleIndexRoute
   '/api/shop': typeof ApiShopIndexRoute
   '/dashboard/admin-only': typeof ProtectedDashboardAdminOnlyIndexRoute
+  '/dashboard/api-doc': typeof ProtectedDashboardApiDocIndexRoute
   '/dashboard/branding': typeof ProtectedDashboardBrandingIndexRoute
+  '/dashboard/changelog': typeof ProtectedDashboardChangelogIndexRoute
   '/dashboard/daily-sales': typeof ProtectedDashboardDailySalesIndexRoute
   '/dashboard/deliveries': typeof ProtectedDashboardDeliveriesIndexRoute
   '/dashboard/disposes': typeof ProtectedDashboardDisposesIndexRoute
@@ -411,6 +437,7 @@ export interface FileRoutesByTo {
   '/dashboard/sales': typeof ProtectedDashboardSalesIndexRoute
   '/dashboard/schedules': typeof ProtectedDashboardSchedulesIndexRoute
   '/dashboard/shops': typeof ProtectedDashboardShopsIndexRoute
+  '/dashboard/user-guide': typeof ProtectedDashboardUserGuideIndexRoute
   '/dashboard/users': typeof ProtectedDashboardUsersIndexRoute
   '/dashboard/weekly-sales': typeof ProtectedDashboardWeeklySalesIndexRoute
 }
@@ -447,7 +474,9 @@ export interface FileRoutesById {
   '/api/sale/': typeof ApiSaleIndexRoute
   '/api/shop/': typeof ApiShopIndexRoute
   '/_protected/dashboard/admin-only/': typeof ProtectedDashboardAdminOnlyIndexRoute
+  '/_protected/dashboard/api-doc/': typeof ProtectedDashboardApiDocIndexRoute
   '/_protected/dashboard/branding/': typeof ProtectedDashboardBrandingIndexRoute
+  '/_protected/dashboard/changelog/': typeof ProtectedDashboardChangelogIndexRoute
   '/_protected/dashboard/daily-sales/': typeof ProtectedDashboardDailySalesIndexRoute
   '/_protected/dashboard/deliveries/': typeof ProtectedDashboardDeliveriesIndexRoute
   '/_protected/dashboard/disposes/': typeof ProtectedDashboardDisposesIndexRoute
@@ -462,6 +491,7 @@ export interface FileRoutesById {
   '/_protected/dashboard/sales/': typeof ProtectedDashboardSalesIndexRoute
   '/_protected/dashboard/schedules/': typeof ProtectedDashboardSchedulesIndexRoute
   '/_protected/dashboard/shops/': typeof ProtectedDashboardShopsIndexRoute
+  '/_protected/dashboard/user-guide/': typeof ProtectedDashboardUserGuideIndexRoute
   '/_protected/dashboard/users/': typeof ProtectedDashboardUsersIndexRoute
   '/_protected/dashboard/weekly-sales/': typeof ProtectedDashboardWeeklySalesIndexRoute
 }
@@ -498,7 +528,9 @@ export interface FileRouteTypes {
     | '/api/sale/'
     | '/api/shop/'
     | '/dashboard/admin-only/'
+    | '/dashboard/api-doc/'
     | '/dashboard/branding/'
+    | '/dashboard/changelog/'
     | '/dashboard/daily-sales/'
     | '/dashboard/deliveries/'
     | '/dashboard/disposes/'
@@ -513,6 +545,7 @@ export interface FileRouteTypes {
     | '/dashboard/sales/'
     | '/dashboard/schedules/'
     | '/dashboard/shops/'
+    | '/dashboard/user-guide/'
     | '/dashboard/users/'
     | '/dashboard/weekly-sales/'
   fileRoutesByTo: FileRoutesByTo
@@ -547,7 +580,9 @@ export interface FileRouteTypes {
     | '/api/sale'
     | '/api/shop'
     | '/dashboard/admin-only'
+    | '/dashboard/api-doc'
     | '/dashboard/branding'
+    | '/dashboard/changelog'
     | '/dashboard/daily-sales'
     | '/dashboard/deliveries'
     | '/dashboard/disposes'
@@ -562,6 +597,7 @@ export interface FileRouteTypes {
     | '/dashboard/sales'
     | '/dashboard/schedules'
     | '/dashboard/shops'
+    | '/dashboard/user-guide'
     | '/dashboard/users'
     | '/dashboard/weekly-sales'
   id:
@@ -597,7 +633,9 @@ export interface FileRouteTypes {
     | '/api/sale/'
     | '/api/shop/'
     | '/_protected/dashboard/admin-only/'
+    | '/_protected/dashboard/api-doc/'
     | '/_protected/dashboard/branding/'
+    | '/_protected/dashboard/changelog/'
     | '/_protected/dashboard/daily-sales/'
     | '/_protected/dashboard/deliveries/'
     | '/_protected/dashboard/disposes/'
@@ -612,6 +650,7 @@ export interface FileRouteTypes {
     | '/_protected/dashboard/sales/'
     | '/_protected/dashboard/schedules/'
     | '/_protected/dashboard/shops/'
+    | '/_protected/dashboard/user-guide/'
     | '/_protected/dashboard/users/'
     | '/_protected/dashboard/weekly-sales/'
   fileRoutesById: FileRoutesById
@@ -873,6 +912,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardUsersIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/user-guide/': {
+      id: '/_protected/dashboard/user-guide/'
+      path: '/user-guide'
+      fullPath: '/dashboard/user-guide/'
+      preLoaderRoute: typeof ProtectedDashboardUserGuideIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/shops/': {
       id: '/_protected/dashboard/shops/'
       path: '/shops'
@@ -971,11 +1017,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDashboardDailySalesIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
+    '/_protected/dashboard/changelog/': {
+      id: '/_protected/dashboard/changelog/'
+      path: '/changelog'
+      fullPath: '/dashboard/changelog/'
+      preLoaderRoute: typeof ProtectedDashboardChangelogIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
     '/_protected/dashboard/branding/': {
       id: '/_protected/dashboard/branding/'
       path: '/branding'
       fullPath: '/dashboard/branding/'
       preLoaderRoute: typeof ProtectedDashboardBrandingIndexRouteImport
+      parentRoute: typeof ProtectedDashboardRoute
+    }
+    '/_protected/dashboard/api-doc/': {
+      id: '/_protected/dashboard/api-doc/'
+      path: '/api-doc'
+      fullPath: '/dashboard/api-doc/'
+      preLoaderRoute: typeof ProtectedDashboardApiDocIndexRouteImport
       parentRoute: typeof ProtectedDashboardRoute
     }
     '/_protected/dashboard/admin-only/': {
@@ -990,7 +1050,9 @@ declare module '@tanstack/react-router' {
 
 interface ProtectedDashboardRouteChildren {
   ProtectedDashboardAdminOnlyIndexRoute: typeof ProtectedDashboardAdminOnlyIndexRoute
+  ProtectedDashboardApiDocIndexRoute: typeof ProtectedDashboardApiDocIndexRoute
   ProtectedDashboardBrandingIndexRoute: typeof ProtectedDashboardBrandingIndexRoute
+  ProtectedDashboardChangelogIndexRoute: typeof ProtectedDashboardChangelogIndexRoute
   ProtectedDashboardDailySalesIndexRoute: typeof ProtectedDashboardDailySalesIndexRoute
   ProtectedDashboardDeliveriesIndexRoute: typeof ProtectedDashboardDeliveriesIndexRoute
   ProtectedDashboardDisposesIndexRoute: typeof ProtectedDashboardDisposesIndexRoute
@@ -1005,13 +1067,16 @@ interface ProtectedDashboardRouteChildren {
   ProtectedDashboardSalesIndexRoute: typeof ProtectedDashboardSalesIndexRoute
   ProtectedDashboardSchedulesIndexRoute: typeof ProtectedDashboardSchedulesIndexRoute
   ProtectedDashboardShopsIndexRoute: typeof ProtectedDashboardShopsIndexRoute
+  ProtectedDashboardUserGuideIndexRoute: typeof ProtectedDashboardUserGuideIndexRoute
   ProtectedDashboardUsersIndexRoute: typeof ProtectedDashboardUsersIndexRoute
   ProtectedDashboardWeeklySalesIndexRoute: typeof ProtectedDashboardWeeklySalesIndexRoute
 }
 
 const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardAdminOnlyIndexRoute: ProtectedDashboardAdminOnlyIndexRoute,
+  ProtectedDashboardApiDocIndexRoute: ProtectedDashboardApiDocIndexRoute,
   ProtectedDashboardBrandingIndexRoute: ProtectedDashboardBrandingIndexRoute,
+  ProtectedDashboardChangelogIndexRoute: ProtectedDashboardChangelogIndexRoute,
   ProtectedDashboardDailySalesIndexRoute:
     ProtectedDashboardDailySalesIndexRoute,
   ProtectedDashboardDeliveriesIndexRoute:
@@ -1029,6 +1094,7 @@ const ProtectedDashboardRouteChildren: ProtectedDashboardRouteChildren = {
   ProtectedDashboardSalesIndexRoute: ProtectedDashboardSalesIndexRoute,
   ProtectedDashboardSchedulesIndexRoute: ProtectedDashboardSchedulesIndexRoute,
   ProtectedDashboardShopsIndexRoute: ProtectedDashboardShopsIndexRoute,
+  ProtectedDashboardUserGuideIndexRoute: ProtectedDashboardUserGuideIndexRoute,
   ProtectedDashboardUsersIndexRoute: ProtectedDashboardUsersIndexRoute,
   ProtectedDashboardWeeklySalesIndexRoute:
     ProtectedDashboardWeeklySalesIndexRoute,

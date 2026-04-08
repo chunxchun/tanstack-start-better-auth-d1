@@ -17,7 +17,7 @@ const featureProps = {
   },
   buttonSecondary: {
     text: "View Live Metrics",
-    href: "/dashboard/sales",
+    href: "/dashboard/daily-sales",
   },
   className: "",
 };

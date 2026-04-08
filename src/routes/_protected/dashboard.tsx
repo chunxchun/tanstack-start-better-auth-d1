@@ -10,7 +10,9 @@ import type { SelectUserType } from "@/db/schema/authSchema";
 import { getVersionedImageUrl } from "@/lib/utils";
 import { listShopFn } from "@/utils/shop/shop.function";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const ACTIVE_SHOP_STORAGE_KEY = "active-shop-id";
 
 export const Route = createFileRoute("/_protected/dashboard")({
   loader: async () => {
@@ -23,7 +25,46 @@ export const Route = createFileRoute("/_protected/dashboard")({
 function RouteComponent() {
   const { shops } = Route.useLoaderData();
   const { user } = Route.useRouteContext();
-  const [activeShop, setActiveShop] = useState<SelectShopType>(shops[0]);
+  const [activeShop, setActiveShop] = useState<SelectShopType>(() => {
+    if (typeof window === "undefined") {
+      return shops[0];
+    }
+
+    const storedShopId = window.localStorage.getItem(ACTIVE_SHOP_STORAGE_KEY);
+    if (!storedShopId) {
+      return shops[0];
+    }
+
+    const matchedShop = shops.find((shop) => shop.id === Number(storedShopId));
+    return matchedShop ?? shops[0];
+  });
+
+  useEffect(() => {
+    if (!activeShop) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      ACTIVE_SHOP_STORAGE_KEY,
+      String(activeShop.id),
+    );
+  }, [activeShop]);
+
+  useEffect(() => {
+    if (!shops.length) {
+      return;
+    }
+
+    const matchedShop = shops.find((shop) => shop.id === activeShop?.id);
+    if (matchedShop) {
+      if (matchedShop !== activeShop) {
+        setActiveShop(matchedShop);
+      }
+      return;
+    }
+
+    setActiveShop(shops[0]);
+  }, [activeShop, shops]);
 
   return (
     <TooltipProvider>

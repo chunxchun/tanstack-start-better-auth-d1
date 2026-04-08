@@ -15,6 +15,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { UserFormProps } from "./userFormType";
 
+const allowedRoles = [...userRoleValues].filter((role) => role !== "admin");
+
 export function UserForm({
   mode,
   initialData,
@@ -39,12 +41,10 @@ export function UserForm({
       try {
         if (mode === "edit") {
           await onSubmit(value as UpdateUserType, imageFile ?? undefined);
-          toast.success("User updated successfully");
         }
 
         if (mode === "create") {
           await onSubmit(value as InsertUserType, imageFile ?? undefined);
-          toast.success("User created successfully");
         }
       } catch (error) {
         console.error("Error submitting user form:", error);
@@ -94,13 +94,14 @@ export function UserForm({
             form={form}
             name="role"
             label="Role"
-            list={[...userRoleValues]}
+            list={allowedRoles}
             valueKey={(item) => item}
             labelKey={(item) => item}
             isReadOnly={isReadOnly}
             required
           />
         </div>
+
         {/* name */}
         <FormText
           form={form}

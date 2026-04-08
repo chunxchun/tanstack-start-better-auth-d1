@@ -24,6 +24,6 @@ export type UserCreateDialogProps = UserFormBaseProps &
   };
 
 export type UserViewDialogProps = ViewDialogProps<SelectUserType> &
-  Partial<UserFormBaseProps>;
+  UserFormBaseProps;
 
 export type UserDeleteDialogProps = DeleteDialogProps<SelectUserType>;

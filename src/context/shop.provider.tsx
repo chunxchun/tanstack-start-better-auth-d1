@@ -1,5 +1,5 @@
 import type { SelectShopType } from "@/db/schema";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ShopContext } from "./shop.context";
 
 type ShopProviderProps = {
@@ -12,6 +12,10 @@ export const ShopProvider = ({
   initialValue = null,
 }: ShopProviderProps) => {
   const [activeShop, setActiveShop] = useState<SelectShopType | null>(initialValue);
+
+  useEffect(() => {
+    setActiveShop(initialValue);
+  }, [initialValue]);
 
   return (
     <ShopContext.Provider value={{ activeShop, setActiveShop }}>

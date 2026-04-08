@@ -149,7 +149,7 @@ const data = {
         },
         {
           title: "Changelog",
-          url: "#",
+          url: "/dashboard/changelog",
           canAccess: ["admin", "manager", "staff"],
           disabled: true,
         },
@@ -160,11 +160,11 @@ const data = {
       url: "#",
       icon: <Settings2Icon />,
       items: [
-        {
-          title: "Layout",
-          url: "/dashboard/layout",
-          canAccess: ["admin", "manager", "staff"],
-        },
+        // {
+        //   title: "Layout",
+        //   url: "/dashboard/layout",
+        //   canAccess: ["admin", "manager", "staff"],
+        // },
         {
           title: "Language",
           url: "/dashboard/language",

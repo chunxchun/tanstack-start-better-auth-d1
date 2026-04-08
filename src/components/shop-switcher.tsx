@@ -1,12 +1,10 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -17,8 +15,8 @@ import {
 } from "@/components/ui/sidebar";
 import type { SelectShopType } from "@/db/schema";
 import { getVersionedImageUrl } from "@/lib/utils";
-import { ChevronsUpDownIcon, PlusIcon } from "lucide-react";
-import { Button } from "./ui/button";
+import { ChevronsUpDownIcon } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 
 export function ShopSwitcher({
   shops,
@@ -54,9 +52,7 @@ export function ShopSwitcher({
                     alt={activeShop.name}
                     className="w-full h-full object-cover rounded-lg"
                   />
-                ) : (
-                  <></>
-                )}
+                ) : null}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{activeShop.name}</span>
@@ -73,7 +69,7 @@ export function ShopSwitcher({
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Shops
             </DropdownMenuLabel>
-            {shops.map((shop, index) => (
+            {shops.map((shop) => (
               <DropdownMenuItem
                 key={shop.name}
                 onClick={() => setActiveShop(shop)}
@@ -86,9 +82,7 @@ export function ShopSwitcher({
                       alt={shop.name}
                       className="w-full h-full object-cover rounded-lg"
                     />
-                  ) : (
-                    <></>
-                  )}
+                  ) : null}
                 </div>
                 {shop.name}
                 {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
