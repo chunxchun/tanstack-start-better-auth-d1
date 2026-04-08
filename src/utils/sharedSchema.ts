@@ -10,9 +10,12 @@ const dateRangeBaseSchema = z.object({
   endDate: z.iso.date(),
 });
 
-export const dateRangeSchema = dateRangeBaseSchema.refine((data) => data.startDate <= data.endDate, {
-  message: "startDate must be before or equal to endDate",
-});
+export const dateRangeSchema = dateRangeBaseSchema.refine(
+  (data) => data.startDate <= data.endDate,
+  {
+    message: "startDate must be before or equal to endDate",
+  },
+);
 
 export const shopIdSchema = z.object({
   shopId: z.coerce.number().int().positive(),
@@ -36,7 +39,6 @@ export const dateRangeMachineIdSchema = dateRangeBaseSchema
   .refine((data) => data.startDate <= data.endDate, {
     message: "startDate must be before or equal to endDate",
   });
-
 
 export const paginationSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(10),

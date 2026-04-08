@@ -47,6 +47,10 @@ export default function FormDecimal<TForm>({
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
             disabled={isReadOnly}
+            className={
+              isReadOnly ? "disabled:bg-white disabled:opacity-100" : undefined
+            }
+            required={required}
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

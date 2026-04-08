@@ -31,7 +31,7 @@ type SaleFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof SaleFormBaseProps, never>>;
+} & SaleFormBaseProps;
 
 export type SaleFormProps =
   | SaleFormViewProps

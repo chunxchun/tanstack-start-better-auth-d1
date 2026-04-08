@@ -75,24 +75,3 @@ export const searchSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(10),
   offset: z.coerce.number().int().min(0).default(0),
 });
-
-// export type CreateDialogProps<FetchType, InsertType> = {
-//   open: boolean;
-//   onOpenChange: (open: boolean) => void;
-//   onCancel: () => void;
-// };
-
-// export type ViewDialogProps<T> = {
-//   open: boolean;
-//   onOpenChange: (open: boolean) => void;
-//   onCancel: () => void;
-//   data: T;
-// };
-
-// export type DeleteDialogProps<T> = {
-//   open: boolean;
-//   onOpenChange: (open: boolean) => void;
-//   onCancel: () => void;
-//   onDeleteConfirm: () => void;
-//   data: T;
-// }

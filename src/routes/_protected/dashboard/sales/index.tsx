@@ -79,6 +79,8 @@ function RouteComponent() {
   const columns = useMemo(
     () =>
       getSaleColumns({
+        machines,
+        foodItems,
         onView: (sale) => {
           setSelectedSale(sale);
           setViewOpen(true);
@@ -92,12 +94,18 @@ function RouteComponent() {
           setDeleteOpen(true);
         },
       }),
-    [],
+    [foodItems, machines],
   );
 
   const handleCreateSubmit = async (values: InsertSaleType) => {
     try {
-      await createSaleFn({ data: values });
+      const sale = {
+        ...values,
+        shopId: Number(values.shopId),
+        machineId: Number(values.machineId),
+        foodItemId: Number(values.foodItemId),
+      };
+      await createSaleFn({ data: sale });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -158,6 +166,9 @@ function RouteComponent() {
 
       <ViewSaleDialog
         open={viewOpen}
+        shops={shops}
+        machines={machines}
+        foodItems={foodItems}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedSale(null);

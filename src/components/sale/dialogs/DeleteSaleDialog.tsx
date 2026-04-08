@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import type { SaleDeleteDialogProps } from "./saleDialogType";
 
@@ -17,18 +17,18 @@ export default function DeleteSaleDialog({
   data,
 }: SaleDeleteDialogProps) {
   return (
-    <Dialog open={false} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="min-w-[50vw]"
         onInteractOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="sr-only">
-          <DialogTitle>Create Sale</DialogTitle>
+          <DialogTitle>Delete Sale</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete
+            {data ? ` this sale at ${data.saleDate}` : " this sale"}? This action cannot be
+            undone.
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onCancel}>

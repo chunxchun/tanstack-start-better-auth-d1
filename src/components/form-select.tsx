@@ -61,26 +61,19 @@ export default function FormSelect<T, TForm>({
             {label} {required && <span className="text-destructive">*</span>}
           </FieldLabel>
 
-          {/* {isReadOnly ? <p>{initialValue}</p> : null} */}
           <Select
-            // defaultValue={
-            //   initialValue
-            //     ? list?.find((item) => item.id === initialValue)
-            //     : field.state.value
-            // }
-            // defaultValue={`234`}
             value={initialValue ?? String(field.state.value)}
-            disabled={isReadOnly}
             onValueChange={(e) => {
               field.handleChange(e);
               onValueChange?.(e);
             }}
+            disabled={isReadOnly}
           >
             <SelectTrigger
               onBlur={field.handleBlur}
               disabled={list.length === 0}
             >
-              <SelectValue placeholder={`Select a ${label.toLowerCase()}`} />
+              <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
             </SelectTrigger>
             {!isReadOnly && list.length === 0 && (
               <FieldError>{`No ${label.toLowerCase()} available, go create one`}</FieldError>

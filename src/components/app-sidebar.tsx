@@ -116,6 +116,11 @@ const data = {
       icon: <CircleDollarSign />,
       items: [
         {
+          title: "Sales",
+          url: "/dashboard/sales",
+          canAccess: ["admin"],
+        },
+        {
           title: "Daily Sales",
           url: "/dashboard/daily-sales",
           canAccess: ["admin", "manager", "staff"],

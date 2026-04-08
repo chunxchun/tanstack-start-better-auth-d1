@@ -17,7 +17,6 @@ export default function EditSaleDialog({
   onCancel,
   initialData,
   defaultShopId,
-
 }: SaleEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,7 +36,6 @@ export default function EditSaleDialog({
           onSubmit={onSubmit}
           onCancel={onCancel}
           defaultShopId={defaultShopId}
-
         />
       </DialogContent>
     </Dialog>

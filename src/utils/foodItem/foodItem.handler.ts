@@ -36,7 +36,7 @@ export const listFoodItemByShopIdHandler = async (shopId: number) => {
     console.error("Error listing food items by shop id:", error);
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
-}
+};
 
 export const fetchFoodItemByIdHandler = async (id: number) => {
   try {

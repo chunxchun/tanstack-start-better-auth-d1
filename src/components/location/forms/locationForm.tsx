@@ -43,12 +43,10 @@ export function LocationForm({
         setIsLoading(true);
         if (mode === "edit") {
           await onSubmit(value as UpdateLocationType);
-          // toast.success("Location updated successfully");
         }
 
         if (mode === "create") {
           await onSubmit(value as InsertLocationType);
-          // toast.success("Location created successfully");
         }
       } catch (error) {
         console.error("Error saving location:", error);
@@ -78,14 +76,30 @@ export function LocationForm({
       />
 
       <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
-        {/* name */}
-        <FormText
-          form={form}
-          name="name"
-          label="Name"
-          isReadOnly={isReadOnly}
-          required
-        />
+        <div className="form-half-width">
+          {/* name */}
+          <FormText
+            form={form}
+            name="name"
+            label="Name"
+            isReadOnly={isReadOnly}
+            required
+          />
+
+          {/* shop */}
+          <FormSelect
+            form={form}
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
+            name="shopId"
+            label="Shop"
+            isReadOnly={!!defaultShopId || isReadOnly}
+            list={shops || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            description="Select the shop associated with this location."
+            required
+          />
+        </div>
 
         <FormText
           form={form}
@@ -147,20 +161,6 @@ export function LocationForm({
             valueKey={(item) => item}
             labelKey={(item) => item}
             description="Select the country for this location."
-            required
-          />
-
-          {/* shop */}
-          <FormSelect
-            form={form}
-            initialValue={defaultShopId ? String(defaultShopId) : undefined}
-            name="shopId"
-            label="Shop"
-            isReadOnly={!!defaultShopId || isReadOnly}
-            list={shops || []}
-            valueKey={(item) => item.id}
-            labelKey={(item) => item.name}
-            description="Select the shop associated with this location."
             required
           />
 

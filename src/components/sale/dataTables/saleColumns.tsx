@@ -1,4 +1,8 @@
-import type { SelectSaleType as Sale } from "@/db/schema";
+import type {
+  SelectFoodItemType,
+  SelectMachineType,
+  SelectSaleType as Sale,
+} from "@/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
@@ -14,6 +18,8 @@ import {
 
 type SaleColumnsOptions = {
   rowNumberOffset?: number;
+  machines?: SelectMachineType[];
+  foodItems?: SelectFoodItemType[];
   onView: (sale: Sale) => void;
   onEdit: (sale: Sale) => void;
   onDelete: (sale: Sale) => void;
@@ -21,6 +27,8 @@ type SaleColumnsOptions = {
 
 export const getSaleColumns = ({
   rowNumberOffset = 0,
+  machines = [],
+  foodItems = [],
   onView,
   onEdit,
   onDelete,
@@ -37,10 +45,20 @@ export const getSaleColumns = ({
   {
     accessorKey: "machineId",
     header: "Machine",
+    cell: ({ row }) => {
+      const machine = machines.find((item) => item.id === row.original.machineId);
+      return machine?.name ?? String(row.original.machineId);
+    },
   },
   {
     accessorKey: "foodItemId",
     header: "Food Item",
+    cell: ({ row }) => {
+      const foodItem = foodItems.find(
+        (item) => item.id === row.original.foodItemId,
+      );
+      return foodItem?.name ?? String(row.original.foodItemId);
+    },
   },
   {
     accessorKey: "saleDate",

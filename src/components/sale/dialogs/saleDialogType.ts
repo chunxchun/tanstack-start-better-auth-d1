@@ -23,6 +23,7 @@ export type SaleCreateDialogProps = SaleFormBaseProps &
     defaultShopId?: number;
   };
 
-export type SaleViewDialogProps = ViewDialogProps<SelectSaleType>;
+export type SaleViewDialogProps = SaleFormBaseProps &
+  ViewDialogProps<SelectSaleType>;
 
 export type SaleDeleteDialogProps = DeleteDialogProps<SelectSaleType>;

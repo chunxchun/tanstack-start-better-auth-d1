@@ -172,6 +172,7 @@ function RouteComponent() {
       
       <ViewLocationDialog
         open={viewOpen}
+        shops={shops}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedLocation(null);

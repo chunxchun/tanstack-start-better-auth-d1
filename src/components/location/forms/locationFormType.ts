@@ -29,7 +29,7 @@ type LocationFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof LocationFormBaseProps, never>>;
+} & LocationFormBaseProps;
 
 export type LocationFormProps =
   | LocationFormCreateProps

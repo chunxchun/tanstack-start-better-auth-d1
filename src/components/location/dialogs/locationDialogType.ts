@@ -24,6 +24,7 @@ export type LocationCreateDialogProps = LocationFormBaseProps &
     defaultShopId?: number;
   };
 
-export type LocationViewDialogProps = ViewDialogProps<SelectLocationType>;
+export type LocationViewDialogProps = LocationFormBaseProps &
+  ViewDialogProps<SelectLocationType>;
 
 export type LocationDeleteDialogProps = DeleteDialogProps<SelectLocationType>;

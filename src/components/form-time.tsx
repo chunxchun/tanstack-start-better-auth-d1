@@ -1,7 +1,6 @@
-import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ReactFormExtendedApi } from "@tanstack/react-form";
-import type { required } from "node_modules/zod/v4/core/util.d.cts";
 
 type FormDateProps<TForm> = {
   form: ReactFormExtendedApi<
@@ -49,6 +48,9 @@ export default function FormTime<TForm>({
             onChange={(e) => field.handleChange(e.target.value as any)}
             disabled={isReadOnly}
             required={required}
+            className={
+              isReadOnly ? "disabled:bg-white disabled:opacity-100" : undefined
+            }
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

@@ -12,26 +12,33 @@ import {
   type UpdateSaleType,
 } from "@/db/schema";
 import { currencyValues } from "@/db/schema/commonSchema";
-import { useForm } from "@tanstack/react-form";
+import { listMachineByShopIdFn } from "@/utils/machine/machine.function";
+import { useForm, useStore } from "@tanstack/react-form";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import type { SaleFormProps } from "./saleFormType";
+import { listFoodItemByShopIdFn } from "@/utils/foodItem/foodItem.function";
 
 export function SaleForm({
   mode,
   initialData,
   shops,
-  machines,
-  foodItems = [],
+  // machines,
+  // foodItems = [],
   onSubmit,
   onCancel,
   defaultShopId,
 }: SaleFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  // const [selectedShopId, setSelectedShopId] = useState<number | null>(
+  //   defaultShopId ?? initialData?.shopId ?? null,
+  // );
+
   const form = useForm({
     defaultValues: initialData || {
+      shopId: defaultShopId ?? null,
       machineId: null,
       foodItemId: null,
-      shopId: defaultShopId || null,
       saleDate: new Date().toISOString().slice(0, 10), // default to today's date
       saleTime: "12:00",
       quantity: 1,
@@ -64,6 +71,27 @@ export function SaleForm({
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
 
+  const shopId = useStore(form.store, (state) => state.values.shopId);
+  // const activeShopId =
+  //   selectedShopId ??
+  //   (typeof shopId === "number"
+  //     ? shopId
+  //     : typeof shopId === "string"
+  //       ? Number(shopId)
+  //       : null);
+  // const hasValidShopId = !!activeShopId && activeShopId > 0;
+
+  const { data: machines = [], isLoading: isLoadingMachines } = useQuery({
+    queryKey: ["machines", shopId],
+    queryFn: () => listMachineByShopIdFn({ data: { shopId: Number(shopId) } }),
+    // enabled: hasValidShopId,
+  });
+
+  const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
+    queryKey: ["foodItems", shopId],
+    queryFn: () => listFoodItemByShopIdFn({ data: { shopId: Number(shopId) } }),
+    // enabled: hasValidShopId,
+  });
   return (
     <form
       onSubmit={(e) => {
@@ -78,35 +106,11 @@ export function SaleForm({
         isCreate={isCreate}
         isReadOnly={isReadOnly}
       />
-
       <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
         <div className="form-half-width">
-          {/* machine */}
-          <FormSelect
-            form={form}
-            name="machineId"
-            label="Machine"
-            list={machines || []}
-            valueKey={(item) => item.id}
-            labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
-          />
-
-          {/* food item */}
-          <FormSelect
-            form={form}
-            name="foodItemId"
-            label="Food Item"
-            list={foodItems || []}
-            valueKey={(item) => item.id}
-            labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
-          />
-
           {/* shop */}
           <FormSelect
             form={form}
-            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
             isReadOnly={!!defaultShopId || isReadOnly}
@@ -114,14 +118,65 @@ export function SaleForm({
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
             required
+            onValueChange={() => {
+              form.setFieldValue("machineId", null as never);
+              form.setFieldValue("foodItemId", null as never);
+            }}
           />
 
+          {/* machine */}
+          {/* machine selection depends on selected shop */}
+
+          <FormSelect
+            form={form}
+            name="machineId"
+            label="Machine"
+            list={machines || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            isReadOnly={isReadOnly || isLoadingMachines}
+            required
+          />
+
+          {/* food item */}
+          {/* food item selection depends on selected shop */}
+          <FormSelect
+            form={form}
+            name="foodItemId"
+            label="Food Item"
+            list={foodItems || []}
+            valueKey={(item) => item.id}
+            labelKey={(item) => item.name}
+            isReadOnly={isReadOnly || isLoadingFoodItems}
+            onValueChange={(value) => {
+              const selectedFoodItem = foodItems.find(
+                (item) => item.id === Number(value),
+              );
+              form.setFieldValue(
+                "unitPrice",
+                selectedFoodItem ? selectedFoodItem.price : 0,
+              );
+              form.setFieldValue(
+                "currency",
+                selectedFoodItem ? selectedFoodItem.currency : "AUD",
+              );
+              form.setFieldValue(
+                "totalPrice",
+                selectedFoodItem ? selectedFoodItem.price * form.getFieldValue("quantity") : 0
+              );
+            }}
+            required
+          />
+        </div>
+
+        <div className="form-half-width">
           {/* sale date */}
           <FormDate
             form={form}
             name="saleDate"
             label="Sale Date"
             isReadOnly={isReadOnly}
+            required
           />
 
           {/* sale time */}
@@ -130,14 +185,7 @@ export function SaleForm({
             name="saleTime"
             label="Sale Time"
             isReadOnly={isReadOnly}
-          />
-
-          {/* quantity */}
-          <FormNumber
-            form={form}
-            name="quantity"
-            label="Quantity"
-            isReadOnly={isReadOnly}
+            required
           />
 
           {/* currency */}
@@ -148,7 +196,8 @@ export function SaleForm({
             list={currencyValues}
             valueKey={(item) => item}
             labelKey={(item) => item}
-            isReadOnly={isReadOnly}
+            isReadOnly={true}
+            required
           />
 
           {/* unit price */}
@@ -156,7 +205,22 @@ export function SaleForm({
             form={form}
             name="unitPrice"
             label="Unit Price"
+            isReadOnly={true}
+            required
+          />
+
+          {/* quantity */}
+          <FormNumber
+            form={form}
+            name="quantity"
+            label="Quantity"
             isReadOnly={isReadOnly}
+            onValueChange={(value) => {
+              const unitPrice = form.getFieldValue("unitPrice");
+              const totalPrice = value * unitPrice;
+              form.setFieldValue("totalPrice", totalPrice);
+            }}
+            required
           />
 
           {/* total price */}
@@ -164,7 +228,8 @@ export function SaleForm({
             form={form}
             name="totalPrice"
             label="Total Price"
-            isReadOnly={isReadOnly}
+            isReadOnly={true}
+            required
           />
 
           {/* payment method */}
@@ -176,6 +241,7 @@ export function SaleForm({
             valueKey={(item) => item}
             labelKey={(item) => item}
             isReadOnly={isReadOnly}
+            required
           />
         </div>
       </FieldGroup>

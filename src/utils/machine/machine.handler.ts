@@ -25,6 +25,19 @@ export const listMachineHandler = async (
   }
 };
 
+export const listMachineByShopIdHandler = async (shopId: number) => {
+  try {
+    const result = await db
+      .select()
+      .from(machinesTable)
+      .where(eq(machinesTable.shopId, shopId));
+    return result;
+  } catch (error) {
+    console.error("Error listing machines by shop id:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
 export const fetchMachineByIdHandler = async (id: number) => {
   try {
     const result = await db

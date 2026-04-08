@@ -10,7 +10,9 @@ import type { SaleViewDialogProps } from "./saleDialogType";
 export default function ViewSaleDialog({
   open,
   onOpenChange,
-
+  shops,
+  machines,
+  foodItems,
   onCancel,
   initialData,
 }: SaleViewDialogProps) {
@@ -23,7 +25,14 @@ export default function ViewSaleDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>View Sale</DialogTitle>
         </DialogHeader>
-        <SaleForm mode="view" initialData={initialData} onCancel={onCancel} />
+        <SaleForm
+          mode="view"
+          initialData={initialData}
+          shops={shops}
+          machines={machines}
+          foodItems={foodItems}
+          onCancel={onCancel}
+        />
       </DialogContent>
     </Dialog>
   );

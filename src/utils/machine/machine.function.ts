@@ -3,11 +3,12 @@ import {
   updateMachineSchema,
 } from "@/db/schema/machineTable";
 import { createServerFn } from "@tanstack/react-start";
-import { idSchema, paginationSchema } from "../sharedSchema";
+import { idSchema, paginationSchema, shopIdSchema } from "../sharedSchema";
 import {
   createMachineHandler,
   deleteMachineByIdHandler,
   fetchMachineByIdHandler,
+  listMachineByShopIdHandler,
   listMachineHandler,
   updateMachineByIdHandler,
 } from "./machine.handler";
@@ -17,6 +18,9 @@ export const listMachineFn = createServerFn({ method: "GET" })
   .handler(async ({ data }) =>
     listMachineHandler(data.limit, data.offset, data.shopId),
   );
+export const listMachineByShopIdFn = createServerFn({ method: "GET" })
+  .inputValidator(shopIdSchema)
+  .handler(async ({ data }) => listMachineByShopIdHandler(data.shopId));
 
 export const createMachineFn = createServerFn({ method: "POST" })
   .inputValidator(insertMachineSchema)

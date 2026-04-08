@@ -3,11 +3,12 @@ import {
   updateFoodItemSchema,
 } from "@/db/schema/foodItemTable";
 import { createServerFn } from "@tanstack/react-start";
-import { idSchema, paginationSchema } from "../sharedSchema";
+import { idSchema, paginationSchema, shopIdSchema } from "../sharedSchema";
 import {
   createFoodItemHandler,
   deleteFoodItemByIdHandler,
   fetchFoodItemByIdHandler,
+  listFoodItemByShopIdHandler,
   listFoodItemHandler,
   updateFoodItemByIdHandler,
 } from "./foodItem.handler";
@@ -16,7 +17,11 @@ export const listFoodItemFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
   .handler(async ({ data }) => listFoodItemHandler(data.limit, data.offset, data.shopId)  );
 
-export const createFoodItemFn = createServerFn({ method: "POST" })
+export const listFoodItemByShopIdFn = createServerFn({ method: "GET" })
+  .inputValidator(shopIdSchema)
+  .handler(async ({ data }) => listFoodItemByShopIdHandler(Number(data.shopId)));
+
+  export const createFoodItemFn = createServerFn({ method: "POST" })
   .inputValidator(insertFoodItemSchema)
   .handler(async ({ data }) => createFoodItemHandler(data));
 

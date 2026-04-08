@@ -22,6 +22,7 @@ type FormTextProps<TForm> = {
   isReadOnly: boolean;
   description?: string | null;
   required?: boolean;
+  onValueChange?: (value: number) => void;
 };
 
 export default function FormNumber<TForm>({
@@ -31,6 +32,7 @@ export default function FormNumber<TForm>({
   isReadOnly,
   description = null,
   required = false,
+  onValueChange,
 }: FormTextProps<TForm>) {
   return (
     <form.Field name={name}>
@@ -44,9 +46,20 @@ export default function FormNumber<TForm>({
             name={field.name}
             value={field.state.value}
             onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+            min={1}
+            defaultValue={1}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              field.handleChange(value);
+              if (onValueChange) {
+                onValueChange(value);
+              }
+            }}
             disabled={isReadOnly}
             required={required}
+            className={
+              isReadOnly ? "disabled:bg-white disabled:opacity-100" : undefined
+            }
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

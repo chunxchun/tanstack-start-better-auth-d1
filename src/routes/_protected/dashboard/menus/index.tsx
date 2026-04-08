@@ -4,8 +4,6 @@ import CreateMenuDialog from "@/components/menu/dialogs/CreateMenuDialog";
 import DeleteMenuDialog from "@/components/menu/dialogs/DeleteMenuDialog";
 import EditMenuDialog from "@/components/menu/dialogs/EditMenuDialog";
 import ViewMenuDialog from "@/components/menu/dialogs/ViewMenuDialog";
-import { SortableList } from "@/components/sortableList";
-import { Button } from "@/components/ui/button";
 import type {
   InsertMenuWithFoodItemsType,
   SelectMenuWithFoodItemsType,
@@ -29,12 +27,12 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import CreateButton from "../-shared/createButton";
+import DataTableNavigator from "../-shared/data-table-navigator";
 import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";
-import DataTableNavigator from "../-shared/data-table-navigator";
-import CreateButton from "../-shared/createButton";
 
 export const Route = createFileRoute("/_protected/dashboard/menus/")({
   validateSearch: searchSchema,

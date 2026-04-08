@@ -1,4 +1,4 @@
-import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { ReactFormExtendedApi } from "@tanstack/react-form";
 
@@ -47,6 +47,9 @@ export default function FormDate<TForm>({
             onBlur={field.handleBlur}
             onChange={(e) => field.handleChange(e.target.value as any)}
             disabled={isReadOnly}
+            className={
+              isReadOnly ? "disabled:bg-white disabled:opacity-100" : undefined
+            }
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>
