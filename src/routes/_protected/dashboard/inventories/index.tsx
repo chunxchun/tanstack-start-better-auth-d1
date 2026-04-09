@@ -1,6 +1,5 @@
 import { getInventoryColumns } from "@/components/inventory/dataTables/inventoryColumns";
 import { DataTable } from "@/components/inventory/dataTables/inventoryDataTable";
-import { Button } from "@/components/ui/button";
 import type {
   InsertInventoryType,
   SelectInventoryType as Inventory,
@@ -18,7 +17,7 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import CreateInventoryDialog from "@/components/inventory/dialogs/CreateInventoryDialog";
 import DeleteInventoryDialog from "@/components/inventory/dialogs/DeleteInventoryDialog";
@@ -28,10 +27,10 @@ import { searchSchema } from "@/db/schema/commonSchema";
 import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
 import { listMachineFn } from "@/utils/machine/machine.function";
 import { listShopFn } from "@/utils/shop/shop.function";
+import CreateButton from "../-shared/createButton";
+import DataTableNavigator from "../-shared/data-table-navigator";
 import RouteLayout from "../-shared/routeLayout";
 import RouteHeader from "../-shared/routerHeader";
-import DataTableNavigator from "../-shared/data-table-navigator";
-import CreateButton from "../-shared/createButton";
 
 export const Route = createFileRoute("/_protected/dashboard/inventories/")({
   validateSearch: searchSchema,
@@ -102,7 +101,13 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertInventoryType) => {
     try {
-      await createInventoryFn({ data: values });
+      const inventory = {
+        ...values,
+        shopId: Number(values.shopId),
+        machineId: Number(values.machineId),
+        foodItemId: Number(values.foodItemId),
+      };
+      await createInventoryFn({ data: inventory });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -114,7 +119,13 @@ function RouteComponent() {
     if (!selectedInventory) return;
 
     try {
-      await updateInventoryByIdFn({ data: values });
+      const inventory = {
+        ...values,
+        shopId: Number(values.shopId),
+        machineId: Number(values.machineId),
+        foodItemId: Number(values.foodItemId),
+      };
+      await updateInventoryByIdFn({ data: inventory });
 
       setEditOpen(false);
       setSelectedInventory(null);
