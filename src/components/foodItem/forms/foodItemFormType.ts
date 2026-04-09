@@ -37,7 +37,7 @@ type FoodItemFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof FoodItemFormBaseProps, never>>;
+} & FoodItemFormBaseProps;
 
 export type FoodItemFormProps =
   | FoodItemFormViewProps

@@ -179,6 +179,7 @@ function RouteComponent() {
           setViewOpen(open);
           if (!open) setSelectedFoodItem(null);
         }}
+        shops={shops} 
         initialData={selectedFoodItem as SelectFoodItemType}
         onCancel={() => {
           setViewOpen(false);

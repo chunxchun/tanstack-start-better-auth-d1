@@ -1,5 +1,4 @@
-import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import type { ReactFormExtendedApi } from "@tanstack/react-form";
 import { Checkbox } from "./ui/checkbox";
 
@@ -43,6 +42,9 @@ export default function FormBoolean<TForm>({
             checked={field.state.value as boolean}
             required={required}
             disabled={isReadOnly}
+            className={
+              isReadOnly ? "disabled:bg-white disabled:opacity-100" : undefined
+            }
           />
           {description && <FieldDescription>{description}</FieldDescription>}
         </Field>

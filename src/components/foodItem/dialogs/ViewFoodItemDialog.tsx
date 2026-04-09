@@ -12,6 +12,7 @@ export default function ViewFoodItemDialog({
   onOpenChange,
   onCancel,
   initialData,
+  shops
 }: FoodItemViewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -26,6 +27,7 @@ export default function ViewFoodItemDialog({
           mode="view"
           initialData={initialData}
           onCancel={onCancel}
+          shops={shops}
         />
       </DialogContent>
     </Dialog>

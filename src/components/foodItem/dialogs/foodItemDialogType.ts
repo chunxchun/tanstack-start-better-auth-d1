@@ -31,6 +31,7 @@ export type FoodItemCreateDialogProps = FoodItemFormBaseProps &
     defaultShopId?: number;
   };
 
-export type FoodItemViewDialogProps = ViewDialogProps<SelectFoodItemType>;
+export type FoodItemViewDialogProps = FoodItemFormBaseProps &
+  ViewDialogProps<SelectFoodItemType>;
 
 export type FoodItemDeleteDialogProps = DeleteDialogProps<SelectFoodItemType>;
