@@ -182,6 +182,8 @@ function RouteComponent() {
 
       <ViewMachineDialog
         open={viewOpen}
+        shops={shops}
+        locations={locations}
         onOpenChange={(open) => {
           setViewOpen(open);
           if (!open) setSelectedMachine(null);

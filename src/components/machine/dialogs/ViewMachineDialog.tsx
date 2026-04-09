@@ -9,9 +9,9 @@ import type { MachineViewDialogProps } from "./machineDialogType";
 
 export default function ViewMachineDialog({
   open,
+  onOpenChange,
   shops,
   locations,
-  onOpenChange,
   onCancel,
   initialData,
 }: MachineViewDialogProps) {

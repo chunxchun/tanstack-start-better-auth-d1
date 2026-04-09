@@ -105,7 +105,7 @@ export function MenuForm({
         isReadOnly={isReadOnly}
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
+      <FieldGroup className="field-group-container">
         {/* name */}
         <FormText
           form={form}

@@ -77,7 +77,7 @@ export function DeliveryForm({
         isReadOnly={isReadOnly}
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8">
+      <FieldGroup className="field-group-container">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* destination  */}
           <FormSelect

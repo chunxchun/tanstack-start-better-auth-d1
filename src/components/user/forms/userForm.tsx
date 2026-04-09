@@ -15,7 +15,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { UserFormProps } from "./userFormType";
 
-const allowedRoles = [...userRoleValues].filter((role) => role !== "admin");
+const allRoles = [...userRoleValues];
+const nonAdminRoles = allRoles.filter((role) => role !== "admin");
+
+// const allowedRoles = [...userRoleValues].filter((role) => role !== "admin");
 
 export function UserForm({
   mode,
@@ -73,7 +76,7 @@ export function UserForm({
         isCreate={isCreate}
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
+      <FieldGroup className="field-group-container">
         <div className="flex gap-4">
           {/* shop */}
 
@@ -94,7 +97,7 @@ export function UserForm({
             form={form}
             name="role"
             label="Role"
-            list={allowedRoles}
+            list={defaultShopId ? nonAdminRoles : allRoles}
             valueKey={(item) => item}
             labelKey={(item) => item}
             isReadOnly={isReadOnly}

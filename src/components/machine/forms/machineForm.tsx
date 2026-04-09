@@ -1,10 +1,10 @@
+import FormBoolean from "@/components/form-boolean";
 import FormDate from "@/components/form-date";
 import FormFooter from "@/components/form-footer";
 import FormHeader from "@/components/form-header";
 import FormSelect from "@/components/form-select";
 import FormText from "@/components/form-text";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { FieldGroup } from "@/components/ui/field";
 import {
   machineModeValues,
   machineStatusValues,
@@ -83,7 +83,7 @@ export function MachineForm({
         <div className="form-half-width">
           <FormSelect
             form={form}
-            name={"locationId"}
+            name="locationId"
             label="Location"
             isReadOnly={isReadOnly}
             list={locations || []}
@@ -95,12 +95,13 @@ export function MachineForm({
           <FormSelect
             form={form}
             initialValue={defaultShopId ? String(defaultShopId) : undefined}
-            name={"shopId"}
+            name="shopId"
             label="Shop"
             isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
-            valueKey={(shop: any) => shop.id}
-            labelKey={(shop: any) => shop.name}
+            valueKey={(shop) => shop.id}
+            labelKey={(shop) => shop.name}
+            description="Select the shop associated with this machine."
             required
           />
         </div>
@@ -177,22 +178,16 @@ export function MachineForm({
             isReadOnly={isReadOnly}
           />
         </div>
-
-        {/* day end stock auto reset */}
-        <form.Field name="dayEndStockAutoReset">
-          {(field) => (
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor={field.name}>
-                Day End Stock Auto Reset
-              </FieldLabel>
-              <Checkbox
-                name={field.name}
-                checked={field.state.value as boolean}
-                defaultChecked
-              />
-            </Field>
-          )}
-        </form.Field>
+        <div className="form-half-width">
+          {/* day end stock auto reset */}
+          <FormBoolean
+            form={form}
+            name="dayEndStockAutoReset"
+            label="Day End Stock Auto Reset"
+            isReadOnly={isReadOnly}
+            required
+          />
+        </div>
       </FieldGroup>
       <FormFooter
         onCancel={onCancel}

@@ -97,7 +97,7 @@ export function DisposeForm({
         module="Dispose"
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8">
+      <FieldGroup className="field-group-container">
         <div className="grid grid-cols-2 gap-4 max-w-full lg:grid-cols-2 md:grid-cols-1">
           {/* shop */}
           <FormSelect

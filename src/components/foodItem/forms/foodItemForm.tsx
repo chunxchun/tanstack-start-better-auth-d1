@@ -82,36 +82,17 @@ export function FoodItemForm({
         isReadOnly={isReadOnly}
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8">
-        {/* name */}
-        <FormText
-          form={form}
-          name="name"
-          label="Name"
-          isReadOnly={isReadOnly}
-          required
-        />
+      <FieldGroup className="field-group-container">
+        <div className="form-half-width">
+          {/* name */}
+          <FormText
+            form={form}
+            name="name"
+            label="Name"
+            isReadOnly={isReadOnly}
+            required
+          />
 
-        {/* description */}
-        <FormText
-          form={form}
-          name="description"
-          label="Description"
-          isReadOnly={isReadOnly}
-        />
-
-        {/* image */}
-        <FormImage
-          form={form}
-          name="imageUrl"
-          label="Image"
-          isReadOnly={isReadOnly}
-          description="Upload an image for this food item."
-          setFile={setImageFile}
-          lastUpdatedAt={initialData?.updatedAt}
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* shop */}
           <FormSelect
             form={form}
@@ -124,6 +105,25 @@ export function FoodItemForm({
             labelKey={(item) => item.name}
             description="Select the shop for this food item."
             required
+          />
+        </div>
+        {/* description */}
+        <FormText
+          form={form}
+          name="description"
+          label="Description"
+          isReadOnly={isReadOnly}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* image */}
+          <FormImage
+            form={form}
+            name="imageUrl"
+            label="Image"
+            isReadOnly={isReadOnly}
+            description="Upload an image for this food item."
+            setFile={setImageFile}
+            lastUpdatedAt={initialData?.updatedAt}
           />
 
           {/* category */}
@@ -138,7 +138,6 @@ export function FoodItemForm({
             required
           />
         </div>
-
         {/* sku */}
         <FormText
           form={form}
@@ -147,17 +146,7 @@ export function FoodItemForm({
           isReadOnly={isReadOnly}
           required
         />
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* price */}
-          <FormDecimal
-            form={form}
-            name="price"
-            label="Price"
-            isReadOnly={isReadOnly}
-            required
-          />
-
           {/* currency */}
           <FormSelect
             form={form}
@@ -169,6 +158,14 @@ export function FoodItemForm({
             labelKey={(item) => item}
             required
           />
+          {/* price */}
+          <FormDecimal
+            form={form}
+            name="price"
+            label="Price"
+            isReadOnly={isReadOnly}
+            required
+          />{" "}
         </div>
       </FieldGroup>
 

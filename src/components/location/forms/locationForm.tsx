@@ -75,7 +75,7 @@ export function LocationForm({
         isReadOnly={isReadOnly}
       />
 
-      <FieldGroup className="overflow-auto mt-8 mb-8 px-4">
+      <FieldGroup className="field-group-container">
         <div className="form-half-width">
           {/* name */}
           <FormText

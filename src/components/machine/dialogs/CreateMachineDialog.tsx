@@ -9,9 +9,9 @@ import type { MachineCreateDialogProps } from "./machineDialogType";
 
 export default function CreateMachineDialog({
   open,
+  onOpenChange,
   shops,
   locations,
-  onOpenChange,
   onSubmit,
   onCancel,
   defaultShopId,

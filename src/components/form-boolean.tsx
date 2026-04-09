@@ -40,6 +40,10 @@ export default function FormBoolean<TForm>({
           <Checkbox
             name={field.name}
             checked={field.state.value as boolean}
+            onCheckedChange={(checked) =>
+              // field.handleChange((checked === true) as never)
+              field.handleChange(checked as never)
+            }
             required={required}
             disabled={isReadOnly}
             className={
