@@ -31,7 +31,7 @@ type DisposeFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof DisposeFormBaseProps, never>>;
+} & DisposeFormBaseProps;
 
 export type DisposeFormProps =
   | DisposeFormViewProps

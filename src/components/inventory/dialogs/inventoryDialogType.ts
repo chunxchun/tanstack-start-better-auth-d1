@@ -23,6 +23,6 @@ export type InventoryCreateDialogProps = InventoryFormBaseProps &
     defaultShopId?: number;
   };
 
-export type InventoryViewDialogProps = ViewDialogProps<SelectInventoryType>;
+export type InventoryViewDialogProps = InventoryFormBaseProps &ViewDialogProps<SelectInventoryType>;
 
 export type InventoryDeleteDialogProps = DeleteDialogProps<SelectInventoryType>;

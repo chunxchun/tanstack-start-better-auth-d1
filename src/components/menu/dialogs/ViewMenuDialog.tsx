@@ -9,6 +9,8 @@ import type { MenuViewDialogProps } from "./menuDialogType";
 
 export default function ViewMenuDialog({
   open,
+  shops,
+  foodItems,
   onOpenChange,
   onCancel,
   initialData,
@@ -22,7 +24,13 @@ export default function ViewMenuDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Menu Details</DialogTitle>
         </DialogHeader>
-        <MenuForm mode="view" initialData={initialData} onCancel={onCancel} />
+        <MenuForm
+          mode="view"
+          initialData={initialData}
+          onCancel={onCancel}
+          shops={shops}
+          foodItems={foodItems}
+        />
       </DialogContent>
     </Dialog>
   );

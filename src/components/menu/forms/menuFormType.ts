@@ -35,7 +35,7 @@ type MenuFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof MenuFormBaseProps, never>>;
+} & MenuFormBaseProps;
 
 export type MenuFormProps =
   | MenuFormViewProps

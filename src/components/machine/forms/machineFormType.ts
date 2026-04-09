@@ -29,7 +29,7 @@ type MachineFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof MachineFormBaseProps, never>>;
+} & MachineFormBaseProps;
 
 export type MachineFormProps =
   | MachineFormCreateProps

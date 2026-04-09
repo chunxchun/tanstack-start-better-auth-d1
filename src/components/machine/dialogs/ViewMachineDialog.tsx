@@ -9,6 +9,8 @@ import type { MachineViewDialogProps } from "./machineDialogType";
 
 export default function ViewMachineDialog({
   open,
+  shops,
+  locations,
   onOpenChange,
   onCancel,
   initialData,
@@ -26,6 +28,8 @@ export default function ViewMachineDialog({
           mode="view"
           initialData={initialData}
           onCancel={onCancel}
+          shops={shops}
+          locations={locations}
         />
       </DialogContent>
     </Dialog>

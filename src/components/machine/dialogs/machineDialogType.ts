@@ -23,6 +23,7 @@ export type MachineCreateDialogProps = MachineFormBaseProps &
     defaultShopId?: number;
   };
 
-export type MachineViewDialogProps = ViewDialogProps<SelectMachineType>;
+export type MachineViewDialogProps = MachineFormBaseProps &
+  ViewDialogProps<SelectMachineType>;
 
 export type MachineDeleteDialogProps = DeleteDialogProps<SelectMachineType>;

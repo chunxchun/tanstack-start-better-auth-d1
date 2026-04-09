@@ -9,8 +9,8 @@ import type { LocationViewDialogProps } from "./locationDialogType";
 
 export default function ViewLocationDialog({
   open,
-  onOpenChange,
   shops,
+  onOpenChange,
   onCancel,
   initialData,
 }: LocationViewDialogProps) {
@@ -25,8 +25,8 @@ export default function ViewLocationDialog({
         </DialogHeader>
         <LocationForm
           mode="view"
-          initialData={initialData}
           shops={shops}
+          initialData={initialData}
           onCancel={onCancel}
         />
       </DialogContent>

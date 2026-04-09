@@ -11,6 +11,9 @@ export default function ViewInventoryDialog({
   open,
   onOpenChange,
   onCancel,
+  shops,
+  machines,
+  foodItems,
   initialData,
 }: InventoryViewDialogProps) {
   return (
@@ -26,6 +29,9 @@ export default function ViewInventoryDialog({
           mode="view"
           initialData={initialData}
           onCancel={onCancel}
+          shops={shops}
+          machines={machines}
+          foodItems={foodItems}
         />
       </DialogContent>
     </Dialog>

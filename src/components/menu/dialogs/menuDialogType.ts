@@ -5,12 +5,12 @@ import type {
   ViewDialogProps,
 } from "@/components/shared/sharedFormTypes";
 import type {
-    InsertMenuType,
-    SelectMenuType,
-    UpdateMenuType,
-    InsertMenuWithFoodItemsType,
-    SelectMenuWithFoodItemsType,
-    UpdateMenuWithFoodItemsType,
+  InsertMenuType,
+  SelectMenuType,
+  UpdateMenuType,
+  InsertMenuWithFoodItemsType,
+  SelectMenuWithFoodItemsType,
+  UpdateMenuWithFoodItemsType,
 } from "@/db/schema/menuTable";
 import type { MenuFormBaseProps } from "../forms/menuFormType";
 
@@ -32,6 +32,8 @@ export type MenuCreateDialogProps = MenuFormBaseProps &
     defaultShopId?: number;
   };
 
-export type MenuViewDialogProps = ViewDialogProps<SelectMenuWithFoodItemsType>;
+export type MenuViewDialogProps = MenuFormBaseProps &
+  ViewDialogProps<SelectMenuWithFoodItemsType>;
 
-export type MenuDeleteDialogProps = DeleteDialogProps<SelectMenuWithFoodItemsType>; 
+export type MenuDeleteDialogProps =
+  DeleteDialogProps<SelectMenuWithFoodItemsType>;

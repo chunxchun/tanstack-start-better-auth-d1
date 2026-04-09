@@ -32,7 +32,7 @@ type DeliveryFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof DeliveryFormBaseProps, never>>;
+} & DeliveryFormBaseProps
 
 export type DeliveryFormProps =
   | DeliveryFormViewProps

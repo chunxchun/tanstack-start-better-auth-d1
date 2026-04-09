@@ -23,6 +23,7 @@ export type DeliveryCreateDialogProps = DeliveryFormBaseProps &
     defaultShopId?: number;
   };
 
-export type DeliveryViewDialogProps = ViewDialogProps<SelectDeliveryType>;
+export type DeliveryViewDialogProps = DeliveryFormBaseProps &
+  ViewDialogProps<SelectDeliveryType>;
 
 export type DeliveryDeleteDialogProps = DeleteDialogProps<SelectDeliveryType>;

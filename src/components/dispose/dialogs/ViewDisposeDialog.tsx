@@ -9,6 +9,9 @@ import type { DisposeViewDialogProps } from "./disposeDialogType";
 
 export default function ViewDisposeDialog({
   open,
+  shops,
+  machines,
+  foodItems,
   onOpenChange,
   onCancel,
   initialData,
@@ -24,9 +27,9 @@ export default function ViewDisposeDialog({
       >
         <DisposeForm
           mode="view"
-          shops={undefined}
-          machines={undefined}
-          foodItems={undefined}
+          shops={shops}
+          machines={machines}
+          foodItems={foodItems}
           onCancel={onCancel}
           initialData={initialData}
         />

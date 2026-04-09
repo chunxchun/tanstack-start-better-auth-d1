@@ -9,6 +9,9 @@ import type { DeliveryViewDialogProps } from "./deliveryDialogType";
 
 export default function ViewDeliveryDialog({
   open,
+  shops,
+  machines,
+  locations,
   onOpenChange,
   onCancel,
   initialData,
@@ -26,6 +29,9 @@ export default function ViewDeliveryDialog({
           mode="view"
           initialData={initialData}
           onCancel={onCancel}
+          shops={shops}
+          machines={machines}
+          locations={locations}
         />
       </DialogContent>
     </Dialog>

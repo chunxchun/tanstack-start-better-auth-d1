@@ -23,6 +23,7 @@ export type DisposeCreateDialogProps = DisposeFormBaseProps &
     defaultShopId?: number;
   };
 
-export type DisposeViewDialogProps = ViewDialogProps<SelectDisposeType>;
+export type DisposeViewDialogProps = DisposeFormBaseProps &
+  ViewDialogProps<SelectDisposeType>;
 
 export type DisposeDeleteDialogProps = DeleteDialogProps<SelectDisposeType>;

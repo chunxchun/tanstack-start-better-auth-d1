@@ -31,7 +31,7 @@ type InventoryFormViewProps = {
   onSubmit?: never;
   onCancel: () => void;
   defaultShopId?: never;
-} & Partial<Record<keyof InventoryFormBaseProps, never>>;
+} & InventoryFormBaseProps;
 
 export type InventoryFormProps =
   | InventoryFormViewProps
