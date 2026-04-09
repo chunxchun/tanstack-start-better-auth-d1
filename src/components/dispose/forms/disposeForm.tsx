@@ -8,27 +8,24 @@ import { FieldGroup } from "@/components/ui/field";
 import {
   disposeReasonValues,
   type InsertDisposeType,
-  type SelectFoodItemType,
   type UpdateDisposeType,
 } from "@/db/schema";
-import { listFoodItemFn } from "@/utils/foodItem/foodItem.function";
-import { useForm } from "@tanstack/react-form";
-import { useEffect, useRef, useState } from "react";
+import { listFoodItemByShopIdFn } from "@/utils/foodItem/foodItem.function";
+import { listMachineByShopIdFn } from "@/utils/machine/machine.function";
+import { useForm, useStore } from "@tanstack/react-form";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import type { DisposeFormProps } from "./disposeFormType";
 
 export function DisposeForm({
   mode,
   initialData,
   shops,
-  foodItems,
-  machines,
   onSubmit,
   onCancel,
   defaultShopId,
 }: DisposeFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [dynamicFoodItems, setDynamicFoodItems] = useState<SelectFoodItemType[]>(foodItems ?? []);
-  const initialShopId = useRef(defaultShopId ?? initialData?.shopId ?? null);
 
   const form = useForm({
     defaultValues: initialData || {
@@ -60,27 +57,27 @@ export function DisposeForm({
     },
   });
 
-  const isReadOnly = mode === "view";
-  const isCreate = mode === "create";
-
-  const [selectedShopId, setSelectedShopId] = useState<number | null>(
-    defaultShopId ?? initialData?.shopId ?? null,
+  const formSelectedShopId = useStore(
+    form.store,
+    (state) => state.values.shopId,
   );
 
-  useEffect(() => {
-    if (selectedShopId === initialShopId.current) return;
+  const { data: machines = [], isLoading: isLoadingMachines } = useQuery({
+    queryKey: ["machines", formSelectedShopId],
+    queryFn: () =>
+      listMachineByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    // enabled: !!formSelectedShopId,
+  });
 
-    if (selectedShopId == null) {
-      setDynamicFoodItems([]);
-      return;
-    }
-
-    listFoodItemFn({ data: { limit: 100, offset: 0, shopId: selectedShopId } })
-      .then((items) => setDynamicFoodItems(items))
-      .catch(console.error);
-
-    form.setFieldValue("foodItemId", null as any);
-  }, [selectedShopId]);
+  const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
+    queryKey: ["foodItems", formSelectedShopId],
+    queryFn: () =>
+      listFoodItemByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    // enabled: !!formSelectedShopId,
+  });
+  
+  const isReadOnly = mode === "view";
+  const isCreate = mode === "create";
 
   return (
     <form
@@ -102,15 +99,18 @@ export function DisposeForm({
           {/* shop */}
           <FormSelect
             form={form}
-            initialValue={defaultShopId ? String(defaultShopId) : undefined}
             name="shopId"
             label="Shop"
+            // initialValue={defaultShopId ? String(defaultShopId) : undefined}
             isReadOnly={!!defaultShopId || isReadOnly}
             list={shops || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
             required
-            onValueChange={(val) => setSelectedShopId(Number(val) || null)}
+            onValueChange={() => {
+              form.setFieldValue("machineId", null as never);
+              form.setFieldValue("foodItemId", null as never);
+            }}
           />
 
           {/* machine */}
@@ -118,7 +118,7 @@ export function DisposeForm({
             form={form}
             name="machineId"
             label="Machine"
-            isReadOnly={isReadOnly}
+            isReadOnly={isReadOnly || isLoadingMachines}
             list={machines || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
@@ -130,8 +130,8 @@ export function DisposeForm({
             form={form}
             name="foodItemId"
             label="Food Item"
-            isReadOnly={isReadOnly}
-            list={dynamicFoodItems}
+            isReadOnly={isReadOnly || isLoadingFoodItems}
+            list={foodItems || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
             required
@@ -173,18 +173,6 @@ export function DisposeForm({
             name="quantity"
             label="Quantity"
             isReadOnly={isReadOnly}
-            required
-          />
-
-          {/* dispose reason */}
-          <FormSelect
-            form={form}
-            name="disposeReason"
-            label="Dispose Reason"
-            isReadOnly={isReadOnly}
-            list={[...disposeReasonValues]}
-            valueKey={(item) => item}
-            labelKey={(item) => item}
             required
           />
         </div>

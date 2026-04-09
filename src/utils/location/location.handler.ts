@@ -25,6 +25,19 @@ export const listLocationHandler = async (
   }
 };
 
+export const listLocationByShopIdHandler = async (shopId: number) => {
+  try {
+    const result = await db
+      .select()
+      .from(locationsTable)
+      .where(eq(locationsTable.shopId, shopId));
+    return result;
+  } catch (error) {
+    console.error("Error listing locations by shop id:", error);
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+};
+
 export const fetchLocationByIdHandler = async (id: number) => {
   try {
     const result = await db

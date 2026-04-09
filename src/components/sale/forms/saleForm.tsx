@@ -16,7 +16,7 @@ import { listMachineByShopIdFn } from "@/utils/machine/machine.function";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import type { SaleFormProps } from "./saleFormType";
+import { defaultSaleFormValues, type SaleFormProps } from "./saleFormType";
 import { listFoodItemByShopIdFn } from "@/utils/foodItem/foodItem.function";
 
 export function SaleForm({
@@ -35,18 +35,7 @@ export function SaleForm({
   // );
 
   const form = useForm({
-    defaultValues: initialData || {
-      shopId: defaultShopId ?? null,
-      machineId: null,
-      foodItemId: null,
-      saleDate: new Date().toISOString().slice(0, 10), // default to today's date
-      saleTime: "12:00",
-      quantity: 1,
-      currency: "AUD",
-      unitPrice: null,
-      totalPrice: null,
-      paymentMethod: "cash",
-    },
+    defaultValues: initialData || defaultSaleFormValues,
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
       try {
@@ -71,25 +60,22 @@ export function SaleForm({
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
 
-  const shopId = useStore(form.store, (state) => state.values.shopId);
-  // const activeShopId =
-  //   selectedShopId ??
-  //   (typeof shopId === "number"
-  //     ? shopId
-  //     : typeof shopId === "string"
-  //       ? Number(shopId)
-  //       : null);
-  // const hasValidShopId = !!activeShopId && activeShopId > 0;
+  const formSelectedShopId = useStore(
+    form.store,
+    (state) => state.values.shopId,
+  );
 
   const { data: machines = [], isLoading: isLoadingMachines } = useQuery({
-    queryKey: ["machines", shopId],
-    queryFn: () => listMachineByShopIdFn({ data: { shopId: Number(shopId) } }),
+    queryKey: ["machines", formSelectedShopId],
+    queryFn: () =>
+      listMachineByShopIdFn({ data: { shopId: Number(formSelectedShopId) } }),
     // enabled: hasValidShopId,
   });
 
   const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
-    queryKey: ["foodItems", shopId],
-    queryFn: () => listFoodItemByShopIdFn({ data: { shopId: Number(shopId) } }),
+    queryKey: ["foodItems", formSelectedShopId],
+    queryFn: () =>
+      listFoodItemByShopIdFn({ data: { shopId: Number(formSelectedShopId) } }),
     // enabled: hasValidShopId,
   });
   return (
@@ -162,7 +148,9 @@ export function SaleForm({
               );
               form.setFieldValue(
                 "totalPrice",
-                selectedFoodItem ? selectedFoodItem.price * form.getFieldValue("quantity") : 0
+                selectedFoodItem
+                  ? selectedFoodItem.price * form.getFieldValue("quantity")
+                  : 0,
               );
             }}
             required

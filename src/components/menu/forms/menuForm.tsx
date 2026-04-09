@@ -23,16 +23,18 @@ import type {
   MenuFoodItemType,
   UpdateMenuWithFoodItemsType,
 } from "@/db/schema/menuTable";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useContext, useState } from "react";
-import type { MenuFormProps } from "./menuFormType";
+import { defaultMenuFormValues, type MenuFormProps } from "./menuFormType";
 import { ShopContext } from "@/context/shop.context";
+import { listFoodItemByShopIdFn } from "@/utils/foodItem/foodItem.function";
+import type { SelectFoodItemType } from "@/db/schema";
 
 export function MenuForm({
   mode,
   initialData,
   shops,
-  foodItems,
+  // foodItems,
   onSubmit,
   onCancel,
   defaultShopId,
@@ -46,14 +48,9 @@ export function MenuForm({
   >(initialSelectedFoodItems);
 
   // console.log("Initial selected food items:", initialSelectedFoodItems);
+
   const form = useForm({
-    defaultValues: initialData || {
-      name: null,
-      description: null,
-      coverPhotoUrl: null,
-      shopId: activeShop?.id ?? null,
-      date: new Date().toISOString().slice(0, 10),
-    },
+    defaultValues: initialData || defaultMenuFormValues,
     onSubmit: async ({ value }) => {
       if (!onSubmit) return;
       try {
@@ -90,6 +87,17 @@ export function MenuForm({
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
 
+  const formSelectedShopId = useStore(
+    form.store,
+    (state) => state.values.shopId,
+  );
+
+    const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
+    queryKey: ["foodItems", formSelectedShopId],
+    queryFn: () =>
+      listFoodItemByShopIdFn({ data: { shopId: Number(formSelectedShopId) } }),
+    // enabled: hasValidShopId,
+  });
   return (
     <form
       onSubmit={(e) => {
@@ -181,7 +189,7 @@ export function MenuForm({
                 </MultiSelectTrigger>
                 <MultiSelectContent>
                   <MultiSelectGroup>
-                    {foodItems?.map((item) => (
+                    {foodItems?.map((item as SelectFoodItemType) => (
                       <MultiSelectItem
                         key={item.id}
                         value={{

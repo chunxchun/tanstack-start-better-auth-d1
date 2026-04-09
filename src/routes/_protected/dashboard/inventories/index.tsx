@@ -169,6 +169,9 @@ function RouteComponent() {
           setViewOpen(open);
           if (!open) setSelectedInventory(null);
         }}
+        shops={shops}
+        foodItems={foodItems}
+        machines={machines}
         onCancel={() => {
           setViewOpen(false);
           setSelectedInventory(null);

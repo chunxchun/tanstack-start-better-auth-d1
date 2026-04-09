@@ -12,16 +12,18 @@ import {
   type InsertMachineType,
   type UpdateMachineType,
 } from "@/db/schema/machineTable";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { MachineFormProps } from "./machineFormType";
+import { useQuery } from "@tanstack/react-query";
+import { listLocationByShopIdFn } from "@/utils/location/location.function";
 
 export function MachineForm({
   mode,
   initialData,
   shops,
-  locations,
+  // locations,
   onSubmit,
   onCancel,
   defaultShopId,
@@ -64,6 +66,18 @@ export function MachineForm({
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
 
+  const formSelectedShopId = useStore(
+    form.store,
+    (state) => state.values.shopId,
+  );
+
+  const { data: locations = [], isLoading: isLoadingLocations } = useQuery({
+    queryKey: ["locations", formSelectedShopId],
+    queryFn: () =>
+      listLocationByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    enabled: !!formSelectedShopId,
+  });
+
   return (
     <form
       onSubmit={(e) => {
@@ -83,25 +97,28 @@ export function MachineForm({
         <div className="form-half-width">
           <FormSelect
             form={form}
-            name="locationId"
-            label="Location"
-            isReadOnly={isReadOnly}
-            list={locations || []}
-            valueKey={(location: any) => location.id}
-            labelKey={(location: any) => location.name}
+            name="shopId"
+            label="Shop"
+            initialValue={defaultShopId ? String(defaultShopId) : undefined}
+            list={shops || []}
+            isReadOnly={!!defaultShopId || isReadOnly}
+            valueKey={(shop) => shop.id}
+            labelKey={(shop) => shop.name}
+            description="Select the shop associated with this machine."
             required
+            onValueChange={() => {
+              form.setFieldValue("locationId", null as never);
+            }}
           />
 
           <FormSelect
             form={form}
-            initialValue={defaultShopId ? String(defaultShopId) : undefined}
-            name="shopId"
-            label="Shop"
-            isReadOnly={!!defaultShopId || isReadOnly}
-            list={shops || []}
-            valueKey={(shop) => shop.id}
-            labelKey={(shop) => shop.name}
-            description="Select the shop associated with this machine."
+            name="locationId"
+            label="Location"
+            isReadOnly={isReadOnly || isLoadingLocations}
+            list={locations || []}
+            valueKey={(location: any) => location.id}
+            labelKey={(location: any) => location.name}
             required
           />
         </div>

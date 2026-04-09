@@ -79,6 +79,9 @@ function RouteComponent() {
   const columns = useMemo(
     () =>
       getDisposeColumns({
+        // shops,
+        foodItems,
+        machines,
         onView: (dispose) => {
           setSelectedDispose(dispose);
           setViewOpen(true);
@@ -92,7 +95,7 @@ function RouteComponent() {
           setDeleteOpen(true);
         },
       }),
-    [],
+    [shops, foodItems, machines],
   );
 
   const handleCreateSubmit = async (values: InsertDisposeType) => {
@@ -121,7 +124,7 @@ function RouteComponent() {
         machineId: Number(values.machineId),
         foodItemId: Number(values.foodItemId),
       };
-      await updateDisposeByIdFn({ data: values });
+      await updateDisposeByIdFn({ data: dispose });
       setEditOpen(false);
       setSelectedDispose(null);
       await router.invalidate();
@@ -174,6 +177,9 @@ function RouteComponent() {
           setViewOpen(open);
           if (!open) setSelectedDispose(null);
         }}
+        shops={shops}
+        foodItems={foodItems}
+        machines={machines}
         onCancel={() => {
           setViewOpen(false);
           setSelectedDispose(null);

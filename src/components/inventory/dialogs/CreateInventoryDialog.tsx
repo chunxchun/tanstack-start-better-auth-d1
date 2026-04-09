@@ -21,11 +21,6 @@ export default function CreateInventoryDialog({
 }: InventoryCreateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="default">
-          <span>+</span>Create
-        </Button>
-      </DialogTrigger>
       <DialogHeader className="sr-only">
         <DialogTitle>Create Inventory</DialogTitle>
       </DialogHeader>

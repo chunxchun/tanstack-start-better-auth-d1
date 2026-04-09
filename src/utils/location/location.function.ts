@@ -3,11 +3,12 @@ import {
   updateLocationSchema,
 } from "@/db/schema/locationTable";
 import { createServerFn } from "@tanstack/react-start";
-import { idSchema, paginationSchema } from "../sharedSchema";
+import { idSchema, paginationSchema, shopIdSchema } from "../sharedSchema";
 import {
   createLocationHandler,
   deleteLocationByIdHandler,
   fetchLocationByIdHandler,
+  listLocationByShopIdHandler,
   listLocationHandler,
   updateLocationByIdHandler,
 } from "./location.handler";
@@ -16,6 +17,12 @@ export const listLocationFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
   .handler(async ({ data }) =>
     listLocationHandler(data.limit, data.offset, data.shopId),
+  );
+
+export const listLocationByShopIdFn = createServerFn({ method: "GET" })
+  .inputValidator(shopIdSchema)
+  .handler(async ({ data }) =>
+    listLocationByShopIdHandler(Number(data.shopId)),
   );
 
 export const createLocationFn = createServerFn({ method: "POST" })

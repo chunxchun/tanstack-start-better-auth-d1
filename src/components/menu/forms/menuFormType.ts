@@ -41,3 +41,11 @@ export type MenuFormProps =
   | MenuFormViewProps
   | MenuFormEditProps
   | MenuFormCreateProps;
+
+export const defaultMenuFormValues = {
+  name: null,
+  description: null,
+  coverPhotoUrl: null,
+  shopId: null,
+  date: new Date().toISOString().slice(0, 10),
+};

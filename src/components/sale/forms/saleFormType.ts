@@ -37,3 +37,16 @@ export type SaleFormProps =
   | SaleFormViewProps
   | SaleFormEditProps
   | SaleFormCreateProps;
+
+export const defaultSaleFormValues = {
+  shopId: null,
+  machineId: null,
+  foodItemId: null,
+  saleDate: new Date().toISOString().slice(0, 10), // default to today's date
+  saleTime: "12:00",
+  quantity: 1,
+  currency: "AUD",
+  unitPrice: null,
+  totalPrice: null,
+  paymentMethod: "cash",
+};

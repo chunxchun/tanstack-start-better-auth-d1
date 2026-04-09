@@ -1,4 +1,4 @@
-import type { SelectDisposeType as Dispose } from "@/db/schema";
+import type { SelectDisposeType as Dispose, SelectFoodItemType, SelectMachineType, SelectShopType } from "@/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
@@ -14,6 +14,8 @@ import {
 
 type DisposeColumnsOptions = {
   rowNumberOffset?: number;
+  foodItems?: SelectFoodItemType[];
+  machines?: SelectMachineType[];
   onView: (dispose: Dispose) => void;
   onEdit: (dispose: Dispose) => void;
   onDelete: (dispose: Dispose) => void;
@@ -21,6 +23,8 @@ type DisposeColumnsOptions = {
 
 export const getDisposeColumns = ({
   rowNumberOffset = 0,
+  machines = [],
+  foodItems = [],
   onView,
   onEdit,
   onDelete,
@@ -37,10 +41,24 @@ export const getDisposeColumns = ({
   {
     accessorKey: "machineId",
     header: "Machine",
+    cell: ({ row }) => {
+      const machineId = row.original.machineId;
+      if (!machineId) return <span>-</span>
+      
+      const machine = machines.find(item => item.id === machineId);
+      return machine?.name ?? `Unknown machine ${machineId}`;
+    }
   },
   {
     accessorKey: "foodItemId",
     header: "Food Item",
+    cell: ({ row }) => {
+      const foodItemId = row.original.foodItemId;
+      if (!foodItemId) return <span>-</span>
+      
+      const foodItem = foodItems.find(item => item.id === foodItemId);
+      return foodItem?.name ?? `Unknown food item ${foodItemId}`;
+    }
   },
   {
     accessorKey: "disposeDate",
