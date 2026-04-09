@@ -5,16 +5,19 @@ import FormNumber from "@/components/form-number";
 import FormSelect from "@/components/form-select";
 import { FieldGroup } from "@/components/ui/field";
 import type { InsertInventoryType, UpdateInventoryType } from "@/db/schema";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useState } from "react";
 import type { InventoryFormProps } from "./inventoryFormType";
+import { useQuery } from "@tanstack/react-query";
+import { listMachineByShopIdFn } from "@/utils/machine/machine.function";
+import { listFoodItemByShopIdFn } from "@/utils/foodItem/foodItem.function";
 
 export function InventoryForm({
   mode,
   initialData,
   shops,
-  machines,
-  foodItems,
+  // machines,
+  // foodItems,
   onSubmit,
   onCancel,
   defaultShopId,
@@ -52,6 +55,25 @@ export function InventoryForm({
 
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
+
+  const formSelectedShopId = useStore(
+    form.store,
+    (state) => state.values.shopId,
+  );
+
+  const { data: machines = [], isLoading: isLoadingMachines } = useQuery({
+    queryKey: ["machines", formSelectedShopId],
+    queryFn: () =>
+      listMachineByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    // enabled: !!formSelectedShopId,
+  });
+
+  const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
+    queryKey: ["foodItems", formSelectedShopId],
+    queryFn: () =>
+      listFoodItemByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    // enabled: !!formSelectedShopId,
+  });
 
   return (
     <form
@@ -91,7 +113,7 @@ export function InventoryForm({
             list={machines || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
+            isReadOnly={isReadOnly || isLoadingMachines}
           />
 
           {/* food item */}
@@ -100,9 +122,9 @@ export function InventoryForm({
             name="foodItemId"
             label="Food Item ID"
             list={foodItems || []}
-            valueKey={(item) => item.id}
-            labelKey={(item) => item.name}
-            isReadOnly={isReadOnly}
+            valueKey={(item: any) => item.id}
+            labelKey={(item: any) => item.name}
+            isReadOnly={isReadOnly || isLoadingFoodItems}
           />
 
           {/* quantity */}

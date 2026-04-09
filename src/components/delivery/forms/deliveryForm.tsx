@@ -10,7 +10,10 @@ import {
   type InsertDeliveryType,
   type UpdateDeliveryType,
 } from "@/db/schema";
-import { useForm } from "@tanstack/react-form";
+import { listLocationByShopIdFn } from "@/utils/location/location.function";
+import { listMachineByShopIdFn } from "@/utils/machine/machine.function";
+import { useForm, useStore } from "@tanstack/react-form";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { DeliveryFormProps } from "./deliveryFormType";
@@ -19,8 +22,8 @@ export function DeliveryForm({
   mode,
   initialData,
   shops,
-  locations,
-  machines,
+  // locations,
+  // machines,
   onSubmit,
   onCancel,
   defaultShopId,
@@ -62,6 +65,25 @@ export function DeliveryForm({
   const isReadOnly = mode === "view";
   const isCreate = mode === "create";
 
+  const formSelectedShopId = useStore(
+    form.store,
+    (state) => state.values.shopId,
+  );
+
+  const { data: locations = [], isLoading: isLoadingLocations } = useQuery({
+    queryKey: ["locations", formSelectedShopId],
+    queryFn: () =>
+      listLocationByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    enabled: !!formSelectedShopId,
+  });
+
+  const { data: machines = [], isLoading: isLoadingMachines } = useQuery({
+    queryKey: ["machines", formSelectedShopId],
+    queryFn: () =>
+      listMachineByShopIdFn({ data: { shopId: formSelectedShopId } }),
+    // enabled: !!formSelectedShopId,
+  });
+
   return (
     <form
       onSubmit={(e) => {
@@ -84,7 +106,7 @@ export function DeliveryForm({
             form={form}
             name="destinationLocationId"
             label="Destination"
-            isReadOnly={isReadOnly}
+            isReadOnly={isReadOnly || isLoadingLocations}
             list={locations || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
@@ -97,7 +119,7 @@ export function DeliveryForm({
             form={form}
             name="machineId"
             label="Machine"
-            isReadOnly={isReadOnly}
+            isReadOnly={isReadOnly || isLoadingMachines}
             list={machines || []}
             valueKey={(item) => item.id}
             labelKey={(item) => item.name}
