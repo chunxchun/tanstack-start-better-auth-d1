@@ -50,7 +50,8 @@ export const Route = createFileRoute("/_protected/dashboard/deliveries/")({
 });
 
 function RouteComponent() {
-  const { deliveries, locations, machines, shops, user } = Route.useLoaderData();
+  const { deliveries, locations, machines, shops, user } =
+    Route.useLoaderData();
   const defaultShopId = user.shopId ?? undefined;
 
   const search = Route.useSearch();
@@ -99,7 +100,13 @@ function RouteComponent() {
 
   const handleCreateSubmit = async (values: InsertDeliveryType) => {
     try {
-      await createDeliveryFn({ data: values });
+      const delivery = {
+        ...values,
+        shopId: Number(values.shopId),
+        destinationLocationId: Number(values.destinationLocationId),
+        machineId: Number(values.machineId),
+      };
+      await createDeliveryFn({ data: delivery });
       setCreateOpen(false);
       await router.invalidate();
     } catch (error) {
@@ -111,7 +118,13 @@ function RouteComponent() {
     if (!selectedDelivery) return;
 
     try {
-      await updateDeliveryByIdFn({ data: values });
+        const delivery = {
+        ...values,
+        shopId: Number(values.shopId),
+        destinationLocationId: Number(values.destinationLocationId),
+        machineId: Number(values.machineId),
+      };
+      await updateDeliveryByIdFn({ data: delivery });
 
       setEditOpen(false);
       setSelectedDelivery(null);
@@ -151,7 +164,7 @@ function RouteComponent() {
         />
         <CreateButton handleClick={() => setCreateOpen(true)} />
       </RouteLayout>
- 
+
       <CreateDeliveryDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
@@ -169,6 +182,9 @@ function RouteComponent() {
           setViewOpen(open);
           if (!open) setSelectedDelivery(null);
         }}
+        shops={shops}
+        locations={locations}
+        machines={machines}
         onCancel={() => {
           setSelectedDelivery(null);
           setViewOpen(false);
