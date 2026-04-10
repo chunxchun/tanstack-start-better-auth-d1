@@ -4,7 +4,6 @@ import CreateShopDialog from "@/components/shop/dialogs/CreateShopDialog";
 import DeleteShopDialog from "@/components/shop/dialogs/DeleteShopDialog";
 import EditShopDialog from "@/components/shop/dialogs/EditShopDialog";
 import ViewShopDialog from "@/components/shop/dialogs/ViewShopDialog";
-import { Button } from "@/components/ui/button";
 import type {
   InsertShopType,
   SelectShopType,
@@ -22,12 +21,12 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import RouteHeader from "../-shared/routerHeader";
-import DataTableNavigator from "../-shared/data-table-navigator";
 import CreateButton from "../-shared/createButton";
+import DataTableNavigator from "../-shared/data-table-navigator";
 import RouteLayout from "../-shared/routeLayout";
+import RouteHeader from "../-shared/routerHeader";
 
 export const Route = createFileRoute("/_protected/dashboard/shops/")({
   validateSearch: searchSchema,

@@ -65,14 +65,14 @@ export function InventoryForm({
     queryKey: ["machines", formSelectedShopId],
     queryFn: () =>
       listMachineByShopIdFn({ data: { shopId: formSelectedShopId } }),
-    // enabled: !!formSelectedShopId,
+    enabled: !!formSelectedShopId,
   });
 
   const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
     queryKey: ["foodItems", formSelectedShopId],
     queryFn: () =>
       listFoodItemByShopIdFn({ data: { shopId: formSelectedShopId } }),
-    // enabled: !!formSelectedShopId,
+    enabled: !!formSelectedShopId,
   });
 
   return (

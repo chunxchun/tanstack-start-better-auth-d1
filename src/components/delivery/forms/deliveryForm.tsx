@@ -46,12 +46,10 @@ export function DeliveryForm({
       try {
         if (mode === "edit") {
           await onSubmit(value as UpdateDeliveryType);
-          toast.success("Delivery updated successfully");
         }
 
         if (mode === "create") {
           await onSubmit(value as InsertDeliveryType);
-          toast.success("Delivery created successfully");
         }
       } catch (error) {
         console.error("Error submitting delivery form:", error);
@@ -81,7 +79,7 @@ export function DeliveryForm({
     queryKey: ["machines", formSelectedShopId],
     queryFn: () =>
       listMachineByShopIdFn({ data: { shopId: formSelectedShopId } }),
-    // enabled: !!formSelectedShopId,
+    enabled: !!formSelectedShopId,
   });
 
   return (

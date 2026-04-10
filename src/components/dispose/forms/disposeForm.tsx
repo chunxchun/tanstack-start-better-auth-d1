@@ -66,14 +66,14 @@ export function DisposeForm({
     queryKey: ["machines", formSelectedShopId],
     queryFn: () =>
       listMachineByShopIdFn({ data: { shopId: formSelectedShopId } }),
-    // enabled: !!formSelectedShopId,
+    enabled: !!formSelectedShopId,
   });
 
   const { data: foodItems = [], isLoading: isLoadingFoodItems } = useQuery({
     queryKey: ["foodItems", formSelectedShopId],
     queryFn: () =>
       listFoodItemByShopIdFn({ data: { shopId: formSelectedShopId } }),
-    // enabled: !!formSelectedShopId,
+    enabled: !!formSelectedShopId,
   });
   
   const isReadOnly = mode === "view";
@@ -95,7 +95,7 @@ export function DisposeForm({
       />
 
       <FieldGroup className="field-group-container">
-        <div className="grid grid-cols-2 gap-4 max-w-full lg:grid-cols-2 md:grid-cols-1">
+        <div className="form-half-width">
           {/* shop */}
           <FormSelect
             form={form}

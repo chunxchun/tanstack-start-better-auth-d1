@@ -117,7 +117,13 @@ function RouteComponent() {
     if (!selectedSale) return;
 
     try {
-      await updateSaleByIdFn({ data: values });
+        const sale = {
+        ...values,
+        shopId: Number(values.shopId),
+        machineId: Number(values.machineId),
+        foodItemId: Number(values.foodItemId),
+      };
+      await updateSaleByIdFn({ data: sale });
       setEditOpen(false);
       setSelectedSale(null);
       await router.invalidate();

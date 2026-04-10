@@ -204,6 +204,8 @@ function RouteComponent() {
           setViewOpen(open);
           if (!open) setSelectedMenu(null);
         }}
+        shops={shops}
+        foodItems={foodItems}
         initialData={selectedMenu as SelectMenuWithFoodItemsType}
         onCancel={() => {
           setViewOpen(false);
