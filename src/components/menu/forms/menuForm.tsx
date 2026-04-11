@@ -60,15 +60,7 @@ export function MenuForm({
 }: MenuFormProps) {
   const [open, setOpen] = useState(false);
   const [coverPhotoFile, setCoverPhotoFile] = useState<File | null>(null);
-  // const shopContext = useContext(ShopContext);
-  // const { activeShop } = shopContext || {};
-  // const initialSelectedFoodItems = initialData?.menuFoodItems || [];
   const [isLoading, setIsLoading] = useState(false);
-  // const [selectedFoodItems, setSelectedFoodItems] = useState<
-  //   MenuFoodItemType[]
-  // >(initialSelectedFoodItems);
-
-  // console.log("Initial selected food items:", initialSelectedFoodItems);
 
   const form = useForm({
     defaultValues: initialData || {
@@ -77,7 +69,6 @@ export function MenuForm({
       coverPhotoUrl: null,
       shopId: defaultShopId ?? null,
       date: new Date().toISOString().slice(0, 10),
-      // foodItems: [] as MenuFoodItemType[]
       menuFoodItems: [] as MenuFoodItemType[],
     },
     onSubmit: async ({ value }) => {
@@ -85,27 +76,13 @@ export function MenuForm({
       try {
         setIsLoading(true);
         if (mode === "edit") {
-          console.log("Submitting menu form with data:", value);
-          //   const menuWithFoodItems: UpdateMenuWithFoodItemsType = {
-          //     ...value,
-          //     menuFoodItems: selectedFoodItems.map((foodItems) => {
-          //       return { ...foodItems, id: Number(foodItems.id) };
-          //     }),
-          //   } as UpdateMenuWithFoodItemsType;
-          //   await onSubmit(menuWithFoodItems);
+          await onSubmit(
+            value as UpdateMenuWithFoodItemsType,
+            coverPhotoFile ?? undefined,
+          );
         }
 
         if (mode === "create") {
-          console.log("Submitting menu form with data:", value);
-          //   const menuWithFoodItems: InsertMenuWithFoodItemsType = {
-          //     ...value,
-          //     menuFoodItems: selectedFoodItems.map((foodItems) => {
-          //       return { ...foodItems, id: Number(foodItems.id) };
-          //     }),
-          //   } as InsertMenuWithFoodItemsType;
-
-          //   console.log("Submitting menu form with data:", menuWithFoodItems);
-          // await onSubmit(menuWithFoodItems);
           await onSubmit(
             value as InsertMenuWithFoodItemsType,
             coverPhotoFile ?? undefined,
@@ -150,23 +127,16 @@ export function MenuForm({
       />
 
       <FieldGroup className="field-group-container">
-        {/* name */}
-        <FormText
-          form={form}
-          name="name"
-          label="Name"
-          isReadOnly={isReadOnly}
-          required
-        />
-
-        {/* description */}
-        <FormText
-          form={form}
-          name="description"
-          label="Description"
-          isReadOnly={isReadOnly}
-        />
         <div className="form-half-width">
+          {/* name */}
+          <FormText
+            form={form}
+            name="name"
+            label="Name"
+            isReadOnly={isReadOnly}
+            required
+          />
+
           {/* shop */}
           <FormSelect
             form={form}
@@ -179,47 +149,33 @@ export function MenuForm({
             isReadOnly={!!defaultShopId || isReadOnly}
             required
           />
+        </div>
 
-          {/* cover photo url */}
-          <FormImage
-            form={form}
-            name="coverPhotoUrl"
-            label="Cover Photo"
-            isReadOnly={isReadOnly}
-            setFile={setCoverPhotoFile}
-            lastUpdatedAt={initialData?.updatedAt}
-          />
-          {/* <form.Field name="coverPhotoUrl">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Cover Photo</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value ?? ""}
-                  disabled={isReadOnly}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value || null)}
-                />
-                <FieldDescription>
-                  Optional public URL for menu cover photo.
-                </FieldDescription>
-              </Field>
-            )}
-          </form.Field> */}
+        {/* description */}
+        <FormText
+          form={form}
+          name="description"
+          label="Description"
+          isReadOnly={isReadOnly}
+        />
 
+        {/* cover photo url */}
+        <FormImage
+          form={form}
+          name="coverPhotoUrl"
+          label="Cover Photo"
+          isReadOnly={isReadOnly}
+          setFile={setCoverPhotoFile}
+          lastUpdatedAt={initialData?.updatedAt}
+        />
+
+        <div className="form-half-width">
           {/* food items */}
           <form.Field name="menuFoodItems">
             {(field) => (
               <Field>
                 <FieldLabel htmlFor="foodItemIds">Food Items</FieldLabel>
-                {/* {isReadOnly ? (
-              initialSelectedFoodItems.map((item) => (
-                <div key={item.id} className="flex items-center space-x-2">
-                  <p>- {item.name}</p>
-                </div>
-              ))
-            ) : ( */}
+
                 <Popover onOpenChange={setOpen} open={open}>
                   <PopoverTrigger asChild>
                     <Button
@@ -252,47 +208,24 @@ export function MenuForm({
                                     const exists = prev.some(
                                       (item) => item.id === foodItem.id,
                                     );
-                                    if (exists) {
-                                      return prev.filter(
-                                        (item) => item.id !== foodItem.id,
-                                      );
-                                    } else {
-                                      return [
-                                        ...prev,
-                                        {
-                                          id: foodItem.id,
-                                          name: foodItem.name,
-                                          imageUrl:
-                                            foodItem.imageUrl ?? undefined,
-                                        },
-                                      ];
-                                    }
+                                    return exists
+                                      ? prev.filter(
+                                          (item) => item.id !== foodItem.id,
+                                        )
+                                      : [
+                                          ...prev,
+                                          {
+                                            id: foodItem.id,
+                                            name: foodItem.name,
+                                            imageUrl:
+                                              foodItem.imageUrl ?? undefined,
+                                          },
+                                        ];
                                   },
                                 );
-                                // form.setFieldValue(
-                                //   "foodItems",
-                                //   (prev: SelectFoodItemType[]) => {
-                                //     return prev.some(
-                                //       (item) => item.id === foodItem.id,
-                                //     )
-                                //       ? prev.filter(
-                                //           (item) => item.id !== foodItem.id,
-                                //         )
-                                //       : [
-                                //           ...prev,
-                                //           {
-                                //             id: foodItem.id,
-                                //             name: foodItem.name,
-                                //             imageUrl: foodItem.imageUrl,
-                                //           },
-                                //         ];
-                                //   },
-                                // );
                               }}
                               value={String(foodItem.id)}
-                              // className="flex flex-row justify-between"
                             >
-                              {/* <div> */}
                               <Check
                                 className={cn(
                                   "mr-2 size-4",
@@ -304,7 +237,6 @@ export function MenuForm({
                                     : "opacity-0",
                                 )}
                               />
-                              {/* </div> */}
                               {foodItem.imageUrl ? (
                                 <img
                                   src={foodItem.imageUrl}
@@ -327,36 +259,10 @@ export function MenuForm({
                     {field.state.value.map((foodItem) => (
                       <Badge key={foodItem.id} variant="secondary">
                         {foodItem.name}
-                        {/* {foodItem.find((item) => topic.value === value)?.label} */}
                       </Badge>
                     ))}
                   </div>
                 )}
-                {/* <MultiSelect
-                defaultValues={initialSelectedFoodItems}
-                values={selectedFoodItems}
-                onValuesChange={setSelectedFoodItems}
-              >
-                <MultiSelectTrigger>
-                  <MultiSelectValue placeholder="Select frameworks..." />
-                </MultiSelectTrigger>
-                <MultiSelectContent>
-                  <MultiSelectGroup>
-                    {foodItems?.map((item as SelectFoodItemType) => (
-                      <MultiSelectItem
-                        key={item.id}
-                        value={{
-                          id: item.id,
-                          name: item.name,
-                          imageUrl: item.imageUrl || undefined,
-                        }}
-                      >
-                        {item.name}
-                      </MultiSelectItem>
-                    ))}
-                  </MultiSelectGroup>
-                </MultiSelectContent>
-              </MultiSelect> */}
               </Field>
             )}
           </form.Field>
