@@ -198,6 +198,7 @@ function RouteComponent() {
         onCancel={() => setCreateOpen(false)}
         defaultShopId={defaultShopId}
       />
+      
       <ViewMenuDialog
         open={viewOpen}
         onOpenChange={(open) => {

@@ -1,6 +1,7 @@
 import type { FormDataDependency } from "@/components/shared/sharedFormTypes";
 import type {
   InsertMenuWithFoodItemsType,
+  SelectFoodItemType,
   SelectMenuWithFoodItemsType,
   UpdateMenuWithFoodItemsType,
 } from "@/db/schema";
@@ -42,10 +43,17 @@ export type MenuFormProps =
   | MenuFormEditProps
   | MenuFormCreateProps;
 
+export type MenuFoodItemType = {
+  id: number;
+  name: string;
+  imageUrl?: string | null;
+};
 export const defaultMenuFormValues = {
   name: null,
   description: null,
   coverPhotoUrl: null,
   shopId: null,
   date: new Date().toISOString().slice(0, 10),
+  foodItems: [] as MenuFoodItemType[]
+  // foodItems: [] as SelectFoodItemType[]
 };

@@ -19,7 +19,7 @@ export const listMenuFn = createServerFn({ method: "GET" })
 export const listMenuWithFoodItemFn = createServerFn({ method: "GET" })
   .inputValidator(paginationSchema)
   .handler(async ({ data }) =>
-    listMenuWithFoodItemHandler(data.limit, data.offset),
+    listMenuWithFoodItemHandler(data.limit, data.offset, data.shopId),
   );
 
 export const createMenuFn = createServerFn({ method: "POST" })
