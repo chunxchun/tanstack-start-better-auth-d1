@@ -5,6 +5,10 @@ import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import NotFound from "../components/NotFound";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthUIProvider } from "@/components/auth-ui-provider";
+
+const queryClient = new QueryClient();
 
 export const Route = createRootRoute({
   head: () => ({
@@ -29,9 +33,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        
-        {children}
-        <Toaster />
+        <QueryClientProvider client={queryClient}>
+          <AuthUIProvider>
+            {children}
+            <Toaster />
+          </AuthUIProvider>
+        </QueryClientProvider>
         {/* <TanStackDevtools
           config={{
             position: 'bottom-right',

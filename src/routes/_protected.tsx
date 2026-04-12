@@ -1,9 +1,6 @@
 import { getSession } from "@/lib/session";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { ThemeProvider } from "@/context/theme.provider";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
 
 export const Route = createFileRoute("/_protected")({
   beforeLoad: async ({ location }) => {
@@ -20,9 +17,7 @@ export const Route = createFileRoute("/_protected")({
   },
   component: () => (
     <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <Outlet />
-      </QueryClientProvider>
+      <Outlet />
     </ThemeProvider>
   ),
 });
