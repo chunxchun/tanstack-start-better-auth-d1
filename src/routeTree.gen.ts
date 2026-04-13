@@ -29,6 +29,8 @@ import { Route as ApiDisposeIndexRouteImport } from './routes/api/dispose/index'
 import { Route as ApiDeliveryIndexRouteImport } from './routes/api/delivery/index'
 import { Route as ApiShopIdRouteImport } from './routes/api/shop/$id'
 import { Route as ApiSaleIdRouteImport } from './routes/api/sale/$id'
+import { Route as ApiResendWebhookRouteImport } from './routes/api/resend/webhook'
+import { Route as ApiResendSendRouteImport } from './routes/api/resend/send'
 import { Route as ApiR2UploadRouteImport } from './routes/api/r2/upload'
 import { Route as ApiR2DownloadRouteImport } from './routes/api/r2/download'
 import { Route as ApiMenuIdRouteImport } from './routes/api/menu/$id'
@@ -158,6 +160,16 @@ const ApiShopIdRoute = ApiShopIdRouteImport.update({
 const ApiSaleIdRoute = ApiSaleIdRouteImport.update({
   id: '/api/sale/$id',
   path: '/api/sale/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResendWebhookRoute = ApiResendWebhookRouteImport.update({
+  id: '/api/resend/webhook',
+  path: '/api/resend/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResendSendRoute = ApiResendSendRouteImport.update({
+  id: '/api/resend/send',
+  path: '/api/resend/send',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiR2UploadRoute = ApiR2UploadRouteImport.update({
@@ -355,6 +367,8 @@ export interface FileRoutesByFullPath {
   '/api/menu/$id': typeof ApiMenuIdRoute
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/resend/send': typeof ApiResendSendRoute
+  '/api/resend/webhook': typeof ApiResendWebhookRoute
   '/api/sale/$id': typeof ApiSaleIdRoute
   '/api/shop/$id': typeof ApiShopIdRoute
   '/api/delivery/': typeof ApiDeliveryIndexRoute
@@ -407,6 +421,8 @@ export interface FileRoutesByTo {
   '/api/menu/$id': typeof ApiMenuIdRoute
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/resend/send': typeof ApiResendSendRoute
+  '/api/resend/webhook': typeof ApiResendWebhookRoute
   '/api/sale/$id': typeof ApiSaleIdRoute
   '/api/shop/$id': typeof ApiShopIdRoute
   '/api/delivery': typeof ApiDeliveryIndexRoute
@@ -461,6 +477,8 @@ export interface FileRoutesById {
   '/api/menu/$id': typeof ApiMenuIdRoute
   '/api/r2/download': typeof ApiR2DownloadRoute
   '/api/r2/upload': typeof ApiR2UploadRoute
+  '/api/resend/send': typeof ApiResendSendRoute
+  '/api/resend/webhook': typeof ApiResendWebhookRoute
   '/api/sale/$id': typeof ApiSaleIdRoute
   '/api/shop/$id': typeof ApiShopIdRoute
   '/api/delivery/': typeof ApiDeliveryIndexRoute
@@ -515,6 +533,8 @@ export interface FileRouteTypes {
     | '/api/menu/$id'
     | '/api/r2/download'
     | '/api/r2/upload'
+    | '/api/resend/send'
+    | '/api/resend/webhook'
     | '/api/sale/$id'
     | '/api/shop/$id'
     | '/api/delivery/'
@@ -567,6 +587,8 @@ export interface FileRouteTypes {
     | '/api/menu/$id'
     | '/api/r2/download'
     | '/api/r2/upload'
+    | '/api/resend/send'
+    | '/api/resend/webhook'
     | '/api/sale/$id'
     | '/api/shop/$id'
     | '/api/delivery'
@@ -620,6 +642,8 @@ export interface FileRouteTypes {
     | '/api/menu/$id'
     | '/api/r2/download'
     | '/api/r2/upload'
+    | '/api/resend/send'
+    | '/api/resend/webhook'
     | '/api/sale/$id'
     | '/api/shop/$id'
     | '/api/delivery/'
@@ -672,6 +696,8 @@ export interface RootRouteChildren {
   ApiMenuIdRoute: typeof ApiMenuIdRoute
   ApiR2DownloadRoute: typeof ApiR2DownloadRoute
   ApiR2UploadRoute: typeof ApiR2UploadRoute
+  ApiResendSendRoute: typeof ApiResendSendRoute
+  ApiResendWebhookRoute: typeof ApiResendWebhookRoute
   ApiSaleIdRoute: typeof ApiSaleIdRoute
   ApiShopIdRoute: typeof ApiShopIdRoute
   ApiDeliveryIndexRoute: typeof ApiDeliveryIndexRoute
@@ -826,6 +852,20 @@ declare module '@tanstack/react-router' {
       path: '/api/sale/$id'
       fullPath: '/api/sale/$id'
       preLoaderRoute: typeof ApiSaleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/resend/webhook': {
+      id: '/api/resend/webhook'
+      path: '/api/resend/webhook'
+      fullPath: '/api/resend/webhook'
+      preLoaderRoute: typeof ApiResendWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/resend/send': {
+      id: '/api/resend/send'
+      path: '/api/resend/send'
+      fullPath: '/api/resend/send'
+      preLoaderRoute: typeof ApiResendSendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/r2/upload': {
@@ -1134,6 +1174,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMenuIdRoute: ApiMenuIdRoute,
   ApiR2DownloadRoute: ApiR2DownloadRoute,
   ApiR2UploadRoute: ApiR2UploadRoute,
+  ApiResendSendRoute: ApiResendSendRoute,
+  ApiResendWebhookRoute: ApiResendWebhookRoute,
   ApiSaleIdRoute: ApiSaleIdRoute,
   ApiShopIdRoute: ApiShopIdRoute,
   ApiDeliveryIndexRoute: ApiDeliveryIndexRoute,
